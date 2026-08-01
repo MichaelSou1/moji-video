@@ -83,15 +83,55 @@
 
 - [ ] 0.1 确认 huirui 服务器 GPU 型号、数量、单卡显存（`nvidia-smi`），据此决定 Phase 3 的
       `NUM_GPUS`/`ROLLOUT_TP`/`REWARD_TP` 取值。
-- [ ] 0.2 按 `docs/start/install.md` 在 huirui 上完成 GPU 环境安装：
+- [ ] 0.2 下载/确认模型权重（huirui 上当前模型资产见下表，需从 ModelScope 补齐缺失项）。
+
+  **huirui 上已有模型资产（核实于 2025-08）**
+
+  | 模型 | ModelScope ID | 位置 | 状态 | 体积 |
+  |------|--------------|------|------|------|
+  | **Wan2.2-TI2V-5B-Diffusers** (base model) | `Wan-AI/Wan2.2-TI2V-5B-Diffusers` | `~/.cache/huggingface/hub/` ref only | ❌ **需下载** | ~24 GB |
+  | Wan2.1-T2V-1.3B (参考，非必需) | `Wan-AI/Wan2.1-T2V-1.3B` | `~/VEGA-3D/data/models/` | ✅ 已有 | 5.8 GB |
+  | **Qwen3-VL-8B-Instruct** (OCR VLM，推荐) | `Qwen/Qwen3-VL-8B-Instruct` | `~/.cache/huggingface/hub/` 部分（仅 395M blobs，缺 safetensors） | ⚠️ **需补全** | ~8 GB |
+  | Qwen3-VL-30B-A3B-Instruct (过大，非必需) | — | `/data/models/` | ✅ 完整 | 58 GB |
+  | Qwen2.5-VL-7B-Instruct (备选 VLM) | `Qwen/Qwen2.5-VL-7B-Instruct` | `~/.cache/huggingface/hub/` ref only | ❌ 需下载 | ~15 GB |
+
+  > ⚠️ `/data` 磁盘已用 97%（3.2T/3.5T，仅剩 ~116G），多人共享。下载前确认空间足够，优先下载
+  > 必需的两个模型（Wan2.2 ~24G + Qwen3-VL-8B ~8G ≈ 32G），不建议下载 Qwen3-VL-30B（58G）。
+
+  下载命令（在 huirui 上执行，**先 `bash -ic "clashon"` 开代理**）：
+  ```bash
+  # 安装 modelscope CLI（如未装）
+  pip install modelscope
+
+  # ① Base model: Wan2.2-TI2V-5B-Diffusers（~24 GB，约 30-60 min）
+  modelscope download Wan-AI/Wan2.2-TI2V-5B-Diffusers \
+    --local_dir /data/models/Wan2.2-TI2V-5B-Diffusers
+
+  # ② OCR VLM: Qwen3-VL-8B-Instruct（~8 GB，约 10-20 min）
+  modelscope download Qwen/Qwen3-VL-8B-Instruct \
+    --local_dir /data/models/Qwen3-VL-8B-Instruct
+  ```
+
+  下载完成后验证：
+  ```bash
+  # Wan2.2 应含 diffusion_pytorch_model-*.safetensors (3个分片) + config.json + VAE 权重
+  ls /data/models/Wan2.2-TI2V-5B-Diffusers/*.safetensors | wc -l   # 预期 ≥3
+  # Qwen3-VL 应含 model-*.safetensors 分片 + tokenizer 文件
+  ls /data/models/Qwen3-VL-8B-Instruct/*.safetensors | wc -l      # 预期 ≥1
+  ```
+
+  后续训练脚本中通过 `model_name=/data/models/Wan2.2-TI2V-5B-Diffusers` 和
+  `reward_model_name=/data/models/Qwen3-VL-8B-Instruct` 引用本地路径，避免运行时再从 Hub 拉取。
+
+- [ ] 0.3 按 `docs/start/install.md` 在 huirui 上完成 GPU 环境安装：
   ```bash
   uv venv --python 3.12 --seed && source .venv/bin/activate
   uv pip install -e ".[gpu]" --torch-backend=auto
   uv pip install "vllm-omni @ git+https://github.com/vllm-project/vllm-omni.git@$(cat .github/vllm_omni_pin.txt)"
   uv pip install -e ".[train,dev,ocr]"   # ocr extra 提供 Levenshtein
   ```
-- [ ] 0.3 跑一遍 `docs/start/install.md` 的 Post-Installation Verification 五条 `python -c` 检查。
-- [ ] 0.4 （可选但强烈建议）先按官方 quickstart 跑通一次现成的 FlowGRPO/DanceGRPO 示例
+- [ ] 0.4 跑一遍 `docs/start/install.md` 的 Post-Installation Verification 五条 `python -c` 检查。
+- [ ] 0.5 （可选但强烈建议）先按官方 quickstart 跑通一次现成的 FlowGRPO/DanceGRPO 示例
       （如 `bash examples/dancegrpo_trainer/wan22/run_wan22_5b_t2v_hpsv3_npu.sh` 改成 GPU 版
       或直接跑 `run_qwen_image_ocr_lora.sh`），验证 Ray/vLLM-Omni 基础设施可用，排除环境问题
       对后续调试的干扰。
@@ -133,8 +173,9 @@
 
 ### Phase 2：Reward 函数接线（默认方案：VLM/GenRM OCR）
 
-- [ ] 2.1 确认奖励模型：`Qwen/Qwen3-VL-8B-Instruct`（与 Qwen-Image OCR 示例一致），或更小的
-      `Qwen/Qwen2.5-VL-3B-Instruct`（与 SD3.5 quickstart 一致，显存需求更低，适合先做小规模验证）。
+- [ ] 2.1 确认奖励模型：优先使用 Phase 0.2 已下载到 `/data/models/Qwen3-VL-8B-Instruct` 的
+      `Qwen/Qwen3-VL-8B-Instruct`（与 Qwen-Image OCR 示例一致），或更小的备选
+      `Qwen/Qwen2.5-VL-3B-Instruct`（显存需求更低，适合先做小规模验证，需额外下载约 6G）。
 - [ ] 2.2 确认 `verl_omni/utils/reward_score/genrm_ocr.py::compute_score_ocr` **无需修改**即可用于
       Wan2.2 视频输出——已支持 `[B, F, H, W, C]` 5D tensor（对应注释里的 "Wan22 DanceGRPO"）。
       仅需在启动脚本里配置：
@@ -193,7 +234,7 @@
 - [ ] 3.4 替换 reward 配置块（删除 HPSv3 相关的 `custom_reward_model_path`、
       `hpsv3_reward.py`、`compute_score_hpsv3`），换成 Phase 2 确定的 OCR reward 配置：
   ```bash
-  reward_model_name=Qwen/Qwen3-VL-8B-Instruct
+  reward_model_name=/data/models/Qwen3-VL-8B-Instruct   # Phase 0.2 下载的本地路径
   reward_function_path=verl_omni/utils/reward_score/genrm_ocr.py
   ...
   reward.reward_model.enable=True \
@@ -226,8 +267,8 @@
 
 ### Phase 4：Smoke Test（小规模跑通）
 
-- [ ] 4.1 在 huirui 上通过 `bash -ic "clashon"` 确保联网下载模型权重时代理已开启（`Wan2.2-TI2V-5B`
-      和 VLM reward 模型都会从 HuggingFace Hub 自动下载缓存）。
+- [ ] 4.1 确认 Phase 0.2 下载的模型权重已在 `/data/models/` 下就绪（若尚未下载，先按 Phase 0.2
+      的命令补齐，下载前 `bash -ic "clashon"` 开代理）。
 - [ ] 4.2 用最小 GPU 数/最小 batch 跑几个 step，确认：
       - 训练进程能正常启动，不报 config/shape 错误；
       - reward/OCR-score 日志字段能正常打印（非 NaN、非全 0）；
@@ -314,4 +355,5 @@
 | 算法文档 | `docs/algo/flowgrpo.md`、`examples/dancegrpo_trainer/README.md` |
 | 批大小/OOM 调参文档 | `docs/start/flowgrpo_quickstart.md`、`docs/algo/flowgrpo.md#batch-size` |
 | 训练指标含义 | `docs/start/metrics.md` |
+| huirui 模型权重存放位置 | `/data/models/`（Phase 0.2 下载） |
 | 本地/远程环境与同步说明 | `MEMORY.md` |
