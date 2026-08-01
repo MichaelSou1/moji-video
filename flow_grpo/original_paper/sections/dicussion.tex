@@ -1,0 +1,27 @@
+% \section{Discussion}\label{sec:dis}
+% We have presented weak-to-strong search, an alignment method that keeps the large language model frozen while steering its decoding through a test-time greedy search over small language models.
+% This method builds on the insight that the log-probability difference between small tuned and untuned language models can serve both as a dense reward function and a value function, and then introduces a novel beam search algorithm designed for balancing reward maximization and KL minimization.
+% This method offers a compute-efficient model up-scaling strategy that eliminates the complexity of directly fine-tuning the large models, and exemplifies weak-to-strong generalization~\cite{burns2023weak} that makes strong models stronger with only weak test-time guidance.
+% Empirically, this approach is effective in controlled-sentiment generation, summarization, and instruction following.
+
+\section{Conclusion}
+We have presented Flow-GRPO, the first method to integrate online policy gradient RL into flow matching models. By converting deterministic ODEs to SDEs and reducing denoising steps during training, Flow-GRPO enables efficient RL-based optimization without noticeably compromising image quality or diversity.
+Our method significantly improves performance on compositional generation, text rendering, and human preference alignment, with minimal reward hacking. Flow-GRPO offers a simple and general framework for applying online RL to flow-based generative models.
+
+\label{sec:limitation}
+\paragraph{Limitations \& Future Work.} 
+Although this work focuses on T2I tasks, Flow-GRPO has potential for video generation~\cite{wanx, hunyuanvideo}, raising several future directions: (1) Reward Design: Simple heuristics, such as using object detectors or trackers as rule-based rewards, can encourage physical realism and temporal consistency, but more advanced reward models are needed.
+(2) Balancing Multiple Rewards: Video generation requires optimizing multiple objectives, including realism, smoothness, and coherence. Balancing these competing goals remains challenging and demands careful tuning.
+(3) Scalability: Video generation is far more resource-intensive than T2I, so applying Flow-GRPO at scale requires more efficient data collection and training pipelines. Additionally, better methods for preventing reward hacking are worth exploring. While KL regularization helps significantly, it requires longer training and occasional reward hacking occurs for certain prompts.
+
+\section*{Acknowledgements}
+This work was partially supported by the JC STEM Lab of AI for Science and Engineering, funded by The Hong Kong Jockey Club Charities Trust, the Research Grants Council of Hong Kong (Project No. CUHK14213224).
+We gratefully acknowledge Mingwu Zheng for his insightful discussions on the proof and Zhanhui Zhou for his valuable comments that improved the clarity of this paper.
+
+% Denoising Reduction is a promising
+% Our experiments in Section~\ref{sec:exp:distill} also suggest Flow-GRPO can be used for distillation. Future work may explore using it to train compact T2I models with fewer sampling steps.
+% \section*{Acknowledgements}
+% This work was supported in part by the National Key R\&D Program of China (NO.2022ZD0160201). We would like to thank anonymous reviewers for their valuable feedback and helpful discussions.
+
+% \section*{Author Contributions}
+% \textbf{Zhanhui Zhou}  led the project, proposed the research idea, wrote the codebase, designed the experiments, conducted most of the initial experiments, and wrote the paper. \textbf{Zhixuan Liu} assisted with running many of the ablation studies throughout the experiments presented in the paper. All other authors provided feedback throughout the project.

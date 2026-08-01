@@ -1,0 +1,36 @@
+\section{Related Work}
+
+\paragraph{RL for LLM.} 
+Online RL has effectively improved the reasoning abilities of LLMs, such as DeepSeek‑R1~\cite{deepseek_r1} and OpenAI‑o1~\cite{openai_o1}, using policy gradient methods like PPO~\cite{ppo} or value-free GRPO~\cite{grpo}. GRPO is more memory efficient by removing the need for a value network, so we adopt it in this work. PPO can also be applied to flow matching in a similar way.
+\vspace{-2mm}
+\paragraph{Diffusion and Flow Matching.}
+Diffusion models~\cite{ho2020denoising, ddim, song2020score} add Gaussian noise to data and train a neural network to reverse the process. Sampling uses discrete DDPM steps or probability flow SDE solvers to generate high-fidelity outputs.
+Flow matching~\cite{lipman2022flow, rectified_flow} learns a continuous-time normalizing flow by directly matching the velocity field, allowing efficient deterministic sampling with only a few ODE steps. It achieves competitive FID with far fewer denoising steps than diffusion, making it the dominant choice in recent image~\cite{sd3, flux2024} and video~\cite{kling, wanx, sora, hunyuanvideo} generation models.
+Recent work~\cite{albergo2023stochastic, domingo2024adjoint} unifies diffusion and flow models under an SDE/ODE framework. Our work builds on their theoretical foundations and introduces GRPO to flow-based models.
+\vspace{-2mm}
+\paragraph{Alignment for T2I.}
+Recent efforts to align pretrained T2I models with human preferences follow five main directions:
+(1) direct fine-tuning with differentiable rewards~\cite{prabhudesai2023aligning, clark2023directly, xu2024imagereward, prabhudesai2024video};
+(2) Reward Weighted Regression (RWR)~\cite{peng2019advantage, fan2025online, lee2023aligning,dong2023raft};
+(3) Direct Preference Optimization (DPO) and variants~\cite{rafailov2024direct, wallace2024diffusion, videoalign, yang2024using, liang2024step, yuan2024self, liu2024videodpo, zhang2024onlinevpo, furuta2024improving,liang2025aesthetic};
+(4) PPO-style policy gradients~\cite{schulman2017proximal, black2023training, fan2024reinforcement, gupta2025simple, miao2024training, zhao2025score};
+(5) training-free alignment methods~\cite{yeh2024training, tang2024tuning, song2023loss}.
+These methods have successfully aligned T2I models with human preferences, improving aesthetics and semantic consistency. Building on this progress, we introduce GRPO for flow matching models, the backbone of today's state-of-the-art T2I systems.
+Concurrent work \cite{sun2025f5r} applies GRPO to text-to-speech flow models, but instead of converting the ODE to an SDE to inject stochasticity, they reformulate velocity prediction by estimating a Gaussian distribution (predicting both the mean and variance of
+velocity), which requires retraining the pre-trained model. Another study~\cite{kim2025inference} also explores SDE-based stochasticity but focuses on inference-time scaling.
+
+
+% \todo{This approach is distinct from the traditional strategy in diffusion tasks, where the SDE is typically converted into an ODE to achieve higher generation quality.}
+% Framing alignment as a test-time search to maximize a reward function is not a novel formulation. However, most existing works either simplify autoregressive decoding as a bandit problem~\citep{gao2023scaling, beirami2024theoretical}, which limits their steerability, or require a value function learned from scratch to handle sparse preference rewards and prune search space~\citep{mudgal2023controlled, liu2023making}, which can be as difficult as training a large language model from scratch.
+% Our work avoids these issues by parametrizing the sparse preference reward function with the log-probability difference between small tuned and untuned language models~\citep{rafailov2024direct}. This parametrization not only simplifies the search objective, allowing a simple greedy search algorithm to generate good results, but also reuses off-the-shelf models as steering forces, eliminating the need to train a reward or critic model from scratch.
+
+% Concurrently with our work, Rafailov et al.~\citep{rafailov2024r} proposes a token-level MDP interpretation for language model alignment, demonstrating that a greedy probability search over a trained language model can achieve improvements over regular decoding. Our work builds on their theoretical foundations and proposes a practical greedy search algorithm designed for weak-to-strong guidance.
+% % , i.e.,  conducting the probability search on the smaller models while sampling from the large model, in order to improve the generation quality of the large language model. 
+
+% The idea of using small language models to align large language models has arisen in many recent works.
+% The most related is proxy or emulated fine-tuning~\citep{liu2021dexperts, liu2024tuning, mitchell2023emulator, zhou2024emulated}, which uses the distributional difference of a small tuned and untuned model pair to modify the output distribution of a large model, approximating the output of the directly tuned large model. 
+% However, these methods require that both small and large models share the same vocabulary, limiting their practical applications.
+% In contrast, our approach does not modify the sampling distribution of the large model at the token level. Instead, we perform a tree search that periodically prioritizes the most promising states for further expansion (as evaluated by the small models) while sampling from the frozen large model's distribution. 
+% Thus our approach does not require shared vocabulary and is applicable to black-box language models.
+
+

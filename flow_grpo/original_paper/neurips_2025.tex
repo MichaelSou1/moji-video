@@ -1,0 +1,248 @@
+\documentclass{article}
+\usepackage{natbib}
+\setcitestyle{numbers,square,comma}
+\usepackage{multirow}
+
+% if you need to pass options to natbib, use, e.g.:
+% \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2025
+
+
+% ready for submission
+% \usepackage{neurips_2025}
+% \usepackage{etoolbox}
+% \newtoggle{isSubmission}
+% \toggletrue{isSubmission}
+
+% camera ready for arxiv
+% \usepackage[preprint]{neurips_2025}
+% \usepackage{etoolbox}
+% \newtoggle{isSubmission}
+% \togglefalse{isSubmission}
+
+% camera ready for submission
+\usepackage[final]{neurips_2025}
+\usepackage{etoolbox}
+\newtoggle{isSubmission}
+\toggletrue{isSubmission}
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+    % \usepackage[preprint]{neurips_2025}
+
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+%     \usepackage[final]{neurips_2025}
+
+
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{neurips_2025}
+
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage[table]{xcolor}         % colors
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage[nameinlink]{cleveref}
+\usepackage{enumitem}
+% \usepackage{minitoc}
+% \usepackage{etoc}
+\usepackage{titletoc}
+% \stopcontents[app]
+
+% \titlecontents{section}
+%   [0pt]                      % 保持默认左缩进
+%   {}                         % 保持默认格式（不加粗等）
+%   {\contentslabel{2.5em}}    % 保持默认章节编号格式
+%   {}                         % 保持默认无编号格式
+%   {\hfill\contentspage}      % 保持默认页码对齐
+%   [\vspace{-0.6em}]          % 仅这一项：减少章节之间的垂直间距
+  
+
+\newcommand*{\affaddr}[1]{#1} 
+\newcommand*{\affmark}[1][*]{\textsuperscript{#1}}
+\newcommand{\authormark}[2][]{%
+  \begingroup
+  \def\@thefnmark{#1}%
+  \footnote{#2}%
+  \endgroup
+}
+
+
+
+
+% \title{BeamAlign: Likelihood-Based Search Enables Weak-to-Strong Alignment}
+\title{Flow-GRPO: \\Training Flow Matching Models via Online RL}
+% \title{Weak-to-Strong Search}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+
+% \author{%
+%   Jie Liu$^*$, Gongye Liu$^*$, Jiajun Liang, Yangguang Li, Zhanhui Zhou, \\ \textbf{Jiaheng Liu, Xintao Wang, Pengfei Wan, Di Zhang, Wanli Ouyang{\dag}} \\
+%   Shanghai Artificial Intelligence Laboratory \\
+%   $^*$Equal Contribution, $^\dag$Corresponding Author \\
+%   \texttt{jieliu@link.cuhk.edu.hk} \\
+%   Code: \url{https://github.com/yifan123/flow-grpo}
+% }
+\author{%
+\bf
+Jie Liu\affmark[1,3,5]\thanks{Equal contribution, \textsuperscript{\dag}Corresponding author}~~~ 
+Gongye Liu\affmark[2,3]\textsuperscript{*}~~~ 
+Jiajun Liang\affmark[3]~~~ 
+Yangguang Li\affmark[1]\\
+\bf
+Jiaheng Liu\affmark[4]~~~ 
+Xintao Wang\affmark[3]~~~ 
+Pengfei Wan\affmark[3]~~~ 
+Di Zhang\affmark[3]~~~ 
+Wanli Ouyang\affmark[1,5]\textsuperscript{\dag}\\
+\affaddr{\affmark[1]MMLab, CUHK~~~~~~~~~~}
+\affaddr{\affmark[2]Tsinghua University~~~~~~~~~~}
+\affaddr{\affmark[3]Kling Team, Kuaishou Technology~~~~~~~~~~} \\
+\affaddr{\affmark[4]Nanjing University~~~~~~~~~~} 
+\affaddr{\affmark[5]Shanghai AI Laboratory} \\
+\small
+\texttt{jieliu@link.cuhk.edu.hk}~~~~~~  
+\texttt{wlouyang@ie.cuhk.edu.hk}\\
+Code: \url{https://github.com/yifan123/flow_grpo}
+% \tt\small{Project page: \url{https://gongyeliu.github.io/StyleCrafter.github.io/}}\\
+}
+
+% customized packages and commands
+\bibliographystyle{unsrt}
+\usepackage{graphics}
+\usepackage[table]{xcolor}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{caption}
+\usepackage{amssymb}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{wrapfig}
+\usepackage{longtable}
+\usepackage{fancyvrb}
+\usepackage{empheq}
+\definecolor{metacolor}{HTML}{0064E0}
+\hypersetup{
+  colorlinks,
+  linkcolor=metacolor,
+  citecolor=metacolor,
+  urlcolor=metacolor
+}
+\usepackage{adjustbox}
+\usepackage{makecell} 
+\definecolor{color_blue}{HTML}{E7EFFA}
+\definecolor{color_green}{HTML}{E6F8E0}
+\definecolor{color_gray}{HTML}{ECECEC}
+\definecolor{pearDark}{HTML}{2980B9}
+
+\input{commands/math}
+\input{commands/customized}
+
+\begin{document}
+
+% \dominitoc
+
+
+\maketitle
+\input{sections/abstract}
+\input{sections/introduction}
+\input{sections/related_work}
+\input{sections/preliminaries}
+\input{sections/method}
+\input{sections/experiments}
+\input{sections/dicussion}
+
+% \clearpage
+\bibliography{
+references/flowpo,
+references/alignment, 
+references/search,
+references/proxy_tuning,
+references/models,
+references/benchmarks,
+references/others
+}
+
+\clearpage
+\appendix
+\appendixtitle
+
+% \setcounter{page}{1}
+% \setcounter{section}{0}
+% \setcounter{figure}{0}
+% \setcounter{table}{0}
+
+\startcontents[app]
+\printcontents[app]{l}{1}{%
+  % \section*{\centering Appendix}%
+}{}
+
+% \etocsettocstyle{\noindent}{}
+% \etocsetnexttocdepth{2}
+% \localtableofcontents
+
+
+% \renewcommand{\contentsname}{}
+% \tableofcontents
+
+% \minitoc 
+
+\vspace{1em}
+
+\noindent Our Appendix consists of 4 sections. Readers can click on each section number to navigate to the corresponding section:
+\vspace{-0.6em}
+\begin{itemize}[leftmargin=2.0em]
+    \item Section~\ref{app:sec:math} provides detailed derivations of stochastic sampling in flow matching models.
+    \item Section~\ref{app:sec:exp-setup-details} presents details about our experimental setup.
+    \item Section~\ref{app:sec:extened-exp-results} offers some additional experimental results, including 1) the comparison with other alignment methods, 2) ablation of denoising reduction on OCR accuracy and pickscore, 3) ablation of initial noise, 4) additional results on FLUX.1-Dev, 5) the learning curves of Flow-GRPO on three tasks, 6) additional qualitative results, and 7) evolution of evaluation images during training.
+    \item Section~\ref{app:sec:denoising_reduction_viz} provides a visualization of training samples under the denoising reduction strategy.
+    
+\end{itemize}
+\vspace{-0.4em}
+
+In addition to this Appendix, we also provide more visualization results, see \href{https://gongyeliu.github.io/Flow-GRPO/}{this website}. We encourage the readers to consult this HTML page for a more intuitive assessment of the improvements brought by Flow-GRPO.
+
+% \iftoggle{isSubmission}{
+%  In addition to this Appendix, we also provide \textbf{a local HTML for image comparisons}. We encourage the reviewers to consult this HTML file for a more intuitive assessment of the improvements brought by Flow-GRPO.
+% }
+%  For more visualization results, see \href{https://gongyeliu.github.io/Flow-GRPO/}{this website}.
+\clearpage
+\input{sections/appendix/math}
+\input{sections/appendix/experimental_setup}
+\input{sections/appendix/extended_results}
+% \input{sections/appendix/generation_samples} 
+
+% \input{sections/appendix/checklist}
+
+% \clearpage
+% \bibliography{
+% references/flowpo,
+% references/alignment, 
+% references/search,
+% references/proxy_tuning,
+% references/models,
+% references/benchmarks,
+% references/others
+% }
+
+% \clearpage
+% \iftoggle{isSubmission}{
+%   \input{sections/check_list}
+% }
+
+\end{document}

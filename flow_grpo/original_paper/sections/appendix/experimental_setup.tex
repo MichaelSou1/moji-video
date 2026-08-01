@@ -1,0 +1,178 @@
+% \iftoggle{isSubmission}{}
+% {\section{Changelog}
+% \textbf{v1}: We corrected an evaluation inconsistency: using $\text{top-k} = 50$ for regular decoding (i.e., Base) and EFT, but $\text{top-k} = \infty$ for BoN and weak-to-strong search, which had \textit{slightly} underestimated results for weak-to-strong and BoN. This version standardizes $\text{top-k} = 50$ and updates results from the previous version (the version under review).
+
+% \textbf{v2}: We fixed an error in our plots where we had incorrectly shown variances instead of standard deviations.
+% }
+% \clearpage
+\section{Further Details on the Experimental Setup}\label{app:sec:exp-setup-details}
+
+\subsection{Quality Metrics}\label{app:subsubsec:quality_metric}
+The details of quality metrics are as follows:
+\begin{itemize} [leftmargin=15pt]
+  \item Aesthetic score~\cite{schuhmann2022laion}: a CLIP‑based linear regressor that predicts an image’s aesthetic score.
+  \item DeQA score~\cite{deqa}: a multimodal large language model based image‑quality assessment (IQA) model that quantifies how distortions, texture damage, and other low‑level artefacts affect perceived quality.
+  \item ImageReward~\cite{xu2024imagereward}: a general purpose T2I human preference reward model that captures text–image alignment, visual fidelity, and harmlessness.
+  \item UnifiedReward~\cite{wang2025unified}: a recently proposed unified reward model for multimodal understanding and generation that currently achieves state‑of‑the‑art performance on the human preference assessment leaderboard.
+\end{itemize}
+
+\subsection{Model Specification}\label{app:subsubsec:synthetic-model}
+The following table lists the base model and the reward models and their corresponding links.
+
+\begin{table}[h]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{ll}
+\toprule
+\textbf{Models} & \textbf{Links} \\
+\midrule
+\texttt{SD3.5-M}~\citep{sd3} & \url{https://huggingface.co/stabilityai/stable-diffusion-3.5-medium} \\
+\texttt{Aesthetic Score}~\citep{schuhmann2022laion} & \url{https://github.com/LAION-AI/aesthetic-predictor} \\
+\texttt{PickScore}~\citep{kirstain2023pick} & \url{https://huggingface.co/yuvalkirstain/PickScore_v1} \\
+\texttt{DeQA score}~\citep{deqa} & \url{https://huggingface.co/zhiyuanyou/DeQA-Score-Mix3} \\
+\texttt{ImageReward}~\citep{xu2024imagereward} & \url{https://huggingface.co/THUDM/ImageReward} \\
+\texttt{UnifiedReward}~\citep{wang2025unified} & \url{https://huggingface.co/CodeGoat24/UnifiedReward-7b-v1.5} \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+
+
+
+\subsection{Hyperparameters Specification}\label{app:subsubsec:synthetic-hyperp}
+Except for $\beta$, GRPO hyperparameters are fixed across tasks. We use a sampling timestep $T=10$ and an evaluation timestep $T=40$. Other settings include a group size $G=24$, an noise level $a=0.7$ and an image resolution of 512. The KL ratio $\beta$ is set to 0.04 for GenEval and Text Rendering, and 0.01 for Pickscore. We use Lora with $\alpha=64$ and $r=32$.
+
+\subsection{Compute Resources Specification}\label{app:subsubsec:synthetic-compute}
+We train our model using 24 NVIDIA A800 GPUs. The learning curves in Appendix~\ref{app:subsec:training_curve_kl} provide details on the specific GPU hours.
+
+% \subsubsection{Gold Reward Model Details}\label{app:subsubsec:synthetic-grm}
+% % \begin{longtable}{lll} 
+% % \toprule
+% % \textbf{Tasks} & \textbf{Models} & \textbf{Links} \\
+% % \midrule
+% % \texttt{IMDB} & \texttt{lvwerra/distilbert-imdb} (268M) & \url{https://huggingface.co/lvwerra/distilbert-imdb} \\
+% % \texttt{Summarize} & \texttt{chadlzx/summarize-goldenrm-llama-2-7b} & \url{https://huggingface.co/chadlzx/summarize-goldenrm-llama-2-7b} \\
+% % \bottomrule
+% % \end{longtable}
+
+% % In our research, the gold reward model was utilized for two specific tasks: controlled-sentiment generation and summarization.
+
+% % For controlled-sentiment generation, the model deployed was \texttt{lvwerra/distilbert-imdb}, a fine-tuned version of \texttt{distilbert-base-uncased} on the \texttt{IMDB} dataset, featuring 66 million parameters.
+
+% % In the summarization task, training was executed within the \texttt{SafeRLHF} framework using the \texttt{llama-2-7b} model, on the \texttt{CarperAI/openai\_summarize\_comparisons} dataset. Training configurations included $bs=32$, $lr=1 \times 10^{-5}$ for new parameters and $lr=5 \times 10^{-6}$ for pre-trained parameters, over a single epoch with a cosine learning rate schedule.
+
+% % \todo{
+% We follow the synthetic setup in which we use the gold reward models to play the roles of humans and provide binary preference labels~\cite{gao2023scaling, lightman2023let, rafailov2024direct}. 
+% % \iftoggle{isSubmission}{}
+% % {We list the links to the two gold reward models in the following table:
+% % \vspace{-5mm}
+% % \begin{center}
+% % \resizebox{1\linewidth}{!}{
+% % \begin{tabular}{ll}
+% % \toprule
+% % \textbf{Models} & \textbf{Links} \\
+% % \midrule
+% % \texttt{distilbert-imdb} (268M) & \url{https://huggingface.co/lvwerra/distilbert-imdb} \\
+% % \texttt{summarize-goldrm-llama-2-7b} & \url{https://huggingface.co/chadlzx/summarize-goldrm-llama-2-7b} \\
+% % \bottomrule
+% % \end{tabular}
+% % }
+% % \end{center}
+% % }
+
+% For controlled-sentiment generation, we reuse the publicly available \href{https://huggingface.co/lvwerra/distilbert-imdb}{\texttt{distilbert-imdb}} to define the gold reward model $r_{\text{gold}}$. \href{https://huggingface.co/lvwerra/distilbert-imdb}{\texttt{Distilbert-imdb}} is a fine-tuned classifier $p$ on the \href{https://huggingface.co/datasets/stanfordnlp/imdb}{\texttt{imdb}} dataset~\cite{maas-etal-2011-learning} to classify movie review sentiments.
+% We define the gold reward $r_{\text{gold}}$ as $\log p(\text{positive} \, | \, x, y) - \log p (\text{negative} \, | \, x, y)$ to encourage positive review. 
+% % We then collect synthetic preferences from the gold reward model $\mathcal{D} = \{(\rvx, \rvy_w, \rvy_l)_i \}_{i=1}^N$.
+% % The prompt set consists of prefixes of movie reviews (i.e., truncated movie reviews) and for each prefix $\rvx$, we sample pairwise completions $\rvy_1, \rvy_2$ from \href{https://huggingface.co/lvwerra/gpt2-imdb}{\texttt{gpt2-imdb}}, a publically available language model fine-tuned on \texttt{imdb} dataset. These pairwise responses are then ranked by the $r_{\text{gold}}$ with $p(\rvy_1 \succ \rvy_2 \mid \rvx) = \sigma (r_{\text{gold}}(\rvx, \rvy_1) - r_{\text{gold}}(\rvx, \rvy_2))$.
+% Synthetic preferences are collected using the truncated movie reviews as prompts $\rvx$, and pairwise completions from \href{https://huggingface.co/lvwerra/gpt2-imdb}{\texttt{gpt2-imdb}}, ranked with $p(\rvy_1 \succ \rvy_2 \mid \rvx) = \sigma (r_{\text{gold}}(\rvx, \rvy_1) - r_{\text{gold}}(\rvx, \rvy_2))$, as preferences.
+
+
+% For summarization, we fit a reward model on the \href{https://huggingface.co/datasets/openai/summarize_from_feedback}{\texttt{summarize\_from\_feedback}} dataset~\cite{stiennon2020learning} as the gold reward model $r_{\text{gold}}$. 
+% Specifically, this reward model is fine-tuned from \texttt{Llama-2-7b} with a linear projection head and binary cross entropy loss, using a batch size of $32$, a learning rate of \texttt{1e-5} for the projection head, and \texttt{5e-6} for other parameters, over one epoch with a cosine learning rate schedule. 
+% Synthetic preferences are generated by relabeling pairwise responses in the original dataset with $p(\rvy_1 \succ \rvy_2 \mid \rvx) = \sigma (r_{\text{gold}}(\rvx, \rvy_1) - r_{\text{gold}}(\rvx, \rvy_2))$.
+% % To collect synthetic preferences from the gold reward model, we relabel the pairwise responses in the original dataset by the gold reward model with $p(\rvy_1 \succ \rvy_2 \mid \rvx) = \sigma (r_{\text{gold}}(\rvx, \rvy_1) - r_{\text{gold}}(\rvx, \rvy_2))$.
+
+% Both gold reward models show high validation accuracies, $0.928$ and $0.736$, demonstrating strong correlation with human judgments.
+
+% \subsubsection{Direct Tuning Details}\label{app:subsubsec:synthetic-tuning-details}
+% % We detail the finetuning strategies for four language models—\texttt{gpt2-large}, \texttt{gpt2-xl}, \texttt{llama-2-7B}, and \texttt{llama-3-8B}—targeting controlled-sentiment generation and summarization. The procedure includes two phases: Supervised Fine-Tuning (\texttt{SFT}) and Direct Preference Optimization (\texttt{DPO}).
+
+% % During the \texttt{SFT} phase, models underwent finetuning on \texttt{IMDB} for sentiment control and \texttt{CarperAI/openai\_summarize\_tldr} for summarization, with parameters set to $lr=2e-5$, $bs=64$, and $epochs=1$, employing a cosine scheduler.
+
+% % In the \texttt{DPO} phase, using the gold reward model, the models were retrained on relabeled data from the same datasets. Settings were adjusted to $lr=1e-6$, $bs=256$, $\beta=0.1$, and $epochs=1$, again utilizing a cosine scheduler for dynamic learning rate adjustments.
+% Direct tuning on the synthetic preferences $\mathcal{D} = \{(\rvx, \rvy_w, \rvy_l)_i \}_{i=1}^N$ involves two stages: Supervised Fine-Tuning (\texttt{SFT}) and Direct Preference Optimization (\texttt{DPO})~\cite{rafailov2024direct}. During \texttt{SFT}, models are trained on both selected and rejected responses using a batch size of $64$, a learning rate of \texttt{2e-5}, and a cosine learning rate schedule over one epoch. During \texttt{DPO}, we use a $\beta=0.1$, batch size of $256$, a learning rate of \texttt{1e-6}, and a cosine learning rate schedule over one epoch.
+
+
+% \subsubsection{Prompt Template for Sampling from Base Models}\label{app:subsubsec:synthetic-prompt-template}
+% When sampling from large pre-trained models, it is crucial to provide clear task-specific instructions. 
+% For sentiment-controlled generation, we use a zero-shot prompt:
+
+% % \begin{Verbatim}[frame=single]
+% % BEGINNING OF CONVERSATION: USER: {system prompt}{query} ASSISTANT:
+% % \end{Verbatim}
+% \begin{center}
+% \verb|Here is a movie review from imdb: {prompt}|
+% \end{center}
+
+% For summarization, we use a two-shot prompt (the exemplars are selected arbitrarily):
+
+% \begin{Verbatim}
+%               {examplar[1].prompt}TL;DR: {examplar[1].response}
+%               {examplar[2].prompt}TL;DR: {examplar[2].response}
+%               {prompt}TL;DR: 
+% \end{Verbatim}
+
+
+% \subsection{Instruction Following}\label{app:subsec:exp-setup-details-instruction-following}
+
+% \subsubsection{Model Specification}\label{app:subsubsec:instruction-following-model}
+% The following table lists the models and their corresponding links.
+
+% % {
+% % \footnotesize
+% % \begin{longtable}{ll}
+% % \toprule
+% % \textbf{Models} & \textbf{Links} \\
+% % \midrule
+% % \texttt{zephyr-7b-beta}~\cite{tunstall2023zephyr} & \url{https://huggingface.co/HuggingFaceH4/zephyr-7b-beta} \\
+% % \texttt{mistral-7b-sft-beta}~\cite{tunstall2023zephyr} & \url{https://huggingface.co/HuggingFaceH4/mistral-7b-sft-beta} \\
+% % \texttt{tulu-2-dpo-7b}~\cite{ivison2023camels} & \url{https://huggingface.co/allenai/tulu-2-dpo-7b} \\
+% % \texttt{tulu-2-7b}~\cite{ivison2023camels} & \url{https://huggingface.co/allenai/tulu-2-7b} \\
+% % \texttt{Llama-2-7b-chat}~\cite{touvron2023llama2} & \url{https://huggingface.co/meta-llama/Llama-2-7b-chat-hf} \\
+% % \texttt{Llama-2-70b-chat}~\cite{touvron2023llama2} & \url{https://huggingface.co/meta-llama/Llama-2-70b-chat-hf} \\
+% % \texttt{Llama-3-8B-Instruct}~\cite{llama3modelcard} & \url{https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct} \\
+% % \texttt{Llama-3-70B-Instruct}~\cite{llama3modelcard} & \url{https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct} \\
+% % \texttt{gpt-3.5-turbo-instruct}~\cite{ouyang2022training} & \url{https://platform.openai.com/docs/models/gpt-3-5-turbo} \\
+% % \bottomrule
+% % \end{longtable}
+% % }
+
+% \begin{center}
+% \resizebox{1\linewidth}{!}{
+% \begin{tabular}{ll}
+% \toprule
+% \textbf{Models} & \textbf{Links} \\
+% \midrule
+% \texttt{zephyr-7b-beta}~\cite{tunstall2023zephyr} & \url{https://huggingface.co/HuggingFaceH4/zephyr-7b-beta} \\
+% \texttt{mistral-7b-sft-beta}~\cite{tunstall2023zephyr} & \url{https://huggingface.co/HuggingFaceH4/mistral-7b-sft-beta} \\
+% \texttt{tulu-2-dpo-7b}~\cite{ivison2023camels} & \url{https://huggingface.co/allenai/tulu-2-dpo-7b} \\
+% \texttt{tulu-2-7b}~\cite{ivison2023camels} & \url{https://huggingface.co/allenai/tulu-2-7b} \\
+% \texttt{Llama-2-7b-chat}~\cite{touvron2023llama2} & \url{https://huggingface.co/meta-llama/Llama-2-7b-chat-hf} \\
+% \texttt{Llama-2-70b-chat}~\cite{touvron2023llama2} & \url{https://huggingface.co/meta-llama/Llama-2-70b-chat-hf} \\
+% \texttt{Llama-3-8B-Instruct}~\cite{llama3modelcard} & \url{https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct} \\
+% \texttt{Llama-3-70B-Instruct}~\cite{llama3modelcard} & \url{https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct} \\
+% \texttt{gpt-3.5-turbo-instruct}~\cite{ouyang2022training} & \url{https://platform.openai.com/docs/models/gpt-3-5-turbo} \\
+% \bottomrule
+% \end{tabular}
+% }
+% \end{center}
+
+% \subsubsection{Hyperparameters Specification}\label{app:subsubsec:instruction-following-hyperparam}
+% When sampling from \texttt{Llama-3-8B-Instruct} and \texttt{Llama-3-70B-Instruct}, we use the $T=0.6$, $\text{top-k} = 1.0$ and $\text{top-p} = 0.9$ as per the official Llama-3 generation \href{https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct/blob/main/generation_config.json}{configuration}. For other models, we default to temperature $T=0.7$, $\text{top-k} = 50$ and $\text{top-p} = 1.0$. Specific hyperparameters for each method are detailed in Tables~\ref{tab:zephyr-guidance} and~\ref{tab:tulu-guidance}. 
+% % Generally, for small open-source models (7B \& 8B), we use $W,K,L=4,4,30$ ($W$: beam width, $K$: successors per state, $L$: chunk length) for weak-to-strong search (CBS), and $N=16$ for BoN; for large open-source models (70B), we use $W,K,L=2,2,30$ for weak-to-strong search (CBS), and $N=4$ for BoN; for black-box models, we use $W,K,L=2,2,100$ for weak-to-strong search (CBS), and $N=4$ for BoN.
+
+% \subsubsection{Compute Resources Specification}\label{app:subsubsec:instruction-following-compute}
+% Models are evaluated on 805 test prompts. Model inference takes place on one single NVIDIA A100 GPU for 7B\&8B and black-box models, and on four NVIDIA A100 GPUs for 70B models.
+% % \todo{...}
+% % We inference on 

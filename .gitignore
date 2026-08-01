@@ -130,3 +130,6 @@ logs
 log
 outputs
 .history
+
+# personal local dev notes (not part of upstream contribution docs)
+/MEMORY.md

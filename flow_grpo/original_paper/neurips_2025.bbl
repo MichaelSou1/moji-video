@@ -1,0 +1,382 @@
+\begin{thebibliography}{10}
+
+\bibitem{drawbench}
+Chitwan Saharia, William Chan, Saurabh Saxena, Lala Li, Jay Whang, Emily~L Denton, Kamyar Ghasemipour, Raphael Gontijo~Lopes, Burcu Karagol~Ayan, Tim Salimans, et~al.
+\newblock Photorealistic text-to-image diffusion models with deep language understanding.
+\newblock {\em Advances in neural information processing systems}, 35:36479--36494, 2022.
+
+\bibitem{lipman2022flow}
+Yaron Lipman, Ricky~TQ Chen, Heli Ben-Hamu, Maximilian Nickel, and Matt Le.
+\newblock Flow matching for generative modeling.
+\newblock {\em arXiv preprint arXiv:2210.02747}, 2022.
+
+\bibitem{rectified_flow}
+Xingchao Liu, Chengyue Gong, and Qiang Liu.
+\newblock Flow straight and fast: Learning to generate and transfer data with rectified flow.
+\newblock {\em arXiv preprint arXiv:2209.03003}, 2022.
+
+\bibitem{sd3}
+Patrick Esser, Sumith Kulal, Andreas Blattmann, Rahim Entezari, Jonas M{\"u}ller, Harry Saini, Yam Levi, Dominik Lorenz, Axel Sauer, Frederic Boesel, et~al.
+\newblock Scaling rectified flow transformers for high-resolution image synthesis.
+\newblock In {\em Forty-first international conference on machine learning}, 2024.
+
+\bibitem{flux2024}
+Black~Forest Labs.
+\newblock Flux.
+\newblock \url{https://github.com/black-forest-labs/flux}, 2024.
+
+\bibitem{T2i-compbench}
+Kaiyi Huang, Kaiyue Sun, Enze Xie, Zhenguo Li, and Xihui Liu.
+\newblock T2i-compbench: A comprehensive benchmark for open-world compositional text-to-image generation.
+\newblock {\em Advances in Neural Information Processing Systems}, 36:78723--78747, 2023.
+
+\bibitem{Gpt-imgeval}
+Zhiyuan Yan, Junyan Ye, Weijia Li, Zilong Huang, Shenghai Yuan, Xiangyang He, Kaiqing Lin, Jun He, Conghui He, and Li~Yuan.
+\newblock Gpt-imgeval: A comprehensive benchmark for diagnosing gpt4o in image generation.
+\newblock {\em arXiv preprint arXiv:2504.02782}, 2025.
+
+\bibitem{textdiffuser}
+Jingye Chen, Yupan Huang, Tengchao Lv, Lei Cui, Qifeng Chen, and Furu Wei.
+\newblock Textdiffuser: Diffusion models as text painters.
+\newblock {\em Advances in Neural Information Processing Systems}, 36:9353--9387, 2023.
+
+\bibitem{sutton1998reinforcement}
+Richard~S Sutton, Andrew~G Barto, et~al.
+\newblock {\em Reinforcement learning: An introduction}, volume~1.
+\newblock MIT press Cambridge, 1998.
+
+\bibitem{deepseek_r1}
+Daya Guo, Dejian Yang, Haowei Zhang, Junxiao Song, Ruoyu Zhang, Runxin Xu, Qihao Zhu, Shirong Ma, Peiyi Wang, Xiao Bi, et~al.
+\newblock Deepseek-r1: Incentivizing reasoning capability in llms via reinforcement learning.
+\newblock {\em arXiv preprint arXiv:2501.12948}, 2025.
+
+\bibitem{openai_o1}
+Aaron Jaech, Adam Kalai, Adam Lerer, Adam Richardson, Ahmed El-Kishky, Aiden Low, Alec Helyar, Aleksander Madry, Alex Beutel, Alex Carney, et~al.
+\newblock Openai o1 system card.
+\newblock {\em arXiv preprint arXiv:2412.16720}, 2024.
+
+\bibitem{ddpo}
+Kevin Black, Michael Janner, Yilun Du, Ilya Kostrikov, and Sergey Levine.
+\newblock Training diffusion models with reinforcement learning.
+\newblock {\em arXiv preprint arXiv:2305.13301}, 2023.
+
+\bibitem{dpo}
+Rafael Rafailov, Archit Sharma, Eric Mitchell, Christopher~D Manning, Stefano Ermon, and Chelsea Finn.
+\newblock Direct preference optimization: Your language model is secretly a reward model.
+\newblock {\em Advances in Neural Information Processing Systems}, 36:53728--53741, 2023.
+
+\bibitem{videoalign}
+Jie Liu, Gongye Liu, Jiajun Liang, Ziyang Yuan, Xiaokun Liu, Mingwu Zheng, Xiele Wu, Qiulin Wang, Wenyu Qin, Menghan Xia, et~al.
+\newblock Improving video generation with human feedback.
+\newblock {\em arXiv preprint arXiv:2501.13918}, 2025.
+
+\bibitem{skyreels_v2}
+Guibin Chen, Dixuan Lin, Jiangping Yang, Chunze Lin, Juncheng Zhu, Mingyuan Fan, Hao Zhang, Sheng Chen, Zheng Chen, Chengchen Ma, et~al.
+\newblock Skyreels-v2: Infinite-length film generative model.
+\newblock {\em arXiv preprint arXiv:2504.13074}, 2025.
+
+\bibitem{grpo}
+Zhihong Shao, Peiyi Wang, Qihao Zhu, Runxin Xu, Junxiao Song, Xiao Bi, Haowei Zhang, Mingchuan Zhang, YK~Li, Y~Wu, et~al.
+\newblock Deepseekmath: Pushing the limits of mathematical reasoning in open language models.
+\newblock {\em arXiv preprint arXiv:2402.03300}, 2024.
+
+\bibitem{geneval}
+Dhruba Ghosh, Hannaneh Hajishirzi, and Ludwig Schmidt.
+\newblock Geneval: An object-focused framework for evaluating text-to-image alignment.
+\newblock {\em Advances in Neural Information Processing Systems}, 36:52132--52152, 2023.
+
+\bibitem{gpt4o}
+Aaron Hurst, Adam Lerer, Adam~P Goucher, Adam Perelman, Aditya Ramesh, Aidan Clark, AJ~Ostrow, Akila Welihinda, Alan Hayes, Alec Radford, et~al.
+\newblock Gpt-4o system card.
+\newblock {\em arXiv preprint arXiv:2410.21276}, 2024.
+
+\bibitem{kirstain2023pick}
+Yuval Kirstain, Adam Polyak, Uriel Singer, Shahbuland Matiana, Joe Penna, and Omer Levy.
+\newblock Pick-a-pic: An open dataset of user preferences for text-to-image generation.
+\newblock {\em Advances in Neural Information Processing Systems}, 36:36652--36663, 2023.
+
+\bibitem{ppo}
+John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov.
+\newblock Proximal policy optimization algorithms.
+\newblock {\em arXiv preprint arXiv:1707.06347}, 2017.
+
+\bibitem{ho2020denoising}
+Jonathan Ho, Ajay Jain, and Pieter Abbeel.
+\newblock Denoising diffusion probabilistic models.
+\newblock {\em Advances in neural information processing systems}, 33:6840--6851, 2020.
+
+\bibitem{ddim}
+Jiaming Song, Chenlin Meng, and Stefano Ermon.
+\newblock Denoising diffusion implicit models.
+\newblock {\em arXiv preprint arXiv:2010.02502}, 2020.
+
+\bibitem{song2020score}
+Yang Song, Jascha Sohl-Dickstein, Diederik~P Kingma, Abhishek Kumar, Stefano Ermon, and Ben Poole.
+\newblock Score-based generative modeling through stochastic differential equations.
+\newblock {\em arXiv preprint arXiv:2011.13456}, 2020.
+
+\bibitem{kling}
+Kuaishou.
+\newblock Kling ai.
+\newblock {\em https://klingai.kuaishou.com/}, 2024.
+
+\bibitem{wanx}
+Ang Wang, Baole Ai, Bin Wen, Chaojie Mao, Chen-Wei Xie, Di~Chen, Feiwu Yu, Haiming Zhao, Jianxiao Yang, Jianyuan Zeng, et~al.
+\newblock Wan: Open and advanced large-scale video generative models.
+\newblock {\em arXiv preprint arXiv:2503.20314}, 2025.
+
+\bibitem{sora}
+Tim Brooks, Bill Peebles, Connor Holmes, Will DePue, Yufei Guo, Li~Jing, David Schnurr, Joe Taylor, Troy Luhman, Eric Luhman, et~al.
+\newblock Video generation models as world simulators.
+\newblock {\em OpenAI Blog}, 1:8, 2024.
+
+\bibitem{hunyuanvideo}
+Weijie Kong, Qi~Tian, Zijian Zhang, Rox Min, Zuozhuo Dai, Jin Zhou, Jiangfeng Xiong, Xin Li, Bo~Wu, Jianwei Zhang, et~al.
+\newblock Hunyuanvideo: A systematic framework for large video generative models.
+\newblock {\em arXiv preprint arXiv:2412.03603}, 2024.
+
+\bibitem{albergo2023stochastic}
+Michael~S Albergo, Nicholas~M Boffi, and Eric Vanden-Eijnden.
+\newblock Stochastic interpolants: A unifying framework for flows and diffusions.
+\newblock {\em arXiv preprint arXiv:2303.08797}, 2023.
+
+\bibitem{domingo2024adjoint}
+Carles Domingo-Enrich, Michal Drozdzal, Brian Karrer, and Ricky~TQ Chen.
+\newblock Adjoint matching: Fine-tuning flow and diffusion generative models with memoryless stochastic optimal control.
+\newblock {\em arXiv preprint arXiv:2409.08861}, 2024.
+
+\bibitem{prabhudesai2023aligning}
+Mihir Prabhudesai, Anirudh Goyal, Deepak Pathak, and Katerina Fragkiadaki.
+\newblock Aligning text-to-image diffusion models with reward backpropagation.
+\newblock {\em arXiv preprint arXiv:2310.03739}, 2023.
+
+\bibitem{clark2023directly}
+Kevin Clark, Paul Vicol, Kevin Swersky, and David~J Fleet.
+\newblock Directly fine-tuning diffusion models on differentiable rewards.
+\newblock {\em arXiv preprint arXiv:2309.17400}, 2023.
+
+\bibitem{xu2024imagereward}
+Jiazheng Xu, Xiao Liu, Yuchen Wu, Yuxuan Tong, Qinkai Li, Ming Ding, Jie Tang, and Yuxiao Dong.
+\newblock Imagereward: Learning and evaluating human preferences for text-to-image generation.
+\newblock {\em Advances in Neural Information Processing Systems}, 36, 2024.
+
+\bibitem{prabhudesai2024video}
+Mihir Prabhudesai, Russell Mendonca, Zheyang Qin, Katerina Fragkiadaki, and Deepak Pathak.
+\newblock Video diffusion alignment via reward gradients.
+\newblock {\em arXiv preprint arXiv:2407.08737}, 2024.
+
+\bibitem{peng2019advantage}
+Xue~Bin Peng, Aviral Kumar, Grace Zhang, and Sergey Levine.
+\newblock Advantage-weighted regression: Simple and scalable off-policy reinforcement learning.
+\newblock {\em arXiv preprint arXiv:1910.00177}, 2019.
+
+\bibitem{fan2025online}
+Jiajun Fan, Shuaike Shen, Chaoran Cheng, Yuxin Chen, Chumeng Liang, and Ge~Liu.
+\newblock Online reward-weighted fine-tuning of flow matching with wasserstein regularization.
+\newblock In {\em The Thirteenth International Conference on Learning Representations}, 2025.
+
+\bibitem{lee2023aligning}
+Kimin Lee, Hao Liu, Moonkyung Ryu, Olivia Watkins, Yuqing Du, Craig Boutilier, Pieter Abbeel, Mohammad Ghavamzadeh, and Shixiang~Shane Gu.
+\newblock Aligning text-to-image models using human feedback.
+\newblock {\em arXiv preprint arXiv:2302.12192}, 2023.
+
+\bibitem{dong2023raft}
+Hanze Dong, Wei Xiong, Deepanshu Goyal, Yihan Zhang, Winnie Chow, Rui Pan, Shizhe Diao, Jipeng Zhang, Kashun Shum, and Tong Zhang.
+\newblock Raft: Reward ranked finetuning for generative foundation model alignment.
+\newblock {\em arXiv preprint arXiv:2304.06767}, 2023.
+
+\bibitem{rafailov2024direct}
+Rafael Rafailov, Archit Sharma, Eric Mitchell, Christopher~D Manning, Stefano Ermon, and Chelsea Finn.
+\newblock Direct preference optimization: Your language model is secretly a reward model.
+\newblock {\em Advances in Neural Information Processing Systems}, 36, 2024.
+
+\bibitem{wallace2024diffusion}
+Bram Wallace, Meihua Dang, Rafael Rafailov, Linqi Zhou, Aaron Lou, Senthil Purushwalkam, Stefano Ermon, Caiming Xiong, Shafiq Joty, and Nikhil Naik.
+\newblock Diffusion model alignment using direct preference optimization.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition}, pages 8228--8238, 2024.
+
+\bibitem{yang2024using}
+Kai Yang, Jian Tao, Jiafei Lyu, Chunjiang Ge, Jiaxin Chen, Weihan Shen, Xiaolong Zhu, and Xiu Li.
+\newblock Using human feedback to fine-tune diffusion models without any reward model.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition}, pages 8941--8951, 2024.
+
+\bibitem{liang2024step}
+Zhanhao Liang, Yuhui Yuan, Shuyang Gu, Bohan Chen, Tiankai Hang, Ji~Li, and Liang Zheng.
+\newblock Step-aware preference optimization: Aligning preference with denoising performance at each step.
+\newblock {\em arXiv preprint arXiv:2406.04314}, 2024.
+
+\bibitem{yuan2024self}
+Huizhuo Yuan, Zixiang Chen, Kaixuan Ji, and Quanquan Gu.
+\newblock Self-play fine-tuning of diffusion models for text-to-image generation.
+\newblock {\em arXiv preprint arXiv:2402.10210}, 2024.
+
+\bibitem{liu2024videodpo}
+Runtao Liu, Haoyu Wu, Zheng Ziqiang, Chen Wei, Yingqing He, Renjie Pi, and Qifeng Chen.
+\newblock Videodpo: Omni-preference alignment for video diffusion generation.
+\newblock {\em arXiv preprint arXiv:2412.14167}, 2024.
+
+\bibitem{zhang2024onlinevpo}
+Jiacheng Zhang, Jie Wu, Weifeng Chen, Yatai Ji, Xuefeng Xiao, Weilin Huang, and Kai Han.
+\newblock Onlinevpo: Align video diffusion model with online video-centric preference optimization.
+\newblock {\em arXiv preprint arXiv:2412.15159}, 2024.
+
+\bibitem{furuta2024improving}
+Hiroki Furuta, Heiga Zen, Dale Schuurmans, Aleksandra Faust, Yutaka Matsuo, Percy Liang, and Sherry Yang.
+\newblock Improving dynamic object interactions in text-to-video generation with ai feedback.
+\newblock {\em arXiv preprint arXiv:2412.02617}, 2024.
+
+\bibitem{liang2025aesthetic}
+Zhanhao Liang, Yuhui Yuan, Shuyang Gu, Bohan Chen, Tiankai Hang, Mingxi Cheng, Ji~Li, and Liang Zheng.
+\newblock Aesthetic post-training diffusion models from generic preferences with step-by-step preference optimization.
+\newblock In {\em Proceedings of the Computer Vision and Pattern Recognition Conference}, pages 13199--13208, 2025.
+
+\bibitem{schulman2017proximal}
+John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov.
+\newblock Proximal policy optimization algorithms.
+\newblock {\em arXiv preprint arXiv:1707.06347}, 2017.
+
+\bibitem{black2023training}
+Kevin Black, Michael Janner, Yilun Du, Ilya Kostrikov, and Sergey Levine.
+\newblock Training diffusion models with reinforcement learning.
+\newblock {\em arXiv preprint arXiv:2305.13301}, 2023.
+
+\bibitem{fan2024reinforcement}
+Ying Fan, Olivia Watkins, Yuqing Du, Hao Liu, Moonkyung Ryu, Craig Boutilier, Pieter Abbeel, Mohammad Ghavamzadeh, Kangwook Lee, and Kimin Lee.
+\newblock Reinforcement learning for fine-tuning text-to-image diffusion models.
+\newblock {\em Advances in Neural Information Processing Systems}, 36, 2024.
+
+\bibitem{gupta2025simple}
+Shashank Gupta, Chaitanya Ahuja, Tsung-Yu Lin, Sreya~Dutta Roy, Harrie Oosterhuis, Maarten de~Rijke, and Satya~Narayan Shukla.
+\newblock A simple and effective reinforcement learning method for text-to-image diffusion fine-tuning.
+\newblock {\em arXiv preprint arXiv:2503.00897}, 2025.
+
+\bibitem{miao2024training}
+Zichen Miao, Jiang Wang, Ze~Wang, Zhengyuan Yang, Lijuan Wang, Qiang Qiu, and Zicheng Liu.
+\newblock Training diffusion models towards diverse image generation with reinforcement learning.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition}, pages 10844--10853, 2024.
+
+\bibitem{zhao2025score}
+Hanyang Zhao, Haoxian Chen, Ji~Zhang, David~D Yao, and Wenpin Tang.
+\newblock Score as action: Fine-tuning diffusion generative models by continuous-time reinforcement learning.
+\newblock {\em arXiv preprint arXiv:2502.01819}, 2025.
+
+\bibitem{yeh2024training}
+Po-Hung Yeh, Kuang-Huei Lee, and Jun-Cheng Chen.
+\newblock Training-free diffusion model alignment with sampling demons.
+\newblock {\em arXiv preprint arXiv:2410.05760}, 2024.
+
+\bibitem{tang2024tuning}
+Zhiwei Tang, Jiangweizhi Peng, Jiasheng Tang, Mingyi Hong, Fan Wang, and Tsung-Hui Chang.
+\newblock Tuning-free alignment of diffusion models with direct noise optimization.
+\newblock {\em arXiv preprint arXiv:2405.18881}, 2024.
+
+\bibitem{song2023loss}
+Jiaming Song, Qinsheng Zhang, Hongxu Yin, Morteza Mardani, Ming-Yu Liu, Jan Kautz, Yongxin Chen, and Arash Vahdat.
+\newblock Loss-guided diffusion models for plug-and-play controllable generation.
+\newblock In {\em International Conference on Machine Learning}, pages 32483--32498. PMLR, 2023.
+
+\bibitem{sun2025f5r}
+Xiaohui Sun, Ruitong Xiao, Jianye Mo, Bowen Wu, Qun Yu, and Baoxun Wang.
+\newblock F5r-tts: Improving flow matching based text-to-speech with group relative policy optimization.
+\newblock {\em arXiv preprint arXiv:2504.02407}, 2025.
+
+\bibitem{kim2025inference}
+Jaihoon Kim, Taehoon Yoon, Jisung Hwang, and Minhyuk Sung.
+\newblock Inference-time scaling for flow models via stochastic generation and rollover budget forcing.
+\newblock {\em arXiv preprint arXiv:2503.19385}, 2025.
+
+\bibitem{seedream2}
+Lixue Gong, Xiaoxia Hou, Fanshi Li, Liang Li, Xiaochen Lian, Fei Liu, Liyang Liu, Wei Liu, Wei Lu, Yichun Shi, et~al.
+\newblock Seedream 2.0: A native chinese-english bilingual image generation foundation model.
+\newblock {\em arXiv preprint arXiv:2503.07703}, 2025.
+
+\bibitem{schuhmann2022laion}
+Chrisoph Schuhmann.
+\newblock Laion aesthetics, Aug 2022.
+
+\bibitem{deqa}
+Zhiyuan You, Xin Cai, Jinjin Gu, Tianfan Xue, and Chao Dong.
+\newblock Teaching large language models to regress accurate image quality scores using score distribution.
+\newblock {\em arXiv preprint arXiv:2501.11561}, 2025.
+
+\bibitem{wang2025unified}
+Yibin Wang, Yuhang Zang, Hao Li, Cheng Jin, and Jiaqi Wang.
+\newblock Unified reward model for multimodal understanding and generation.
+\newblock {\em arXiv preprint arXiv:2503.05236}, 2025.
+
+\bibitem{rombach2022high}
+Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, and Bj{\"o}rn Ommer.
+\newblock High-resolution image synthesis with latent diffusion models.
+\newblock In {\em Proceedings of the IEEE/CVF conference on computer vision and pattern recognition}, pages 10684--10695, 2022.
+
+\bibitem{podell2023sdxl}
+Dustin Podell, Zion English, Kyle Lacey, Andreas Blattmann, Tim Dockhorn, Jonas M{\"u}ller, Joe Penna, and Robin Rombach.
+\newblock Sdxl: Improving latent diffusion models for high-resolution image synthesis.
+\newblock {\em arXiv preprint arXiv:2307.01952}, 2023.
+
+\bibitem{ramesh2022hierarchical}
+Aditya Ramesh, Prafulla Dhariwal, Alex Nichol, Casey Chu, and Mark Chen.
+\newblock Hierarchical text-conditional image generation with clip latents.
+\newblock {\em arXiv preprint arXiv:2204.06125}, 1(2):3, 2022.
+
+\bibitem{betker2023improving}
+James Betker, Gabriel Goh, Li~Jing, Tim Brooks, Jianfeng Wang, Linjie Li, Long Ouyang, Juntang Zhuang, Joyce Lee, Yufei Guo, et~al.
+\newblock Improving image generation with better captions.
+\newblock {\em Computer Science. https://cdn. openai. com/papers/dall-e-3. pdf}, 2(3):8, 2023.
+
+\bibitem{xie2024show}
+Jinheng Xie, Weijia Mao, Zechen Bai, David~Junhao Zhang, Weihao Wang, Kevin~Qinghong Lin, Yuchao Gu, Zhijie Chen, Zhenheng Yang, and Mike~Zheng Shou.
+\newblock Show-o: One single transformer to unify multimodal understanding and generation.
+\newblock {\em arXiv preprint arXiv:2408.12528}, 2024.
+
+\bibitem{wang2024emu3}
+Xinlong Wang, Xiaosong Zhang, Zhengxiong Luo, Quan Sun, Yufeng Cui, Jinsheng Wang, Fan Zhang, Yueze Wang, Zhen Li, Qiying Yu, et~al.
+\newblock Emu3: Next-token prediction is all you need.
+\newblock {\em arXiv preprint arXiv:2409.18869}, 2024.
+
+\bibitem{ma2024janusflow}
+Yiyang Ma, Xingchao Liu, Xiaokang Chen, Wen Liu, Chengyue Wu, Zhiyu Wu, Zizheng Pan, Zhenda Xie, Haowei Zhang, Liang Zhao, et~al.
+\newblock Janusflow: Harmonizing autoregression and rectified flow for unified multimodal understanding and generation.
+\newblock {\em arXiv preprint arXiv:2411.07975}, 2024.
+
+\bibitem{chen2025janus}
+Xiaokang Chen, Zhiyu Wu, Xingchao Liu, Zizheng Pan, Wen Liu, Zhenda Xie, Xingkai Yu, and Chong Ruan.
+\newblock Janus-pro: Unified multimodal understanding and generation with data and model scaling.
+\newblock {\em arXiv preprint arXiv:2501.17811}, 2025.
+
+\bibitem{xie2025sana}
+Enze Xie, Junsong Chen, Yuyang Zhao, Jincheng Yu, Ligeng Zhu, Yujun Lin, Zhekai Zhang, Muyang Li, Junyu Chen, Han Cai, et~al.
+\newblock Sana 1.5: Efficient scaling of training-time and inference-time compute in linear diffusion transformer.
+\newblock {\em arXiv preprint arXiv:2501.18427}, 2025.
+
+\bibitem{liu2025prorl}
+Mingjie Liu, Shizhe Diao, Ximing Lu, Jian Hu, Xin Dong, Yejin Choi, Jan Kautz, and Yi~Dong.
+\newblock Prorl: Prolonged reinforcement learning expands reasoning boundaries in large language models.
+\newblock {\em arXiv preprint arXiv:2505.24864}, 2025.
+
+\bibitem{chen2025acereason}
+Yang Chen, Zhuolin Yang, Zihan Liu, Chankyu Lee, Peng Xu, Mohammad Shoeybi, Bryan Catanzaro, and Wei Ping.
+\newblock Acereason-nemotron: Advancing math and code reasoning through reinforcement learning.
+\newblock {\em arXiv preprint arXiv:2505.16400}, 2025.
+
+\bibitem{huang2025t2i}
+Kaiyi Huang, Chengqi Duan, Kaiyue Sun, Enze Xie, Zhenguo Li, and Xihui Liu.
+\newblock T2i-compbench++: An enhanced and comprehensive benchmark for compositional text-to-image generation.
+\newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence}, 2025.
+
+\bibitem{oksendal2003stochastic}
+Bernt {\O}ksendal and Bernt {\O}ksendal.
+\newblock {\em Stochastic differential equations}.
+\newblock Springer, 2003.
+
+\bibitem{anderson1982reverse}
+Brian~DO Anderson.
+\newblock Reverse-time diffusion equation models.
+\newblock {\em Stochastic Processes and their Applications}, 12(3):313--326, 1982.
+
+\bibitem{awr}
+Xue~Bin Peng, Aviral Kumar, Grace Zhang, and Sergey Levine.
+\newblock Advantage-weighted regression: Simple and scalable off-policy reinforcement learning.
+\newblock {\em arXiv preprint arXiv:1910.00177}, 2019.
+
+\end{thebibliography}

@@ -1,0 +1,45 @@
+{
+   "sources" : [
+      {
+         "usage" : "toplevel",
+         "filename" : "neurips_2025.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "references/alignment.bib"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "references/benchmarks.bib"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "references/flow.bib"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "references/flowpo.bib"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "references/models.bib"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "references/others.bib"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "references/proxy_tuning.bib"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "references/search.bib"
+      }
+   ],
+   "spec_version" : 1,
+   "texlive_version" : "2025",
+   "process" : {
+      "compiler" : "pdflatex"
+   }
+}
