@@ -78,3 +78,43 @@ WORKSPACE=/data/verl-omni/workspace CUDA_VISIBLE_DEVICES=3,6 bash examples/dance
 - 训练于 step ~42 处按用户指令暂停（step-25 为最新 ckpt，含优化器，可随时 `resume_mode=auto` 续训至 150）。
 - /data 磁盘 99%（59G 空闲，其他用户 ~14G/h 增长）——续训需严格执行只留最近 2 个 ckpt，必要时删 smoke ckpt（28G）。
 - 建议：续训到 150 后用最终 ckpt 在 1018 行 `test.parquet` 上跑全量正式评测（Phase 6），并保留本报告的 mini 配对协议作快速回归检查。
+
+---
+
+# 附录 A：step-50 ckpt 评测（2026-08-03T14:00Z）
+
+ckpt `global_step_50`（已推 [`michaelsou/wan22-ti2v-5b-dancegrpo-ocr-step50`](https://modelscope.cn/models/michaelsou/wan22-ti2v-5b-dancegrpo-ocr-step50)，30.0GB/11 文件，0 失败）。同一 mini8 配对协议，评测 22.4 min。
+
+## A.1 三点对比
+
+| 指标 | 基座 | step-25 | step-50 |
+|---|---|---|---|
+| **OCR reward mean@1（mini8）** | 0.5864 | 0.6390 | **0.6233** |
+| 训练内 64 行 val mean@1 | 0.4730（step0） | 0.4863 / 0.4800（复测） | **0.4883（新高）** |
+| 零分样本 | 2 | 0 | 0 |
+| 满分样本 | 2 | 2 | **3** |
+
+| # | 基座 | s25 | s50 | Δ(50−25) | gts | s50 GenRM 转写 |
+|---|---|---|---|---|---|---|
+| 0 | 0.930 | 0.950 | **1.000** | +0.050 | Spring Collection 2024 | Spring Collection 2024 |
+| 1 | 1.000 | 0.938 | 0.938 | 0.000 | Step Goal Achieved | Step Gal Achieved |
+| 2 | 0.750 | **1.000** | **1.000** | 0.000 | Forever Yours | Forever Yours |
+| 3 | 0.000 | 0.080 | **0.133** | +0.033 | Try Our New Burger | TRY BOUR VILWIOG BUOER BUIGET |
+| 4 | 0.000 | 0.100 | **0.133** | +0.033 | Lost City Near | LOST ANU LOST IN NER |
+| 5 | 0.400 | 0.500 | 0.420 | −0.080 | Tonight Binary StandUp | Toooh indare UP |
+| 6 | 1.000 | **1.000** | **1.000** | 0.000 | Fearless | Fearless |
+| 7 | 0.611 | 0.544 | 0.389 | −0.156 | Loved And Remembered | LOVE.D AW RENPTENLAN |
+
+s50 vs s25：3 胜 2 负 3 平（−0.016 均值）；s50 vs 基座：5 胜 2 负（+0.037 均值）。
+
+## A.2 解读
+
+- **mini8（n=8）上 s50 与 s25 统计上打平**（−0.016 在单样本抖动范围内：p7 一个样本 −0.156 即贡献均值 −0.02）。退步集中在 p7（墓碑刻字，字形清晰但词序全错）与 p5。
+- **更有把握的 64 行训练内 val 曲线仍在爬升**：0.4863 → **0.4883**（s25→s50，新高），且 s50 拿到了 mini8 首个完美满分（p0）与两个难例的持续改善（p3: 0→0.08→0.133，p4: 0→0.10→0.133）。
+- **抽帧目检**（frames/frame_eval_step50_p{0,3,7}.png）：p0 帧为 "Spaiid Colllertion 2024"——GenRM 判 1.0 属 VLM 自动纠正（已在 §5.3 记录的宽容度）；p7 帧 "LOVE.D AW RENPTENLAN" 与转写一致，为真实退步。
+- 结论：**训练继续沿正确方向前进（64 行 val 新高、难例单调改善），但幅度温和且 mini 子集上存在样本级反复**。长文本仍是主战场，支持继续训练至 150。
+
+## A.3 产物
+
+- 视频：`workspace/val_generations/eval_step50/50/{0..7}.mp4`；明细 `eval_step50/50.jsonl`；日志 `logs/eval_step50.log`（0 Traceback）。
+- 上传日志 `logs/ms_upload_step50.log`（Elapsed 564.5s）。
