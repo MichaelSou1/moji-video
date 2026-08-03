@@ -1,0 +1,955 @@
++ CUDA_COMPAT_DIR=/data/verl-omni/.cuda-compat/usr/local/cuda-13.3/compat
++ VENV_CU13_LIB=/data/verl-omni/.venv/lib/python3.12/site-packages/nvidia/cu13/lib
++ '[' -d /data/verl-omni/.cuda-compat/usr/local/cuda-13.3/compat ']'
++ export LD_LIBRARY_PATH=/data/verl-omni/.cuda-compat/usr/local/cuda-13.3/compat:/data/verl-omni/.venv/lib/python3.12/site-packages/nvidia/cu13/lib
++ LD_LIBRARY_PATH=/data/verl-omni/.cuda-compat/usr/local/cuda-13.3/compat:/data/verl-omni/.venv/lib/python3.12/site-packages/nvidia/cu13/lib
++ WORKSPACE=/data/verl-omni/workspace
++ ocr_train_path=/data/verl-omni/workspace/data/ocr/wan22/train.parquet
++ ocr_test_path=/data/verl-omni/workspace/data/ocr/wan22/test_smoke.parquet
++ model_name=/data/models/Wan2.2-TI2V-5B-Diffusers
++ reward_model_name=/data/models/Qwen3-VL-8B-Instruct
++ reward_function_path=verl_omni/utils/reward_score/genrm_ocr.py
++ CUDA_VISIBLE_DEVICES=3,6
++ export CUDA_VISIBLE_DEVICES
++ NUM_GPUS_ACTOR_ROLLOUT_REWARD=2
++ ROLLOUT_TP=1
++ REWARD_TP=1
++ ENGINE=vllm_omni
++ REWARD_ENGINE=vllm
++ tee run_wan22_5b_t2v_ocr.log
++ python3 -m verl_omni.trainer.main_diffusion algorithm.adv_estimator=dance_grpo actor_rollout_ref.model.algorithm=dance_grpo actor_rollout_ref.actor.diffusion_loss.loss_mode=dance_grpo data.train_files=/data/verl-omni/workspace/data/ocr/wan22/train.parquet data.val_files=/data/verl-omni/workspace/data/ocr/wan22/test_smoke.parquet data.train_batch_size=4 data.val_batch_size=8 data.max_prompt_length=1024 data.seed=42 actor_rollout_ref.model.path=/data/models/Wan2.2-TI2V-5B-Diffusers actor_rollout_ref.model.attn_backend=native 'actor_rollout_ref.model.custom_chat_template="{% if messages %}{% for message in messages %}{% if message[\"role\"] == \"user\" %}{{ message[\"content\"] }}{% endif %}{% endfor %}{% endif %}</s>"' actor_rollout_ref.actor.optim.lr=1e-5 actor_rollout_ref.actor.optim.weight_decay=0.0001 actor_rollout_ref.actor.ppo_mini_batch_size=4 actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=4 actor_rollout_ref.actor.fsdp_config.param_offload=True actor_rollout_ref.actor.fsdp_config.optimizer_offload=True actor_rollout_ref.actor.fsdp_config.model_dtype=bfloat16 actor_rollout_ref.actor.fsdp_config.wrap_policy.min_num_params=10000 actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu=16 actor_rollout_ref.rollout.tensor_model_parallel_size=1 actor_rollout_ref.rollout.name=vllm_omni actor_rollout_ref.rollout.n=8 actor_rollout_ref.rollout.seed=42 actor_rollout_ref.rollout.agent.num_workers=2 actor_rollout_ref.rollout.load_format=safetensors actor_rollout_ref.rollout.layered_summon=True actor_rollout_ref.rollout.rollout_attn_backend=TORCH_SDPA actor_rollout_ref.rollout.pipeline.true_cfg_scale=5.0 actor_rollout_ref.rollout.pipeline.height=704 actor_rollout_ref.rollout.pipeline.width=1280 actor_rollout_ref.rollout.pipeline.num_frames=8 actor_rollout_ref.rollout.pipeline.num_inference_steps=10 actor_rollout_ref.rollout.pipeline.guidance_scale=5.0 actor_rollout_ref.rollout.pipeline.max_sequence_length=1024 actor_rollout_ref.rollout.algo.noise_level=1.2 actor_rollout_ref.rollout.algo.sde_type=dance_sde actor_rollout_ref.rollout.algo.sde_window_size=2 'actor_rollout_ref.rollout.algo.sde_window_range=[0,5]' actor_rollout_ref.rollout.val_kwargs.pipeline.num_inference_steps=50 actor_rollout_ref.rollout.val_kwargs.algo.noise_level=0.0 actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu=16 reward.num_workers=2 reward.reward_model.enable=True reward.reward_model.model_path=/data/models/Qwen3-VL-8B-Instruct reward.reward_model.rollout.name=vllm reward.reward_model.rollout.tensor_model_parallel_size=1 reward.reward_model.rollout.max_model_len=32768 reward.custom_reward_function.path=verl_omni/utils/reward_score/genrm_ocr.py reward.custom_reward_function.name=compute_score_ocr 'trainer.logger=["console", "tensorboard"]' trainer.project_name=dance_grpo trainer.experiment_name=wan22_5b_t2v_ocr trainer.log_val_generations=4 trainer.val_before_train=True trainer.validation_data_dir=/data/verl-omni/workspace/val_generations/wan22_5b_t2v_ocr trainer.n_gpus_per_node=2 trainer.nnodes=1 trainer.save_freq=30 trainer.test_freq=30 trainer.total_epochs=15 trainer.total_training_steps=20
+INFO 08-02 06:29:30 [patch.py:252] NVFP4 W4A4 weight_scale NaN-clamp: installed.
+/data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/engine/mindspeed/transformer_impl.py:24: UserWarning: NPU not support router replay for now.
+  from verl.utils.megatron.router_replay_patch import RouterReplay
+2026-08-02 06:29:41,857	INFO worker.py:2015 -- Started a local Ray instance. View the dashboard at [1m[32mhttp://127.0.0.1:8265 [39m[22m
+[36m(pid=3071478)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/engine/mindspeed/transformer_impl.py:24: UserWarning: NPU not support router replay for now.
+[36m(pid=3071478)[0m   from verl.utils.megatron.router_replay_patch import RouterReplay
+ray init kwargs: {'num_cpus': None, 'runtime_env': {'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN', 'VLLM_LOGGING_LEVEL': 'WARN', 'VLLM_ALLOW_RUNTIME_LORA_UPDATING': 'true', 'CUDA_DEVICE_MAX_CONNECTIONS': '1', 'VLLM_DISABLE_COMPILE_CACHE': '1', 'HCCL_HOST_SOCKET_PORT_RANGE': 'auto', 'HCCL_NPU_SOCKET_PORT_RANGE': 'auto', 'HSA_NO_SCRATCH_RECLAIM': '1'}, 'working_dir': None}}
+[36m(TaskRunner pid=3071478)[0m TaskRunner hostname: huirui, PID: 3071478
+[36m(TaskRunner pid=3071478)[0m {'actor_rollout_ref': 
+[36m(TaskRunner pid=3071478)[0m {'actor': {'_target_': 'verl_omni.workers.config.diffusion.FSDPDiffusionActorConfig',
+[36m(TaskRunner pid=3071478)[0m                                  'checkpoint': {'_target_': 'verl.trainer.config.CheckpointConfig',
+[36m(TaskRunner pid=3071478)[0m                                                 'async_save': False,
+[36m(TaskRunner pid=3071478)[0m                                                 'load_contents': ['model',
+[36m(TaskRunner pid=3071478)[0m                                                                   'optimizer',
+[36m(TaskRunner pid=3071478)[0m                                                                   'extra'],
+[36m(TaskRunner pid=3071478)[0m                                                 'save_contents': ['model',
+[36m(TaskRunner pid=3071478)[0m                                                                   'optimizer',
+[36m(TaskRunner pid=3071478)[0m                                                                   'extra']},
+[36m(TaskRunner pid=3071478)[0m                                  'data_loader_seed': 42,
+[36m(TaskRunner pid=3071478)[0m                                  'diffusion_loss': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionLossConfig',
+[36m(TaskRunner pid=3071478)[0m                                                     'adaptive_weight_min': 1e-05,
+[36m(TaskRunner pid=3071478)[0m                                                     'add_kl_coefficient': True,
+[36m(TaskRunner pid=3071478)[0m                                                     'adv_clip_max': 5.0,
+[36m(TaskRunner pid=3071478)[0m                                                     'clip_ratio': 0.0001,
+[36m(TaskRunner pid=3071478)[0m                                                     'dpo_beta': 2000.0,
+[36m(TaskRunner pid=3071478)[0m                                                     'kl_mask_threshold': 1e-05,
+[36m(TaskRunner pid=3071478)[0m                                                     'loss_mode': 'dance_grpo',
+[36m(TaskRunner pid=3071478)[0m                                                     'mix_beta': 0.5,
+[36m(TaskRunner pid=3071478)[0m                                                     'ref_kl_coef': 0.0},
+[36m(TaskRunner pid=3071478)[0m                                  'distill_loss_coef': 1.0,
+[36m(TaskRunner pid=3071478)[0m                                  'distill_loss_mode': 'distill_kl',
+[36m(TaskRunner pid=3071478)[0m                                  'fsdp_config': {'_target_': 'verl.workers.config.FSDPEngineConfig',
+[36m(TaskRunner pid=3071478)[0m                                                  'dtype': 'bfloat16',
+[36m(TaskRunner pid=3071478)[0m                                                  'forward_only': False,
+[36m(TaskRunner pid=3071478)[0m                                                  'forward_prefetch': False,
+[36m(TaskRunner pid=3071478)[0m                                                  'fsdp_size': -1,
+[36m(TaskRunner pid=3071478)[0m                                                  'full_determinism': False,
+[36m(TaskRunner pid=3071478)[0m                                                  'model_dtype': 'bfloat16',
+[36m(TaskRunner pid=3071478)[0m                                                  'offload_policy': False,
+[36m(TaskRunner pid=3071478)[0m                                                  'optimizer_offload': True,
+[36m(TaskRunner pid=3071478)[0m                                                  'param_offload': True,
+[36m(TaskRunner pid=3071478)[0m                                                  'reshard_after_forward': True,
+[36m(TaskRunner pid=3071478)[0m                                                  'seed': 42,
+[36m(TaskRunner pid=3071478)[0m                                                  'strategy': 'fsdp',
+[36m(TaskRunner pid=3071478)[0m                                                  'ulysses_sequence_parallel_size': 1,
+[36m(TaskRunner pid=3071478)[0m                                                  'use_orig_params': False,
+[36m(TaskRunner pid=3071478)[0m                                                  'wrap_policy': {'min_num_params': 10000}},
+[36m(TaskRunner pid=3071478)[0m                                  'grad_clip': 1.0,
+[36m(TaskRunner pid=3071478)[0m                                  'kl_loss_coef': 0.001,
+[36m(TaskRunner pid=3071478)[0m                                  'loss_scale_factor': None,
+[36m(TaskRunner pid=3071478)[0m                                  'optim': {'_target_': 'verl.workers.config.FSDPOptimizerConfig',
+[36m(TaskRunner pid=3071478)[0m                                            'betas': [0.9, 0.999],
+[36m(TaskRunner pid=3071478)[0m                                            'clip_grad': 1.0,
+[36m(TaskRunner pid=3071478)[0m                                            'lr': 1e-05,
+[36m(TaskRunner pid=3071478)[0m                                            'lr_scheduler_type': 'constant',
+[36m(TaskRunner pid=3071478)[0m                                            'lr_warmup_steps': -1,
+[36m(TaskRunner pid=3071478)[0m                                            'lr_warmup_steps_ratio': 0.0,
+[36m(TaskRunner pid=3071478)[0m                                            'min_lr_ratio': 0.0,
+[36m(TaskRunner pid=3071478)[0m                                            'num_cycles': 0.5,
+[36m(TaskRunner pid=3071478)[0m                                            'optimizer': 'AdamW',
+[36m(TaskRunner pid=3071478)[0m                                            'optimizer_impl': 'torch.optim',
+[36m(TaskRunner pid=3071478)[0m                                            'override_optimizer_config': None,
+[36m(TaskRunner pid=3071478)[0m                                            'total_training_steps': -1,
+[36m(TaskRunner pid=3071478)[0m                                            'warmup_style': None,
+[36m(TaskRunner pid=3071478)[0m                                            'weight_decay': 0.0001,
+[36m(TaskRunner pid=3071478)[0m                                            'zero_indexed_step': True},
+[36m(TaskRunner pid=3071478)[0m                                  'ppo_epochs': 1,
+[36m(TaskRunner pid=3071478)[0m                                  'ppo_micro_batch_size_per_gpu': 4,
+[36m(TaskRunner pid=3071478)[0m                                  'ppo_mini_batch_size': 4,
+[36m(TaskRunner pid=3071478)[0m                                  'profiler': {'_target_': 'verl.utils.profiler.ProfilerConfig',
+[36m(TaskRunner pid=3071478)[0m                                               'all_ranks': False,
+[36m(TaskRunner pid=3071478)[0m                                               'enable': False,
+[36m(TaskRunner pid=3071478)[0m                                               'ranks': [],
+[36m(TaskRunner pid=3071478)[0m                                               'save_path': 'outputs/profile',
+[36m(TaskRunner pid=3071478)[0m                                               'tool': 'torch',
+[36m(TaskRunner pid=3071478)[0m                                               'tool_config': {'nsys': {'_target_': 'verl.utils.profiler.config.NsightToolConfig',
+[36m(TaskRunner pid=3071478)[0m                                                                        'discrete': False,
+[36m(TaskRunner pid=3071478)[0m                                                                        'name': 'nsight'},
+[36m(TaskRunner pid=3071478)[0m                                                               'torch': {'_target_': 'verl.utils.profiler.config.TorchProfilerToolConfig',
+[36m(TaskRunner pid=3071478)[0m                                                                         'contents': [],
+[36m(TaskRunner pid=3071478)[0m                                                                         'discrete': False,
+[36m(TaskRunner pid=3071478)[0m                                                                         'name': 'torch'},
+[36m(TaskRunner pid=3071478)[0m                                                               'torch_memory': {'_target_': 'verl.utils.profiler.config.TorchMemoryToolConfig',
+[36m(TaskRunner pid=3071478)[0m                                                                                'name': 'torch_memory',
+[36m(TaskRunner pid=3071478)[0m                                                                                'stack_depth': 32,
+[36m(TaskRunner pid=3071478)[0m                                                                                'trace_alloc_max_entries': 100000}}},
+[36m(TaskRunner pid=3071478)[0m                                  'rollout_correction': {'_target_': 'verl.trainer.config.algorithm.RolloutCorrectionConfig',
+[36m(TaskRunner pid=3071478)[0m                                                         'bypass_mode': False,
+[36m(TaskRunner pid=3071478)[0m                                                         'loss_type': 'ppo_clip',
+[36m(TaskRunner pid=3071478)[0m                                                         'rollout_is': None,
+[36m(TaskRunner pid=3071478)[0m                                                         'rollout_is_batch_normalize': False,
+[36m(TaskRunner pid=3071478)[0m                                                         'rollout_is_threshold': 2.0,
+[36m(TaskRunner pid=3071478)[0m                                                         'rollout_rs': None,
+[36m(TaskRunner pid=3071478)[0m                                                         'rollout_rs_threshold': None},
+[36m(TaskRunner pid=3071478)[0m                                  'rollout_n': 8,
+[36m(TaskRunner pid=3071478)[0m                                  'shuffle': False,
+[36m(TaskRunner pid=3071478)[0m                                  'strategy': 'fsdp',
+[36m(TaskRunner pid=3071478)[0m                                  'use_distill_loss': False,
+[36m(TaskRunner pid=3071478)[0m                                  'use_kl_loss': False},
+[36m(TaskRunner pid=3071478)[0m                        'hybrid_engine': True,
+[36m(TaskRunner pid=3071478)[0m                        'model': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionModelConfig',
+[36m(TaskRunner pid=3071478)[0m                                  'algo': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionRolloutAlgoConfig',
+[36m(TaskRunner pid=3071478)[0m                                           'noise_level': 1.2,
+[36m(TaskRunner pid=3071478)[0m                                           'sde_type': 'dance_sde',
+[36m(TaskRunner pid=3071478)[0m                                           'sde_window_range': [0, 5],
+[36m(TaskRunner pid=3071478)[0m                                           'sde_window_size': 2},
+[36m(TaskRunner pid=3071478)[0m                                  'algorithm': 'dance_grpo',
+[36m(TaskRunner pid=3071478)[0m                                  'attn_backend': 'native',
+[36m(TaskRunner pid=3071478)[0m                                  'config_path': None,
+[36m(TaskRunner pid=3071478)[0m                                  'custom_chat_template': '{% if messages %}{% '
+[36m(TaskRunner pid=3071478)[0m                                                          'for message in '
+[36m(TaskRunner pid=3071478)[0m                                                          'messages %}{% if '
+[36m(TaskRunner pid=3071478)[0m                                                          'message["role"] == '
+[36m(TaskRunner pid=3071478)[0m                                                          '"user" %}{{ '
+[36m(TaskRunner pid=3071478)[0m                                                          'message["content"] '
+[36m(TaskRunner pid=3071478)[0m                                                          '}}{% endif %}{% '
+[36m(TaskRunner pid=3071478)[0m                                                          'endfor %}{% endif '
+[36m(TaskRunner pid=3071478)[0m                                                          '%}</s>',
+[36m(TaskRunner pid=3071478)[0m                                  'enable_gradient_checkpointing': True,
+[36m(TaskRunner pid=3071478)[0m                                  'exclude_modules': None,
+[36m(TaskRunner pid=3071478)[0m                                  'external_lib': None,
+[36m(TaskRunner pid=3071478)[0m                                  'fsdp_layer_prefixes': ['transformer_blocks.'],
+[36m(TaskRunner pid=3071478)[0m                                  'lora_adapter_path': None,
+[36m(TaskRunner pid=3071478)[0m                                  'lora_alpha': 64,
+[36m(TaskRunner pid=3071478)[0m                                  'lora_dtype': None,
+[36m(TaskRunner pid=3071478)[0m                                  'lora_init_weights': 'gaussian',
+[36m(TaskRunner pid=3071478)[0m                                  'lora_rank': 0,
+[36m(TaskRunner pid=3071478)[0m                                  'model_type': 'diffusion_model',
+[36m(TaskRunner pid=3071478)[0m                                  'mtp': {'_target_': 'verl.workers.config.MtpConfig',
+[36m(TaskRunner pid=3071478)[0m                                          'enable': False},
+[36m(TaskRunner pid=3071478)[0m                                  'path': '/data/models/Wan2.2-TI2V-5B-Diffusers',
+[36m(TaskRunner pid=3071478)[0m                                  'pipeline': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionPipelineConfig',
+[36m(TaskRunner pid=3071478)[0m                                               'guidance_scale': 5.0,
+[36m(TaskRunner pid=3071478)[0m                                               'height': 704,
+[36m(TaskRunner pid=3071478)[0m                                               'max_sequence_length': 1024,
+[36m(TaskRunner pid=3071478)[0m                                               'num_frames': 8,
+[36m(TaskRunner pid=3071478)[0m                                               'num_inference_steps': 10,
+[36m(TaskRunner pid=3071478)[0m                                               'true_cfg_scale': 5.0,
+[36m(TaskRunner pid=3071478)[0m                                               'width': 1280},
+[36m(TaskRunner pid=3071478)[0m                                  'policy_state_adapters': ['default'],
+[36m(TaskRunner pid=3071478)[0m                                  'target_modules': 'all-linear',
+[36m(TaskRunner pid=3071478)[0m                                  'target_parameters': None,
+[36m(TaskRunner pid=3071478)[0m                                  'tokenizer_path': None,
+[36m(TaskRunner pid=3071478)[0m                                  'transformer_subfolder': 'transformer',
+[36m(TaskRunner pid=3071478)[0m                                  'trust_remote_code': False,
+[36m(TaskRunner pid=3071478)[0m                                  'use_shm': False},
+[36m(TaskRunner pid=3071478)[0m                        'nccl_timeout': 600,
+[36m(TaskRunner pid=3071478)[0m                        'ref': {'_target_': 'verl_omni.workers.config.diffusion.FSDPDiffusionActorConfig',
+[36m(TaskRunner pid=3071478)[0m                                'fsdp_config': {'_target_': 'verl.workers.config.FSDPEngineConfig',
+[36m(TaskRunner pid=3071478)[0m                                                'dtype': 'bfloat16',
+[36m(TaskRunner pid=3071478)[0m                                                'forward_only': True,
+[36m(TaskRunner pid=3071478)[0m                                                'forward_prefetch': False,
+[36m(TaskRunner pid=3071478)[0m                                                'fsdp_size': -1,
+[36m(TaskRunner pid=3071478)[0m                                                'full_determinism': False,
+[36m(TaskRunner pid=3071478)[0m                                                'model_dtype': 'fp32',
+[36m(TaskRunner pid=3071478)[0m                                                'offload_policy': False,
+[36m(TaskRunner pid=3071478)[0m                                                'optimizer_offload': False,
+[36m(TaskRunner pid=3071478)[0m                                                'param_offload': False,
+[36m(TaskRunner pid=3071478)[0m                                                'reshard_after_forward': True,
+[36m(TaskRunner pid=3071478)[0m                                                'seed': 42,
+[36m(TaskRunner pid=3071478)[0m                                                'strategy': 'fsdp',
+[36m(TaskRunner pid=3071478)[0m                                                'ulysses_sequence_parallel_size': 1,
+[36m(TaskRunner pid=3071478)[0m                                                'use_orig_params': False,
+[36m(TaskRunner pid=3071478)[0m                                                'wrap_policy': {'min_num_params': 0}},
+[36m(TaskRunner pid=3071478)[0m                                'log_prob_micro_batch_size_per_gpu': 16,
+[36m(TaskRunner pid=3071478)[0m                                'profiler': {'_target_': 'verl.utils.profiler.ProfilerConfig',
+[36m(TaskRunner pid=3071478)[0m                                             'all_ranks': False,
+[36m(TaskRunner pid=3071478)[0m                                             'enable': False,
+[36m(TaskRunner pid=3071478)[0m                                             'ranks': [],
+[36m(TaskRunner pid=3071478)[0m                                             'save_path': 'outputs/profile',
+[36m(TaskRunner pid=3071478)[0m                                             'tool': 'torch',
+[36m(TaskRunner pid=3071478)[0m                                             'tool_config': {'nsys': {'_target_': 'verl.utils.profiler.config.NsightToolConfig',
+[36m(TaskRunner pid=3071478)[0m                                                                      'discrete': False,
+[36m(TaskRunner pid=3071478)[0m                                                                      'name': 'nsight'},
+[36m(TaskRunner pid=3071478)[0m                                                             'torch': {'_target_': 'verl.utils.profiler.config.TorchProfilerToolConfig',
+[36m(TaskRunner pid=3071478)[0m                                                                       'contents': [],
+[36m(TaskRunner pid=3071478)[0m                                                                       'discrete': False,
+[36m(TaskRunner pid=3071478)[0m                                                                       'name': 'torch'},
+[36m(TaskRunner pid=3071478)[0m                                                             'torch_memory': {'_target_': 'verl.utils.profiler.config.TorchMemoryToolConfig',
+[36m(TaskRunner pid=3071478)[0m                                                                              'name': 'torch_memory',
+[36m(TaskRunner pid=3071478)[0m                                                                              'stack_depth': 32,
+[36m(TaskRunner pid=3071478)[0m                                                                              'trace_alloc_max_entries': 100000}}},
+[36m(TaskRunner pid=3071478)[0m                                'rollout_n': 8,
+[36m(TaskRunner pid=3071478)[0m                                'strategy': 'fsdp'},
+[36m(TaskRunner pid=3071478)[0m                        'rollout': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionRolloutConfig',
+[36m(TaskRunner pid=3071478)[0m                                    'agent': {'_target_': 'verl.workers.config.AgentLoopConfig',
+[36m(TaskRunner pid=3071478)[0m                                              'default_agent_loop': 'diffusion_single_turn_agent',
+[36m(TaskRunner pid=3071478)[0m                                              'num_workers': 2},
+[36m(TaskRunner pid=3071478)[0m                                    'algo': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionRolloutAlgoConfig',
+[36m(TaskRunner pid=3071478)[0m                                             'iters_per_group': 1,
+[36m(TaskRunner pid=3071478)[0m                                             'noise_level': 1.2,
+[36m(TaskRunner pid=3071478)[0m                                             'sample_strategy': 'random',
+[36m(TaskRunner pid=3071478)[0m                                             'sde_type': 'dance_sde',
+[36m(TaskRunner pid=3071478)[0m                                             'sde_window_range': [0, 5],
+[36m(TaskRunner pid=3071478)[0m                                             'sde_window_seed': 0,
+[36m(TaskRunner pid=3071478)[0m                                             'sde_window_size': 2},
+[36m(TaskRunner pid=3071478)[0m                                    'calculate_log_probs': False,
+[36m(TaskRunner pid=3071478)[0m                                    'checkpoint_engine': {'_target_': 'verl.workers.config.CheckpointEngineConfig',
+[36m(TaskRunner pid=3071478)[0m                                                          'backend': 'naive',
+[36m(TaskRunner pid=3071478)[0m                                                          'custom_backend_module': None,
+[36m(TaskRunner pid=3071478)[0m                                                          'engine_kwargs': {},
+[36m(TaskRunner pid=3071478)[0m                                                          'update_weights_bucket_megabytes': 2048},
+[36m(TaskRunner pid=3071478)[0m                                    'cudagraph_capture_sizes': None,
+[36m(TaskRunner pid=3071478)[0m                                    'data_parallel_size': 1,
+[36m(TaskRunner pid=3071478)[0m                                    'disable_log_stats': True,
+[36m(TaskRunner pid=3071478)[0m                                    'disaggregation': {'_target_': 'verl.workers.config.DisaggregationConfig',
+[36m(TaskRunner pid=3071478)[0m                                                       'enabled': False},
+[36m(TaskRunner pid=3071478)[0m                                    'dtype': 'bfloat16',
+[36m(TaskRunner pid=3071478)[0m                                    'enable_chunked_prefill': True,
+[36m(TaskRunner pid=3071478)[0m                                    'enable_prefix_caching': True,
+[36m(TaskRunner pid=3071478)[0m                                    'enable_rollout_routing_replay': False,
+[36m(TaskRunner pid=3071478)[0m                                    'enforce_eager': False,
+[36m(TaskRunner pid=3071478)[0m                                    'engine_kwargs': {'vllm_omni': {}},
+[36m(TaskRunner pid=3071478)[0m                                    'expert_parallel_size': 1,
+[36m(TaskRunner pid=3071478)[0m                                    'external_lib': None,
+[36m(TaskRunner pid=3071478)[0m                                    'free_cache_engine': True,
+[36m(TaskRunner pid=3071478)[0m                                    'gpu_memory_utilization': 0.5,
+[36m(TaskRunner pid=3071478)[0m                                    'layered_summon': True,
+[36m(TaskRunner pid=3071478)[0m                                    'load_format': 'safetensors',
+[36m(TaskRunner pid=3071478)[0m                                    'log_prob_micro_batch_size_per_gpu': 16,
+[36m(TaskRunner pid=3071478)[0m                                    'logprobs_mode': 'processed_logprobs',
+[36m(TaskRunner pid=3071478)[0m                                    'max_model_len': None,
+[36m(TaskRunner pid=3071478)[0m                                    'max_num_batched_tokens': 8192,
+[36m(TaskRunner pid=3071478)[0m                                    'max_num_seqs': 1024,
+[36m(TaskRunner pid=3071478)[0m                                    'mode': 'async',
+[36m(TaskRunner pid=3071478)[0m                                    'mtp': {'_target_': 'verl.workers.config.MtpConfig',
+[36m(TaskRunner pid=3071478)[0m                                            'enable': False},
+[36m(TaskRunner pid=3071478)[0m                                    'multi_turn': {'_target_': 'verl.workers.config.MultiTurnConfig',
+[36m(TaskRunner pid=3071478)[0m                                                   'enable': False},
+[36m(TaskRunner pid=3071478)[0m                                    'n': 8,
+[36m(TaskRunner pid=3071478)[0m                                    'n_gpus_per_node': 2,
+[36m(TaskRunner pid=3071478)[0m                                    'name': 'vllm_omni',
+[36m(TaskRunner pid=3071478)[0m                                    'nnodes': 0,
+[36m(TaskRunner pid=3071478)[0m                                    'pipeline': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionPipelineConfig',
+[36m(TaskRunner pid=3071478)[0m                                                 'guidance_scale': 5.0,
+[36m(TaskRunner pid=3071478)[0m                                                 'height': 704,
+[36m(TaskRunner pid=3071478)[0m                                                 'max_sequence_length': 1024,
+[36m(TaskRunner pid=3071478)[0m                                                 'num_frames': 8,
+[36m(TaskRunner pid=3071478)[0m                                                 'num_inference_steps': 10,
+[36m(TaskRunner pid=3071478)[0m                                                 'true_cfg_scale': 5.0,
+[36m(TaskRunner pid=3071478)[0m                                                 'width': 1280},
+[36m(TaskRunner pid=3071478)[0m                                    'pipeline_model_parallel_size': 1,
+[36m(TaskRunner pid=3071478)[0m                                    'profiler': {'_target_': 'verl.utils.profiler.ProfilerConfig',
+[36m(TaskRunner pid=3071478)[0m                                                 'all_ranks': False,
+[36m(TaskRunner pid=3071478)[0m                                                 'enable': False,
+[36m(TaskRunner pid=3071478)[0m                                                 'ranks': [],
+[36m(TaskRunner pid=3071478)[0m                                                 'save_path': 'outputs/profile',
+[36m(TaskRunner pid=3071478)[0m                                                 'tool': 'torch',
+[36m(TaskRunner pid=3071478)[0m                                                 'tool_config': {'nsys': {'_target_': 'verl.utils.profiler.config.NsightToolConfig',
+[36m(TaskRunner pid=3071478)[0m                                                                          'discrete': False,
+[36m(TaskRunner pid=3071478)[0m                                                                          'name': 'nsight'},
+[36m(TaskRunner pid=3071478)[0m                                                                 'torch': {'_target_': 'verl.utils.profiler.config.TorchProfilerToolConfig',
+[36m(TaskRunner pid=3071478)[0m                                                                           'contents': [],
+[36m(TaskRunner pid=3071478)[0m                                                                           'discrete': False,
+[36m(TaskRunner pid=3071478)[0m                                                                           'name': 'torch'},
+[36m(TaskRunner pid=3071478)[0m                                                                 'torch_memory': {'_target_': 'verl.utils.profiler.config.TorchMemoryToolConfig',
+[36m(TaskRunner pid=3071478)[0m                                                                                  'name': 'torch_memory',
+[36m(TaskRunner pid=3071478)[0m                                                                                  'stack_depth': 32,
+[36m(TaskRunner pid=3071478)[0m                                                                                  'trace_alloc_max_entries': 100000}}},
+[36m(TaskRunner pid=3071478)[0m                                    'prometheus': {'_target_': 'verl.workers.config.PrometheusConfig',
+[36m(TaskRunner pid=3071478)[0m                                                   'enable': False},
+[36m(TaskRunner pid=3071478)[0m                                    'prompt_length': 1024,
+[36m(TaskRunner pid=3071478)[0m                                    'quantization': None,
+[36m(TaskRunner pid=3071478)[0m                                    'rollout_adapter': 'default',
+[36m(TaskRunner pid=3071478)[0m                                    'rollout_attn_backend': 'TORCH_SDPA',
+[36m(TaskRunner pid=3071478)[0m                                    'scheduling_policy': 'fcfs',
+[36m(TaskRunner pid=3071478)[0m                                    'seed': 42,
+[36m(TaskRunner pid=3071478)[0m                                    'skip_tokenizer_init': True,
+[36m(TaskRunner pid=3071478)[0m                                    'step_execution': False,
+[36m(TaskRunner pid=3071478)[0m                                    'tensor_model_parallel_size': 1,
+[36m(TaskRunner pid=3071478)[0m                                    'val_kwargs': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionSamplingConfig',
+[36m(TaskRunner pid=3071478)[0m                                                   'algo': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionRolloutAlgoConfig',
+[36m(TaskRunner pid=3071478)[0m                                                            'noise_level': 0.0,
+[36m(TaskRunner pid=3071478)[0m                                                            'sde_type': 'dance_sde',
+[36m(TaskRunner pid=3071478)[0m                                                            'sde_window_range': [0,
+[36m(TaskRunner pid=3071478)[0m                                                                                 5],
+[36m(TaskRunner pid=3071478)[0m                                                            'sde_window_size': 2},
+[36m(TaskRunner pid=3071478)[0m                                                   'n': 1,
+[36m(TaskRunner pid=3071478)[0m                                                   'pipeline': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionPipelineConfig',
+[36m(TaskRunner pid=3071478)[0m                                                                'guidance_scale': 5.0,
+[36m(TaskRunner pid=3071478)[0m                                                                'height': 704,
+[36m(TaskRunner pid=3071478)[0m                                                                'max_sequence_length': 1024,
+[36m(TaskRunner pid=3071478)[0m                                                                'num_frames': 8,
+[36m(TaskRunner pid=3071478)[0m                                                                'num_inference_steps': 50,
+[36m(TaskRunner pid=3071478)[0m                                                                'true_cfg_scale': 5.0,
+[36m(TaskRunner pid=3071478)[0m                                                                'width': 1280}}}},
+[36m(TaskRunner pid=3071478)[0m  'algorithm': {'_target_': 'verl_omni.trainer.config.DiffusionAlgoConfig',
+[36m(TaskRunner pid=3071478)[0m                'adv_estimator': 'dance_grpo',
+[36m(TaskRunner pid=3071478)[0m                'adv_mode': 'continuous',
+[36m(TaskRunner pid=3071478)[0m                'global_std': True,
+[36m(TaskRunner pid=3071478)[0m                'norm_adv_by_std_in_grpo': True,
+[36m(TaskRunner pid=3071478)[0m                'old_policy_decay': None,
+[36m(TaskRunner pid=3071478)[0m                'old_policy_decay_schedule': 'copy',
+[36m(TaskRunner pid=3071478)[0m                'old_policy_update_interval': 1,
+[36m(TaskRunner pid=3071478)[0m                'paired_preference': False,
+[36m(TaskRunner pid=3071478)[0m                'rollout_correction': {'_target_': 'verl.trainer.config.algorithm.RolloutCorrectionConfig',
+[36m(TaskRunner pid=3071478)[0m                                       'bypass_mode': False,
+[36m(TaskRunner pid=3071478)[0m                                       'loss_type': 'ppo_clip',
+[36m(TaskRunner pid=3071478)[0m                                       'rollout_is': None,
+[36m(TaskRunner pid=3071478)[0m                                       'rollout_is_batch_normalize': False,
+[36m(TaskRunner pid=3071478)[0m                                       'rollout_is_threshold': 2.0,
+[36m(TaskRunner pid=3071478)[0m                                       'rollout_rs': None,
+[36m(TaskRunner pid=3071478)[0m                                       'rollout_rs_threshold': None},
+[36m(TaskRunner pid=3071478)[0m                'sample_source': 'online',
+[36m(TaskRunner pid=3071478)[0m                'timestep_fraction': 1.0,
+[36m(TaskRunner pid=3071478)[0m                'trainer_type': 'policy_gradient'},
+[36m(TaskRunner pid=3071478)[0m  'data': {'apply_chat_template_kwargs': {},
+[36m(TaskRunner pid=3071478)[0m           'custom_cls': {'collate_fn': None, 'name': None, 'path': None},
+[36m(TaskRunner pid=3071478)[0m           'datagen': {'name': None, 'path': None},
+[36m(TaskRunner pid=3071478)[0m           'dataloader_num_workers': 8,
+[36m(TaskRunner pid=3071478)[0m           'filter_overlong_prompts': False,
+[36m(TaskRunner pid=3071478)[0m           'filter_overlong_prompts_workers': 1,
+[36m(TaskRunner pid=3071478)[0m           'image_key': 'images',
+[36m(TaskRunner pid=3071478)[0m           'image_patch_size': 14,
+[36m(TaskRunner pid=3071478)[0m           'max_prompt_length': 1024,
+[36m(TaskRunner pid=3071478)[0m           'max_response_length': 512,
+[36m(TaskRunner pid=3071478)[0m           'prompt_key': 'prompt',
+[36m(TaskRunner pid=3071478)[0m           'return_full_prompt': False,
+[36m(TaskRunner pid=3071478)[0m           'return_multi_modal_inputs': True,
+[36m(TaskRunner pid=3071478)[0m           'return_raw_chat': True,
+[36m(TaskRunner pid=3071478)[0m           'return_raw_input_ids': False,
+[36m(TaskRunner pid=3071478)[0m           'reward_fn_key': 'data_source',
+[36m(TaskRunner pid=3071478)[0m           'sampler': {'class_name': None, 'class_path': None},
+[36m(TaskRunner pid=3071478)[0m           'seed': 42,
+[36m(TaskRunner pid=3071478)[0m           'shuffle': True,
+[36m(TaskRunner pid=3071478)[0m           'tokenizer': None,
+[36m(TaskRunner pid=3071478)[0m           'tool_config_path': None,
+[36m(TaskRunner pid=3071478)[0m           'train_batch_size': 4,
+[36m(TaskRunner pid=3071478)[0m           'train_files': '/data/verl-omni/workspace/data/ocr/wan22/train.parquet',
+[36m(TaskRunner pid=3071478)[0m           'train_max_samples': -1,
+[36m(TaskRunner pid=3071478)[0m           'truncation': 'error',
+[36m(TaskRunner pid=3071478)[0m           'trust_remote_code': False,
+[36m(TaskRunner pid=3071478)[0m           'use_shm': False,
+[36m(TaskRunner pid=3071478)[0m           'val_batch_size': 8,
+[36m(TaskRunner pid=3071478)[0m           'val_files': '/data/verl-omni/workspace/data/ocr/wan22/test_smoke.parquet',
+[36m(TaskRunner pid=3071478)[0m           'val_max_samples': -1,
+[36m(TaskRunner pid=3071478)[0m           'validation_shuffle': False,
+[36m(TaskRunner pid=3071478)[0m           'video_key': 'videos'},
+[36m(TaskRunner pid=3071478)[0m  'global_profiler': {'_target_': 'verl.utils.profiler.ProfilerConfig',
+[36m(TaskRunner pid=3071478)[0m                      'global_tool_config': {'nsys': {'_target_': 'verl.utils.profiler.config.NsightToolConfig',
+[36m(TaskRunner pid=3071478)[0m                                                      'controller_nsight_options': {'cuda-graph-trace': 'graph',
+[36m(TaskRunner pid=3071478)[0m                                                                                    'cuda-memory-usage': 'true',
+[36m(TaskRunner pid=3071478)[0m                                                                                    'trace': 'cuda,nvtx,cublas,ucx'},
+[36m(TaskRunner pid=3071478)[0m                                                      'discrete': False,
+[36m(TaskRunner pid=3071478)[0m                                                      'worker_nsight_options': {'capture-range': 'cudaProfilerApi',
+[36m(TaskRunner pid=3071478)[0m                                                                                'capture-range-end': None,
+[36m(TaskRunner pid=3071478)[0m                                                                                'cuda-graph-trace': 'graph',
+[36m(TaskRunner pid=3071478)[0m                                                                                'cuda-memory-usage': 'true',
+[36m(TaskRunner pid=3071478)[0m                                                                                'kill': 'none',
+[36m(TaskRunner pid=3071478)[0m                                                                                'trace': 'cuda,nvtx,cublas,ucx'}},
+[36m(TaskRunner pid=3071478)[0m                                             'torch_memory': {'context': 'all',
+[36m(TaskRunner pid=3071478)[0m                                                              'kw_args': {},
+[36m(TaskRunner pid=3071478)[0m                                                              'stack_depth': 32,
+[36m(TaskRunner pid=3071478)[0m                                                              'stacks': 'all',
+[36m(TaskRunner pid=3071478)[0m                                                              'trace_alloc_max_entries': 100000}},
+[36m(TaskRunner pid=3071478)[0m                      'profile_continuous_steps': False,
+[36m(TaskRunner pid=3071478)[0m                      'save_path': 'outputs/profile',
+[36m(TaskRunner pid=3071478)[0m                      'steps': None,
+[36m(TaskRunner pid=3071478)[0m                      'tool': None},
+[36m(TaskRunner pid=3071478)[0m  'model_engine': 'dp_diffusion',
+[36m(TaskRunner pid=3071478)[0m  'ray_kwargs': {'ray_init': {'num_cpus': None}, 'timeline_json_file': None},
+[36m(TaskRunner pid=3071478)[0m  'reward': {'aggregation': 'weighted_sum',
+[36m(TaskRunner pid=3071478)[0m             'custom_reward_function': {'name': 'compute_score_ocr',
+[36m(TaskRunner pid=3071478)[0m                                        'path': 'verl_omni/utils/reward_score/genrm_ocr.py'},
+[36m(TaskRunner pid=3071478)[0m             'num_workers': 2,
+[36m(TaskRunner pid=3071478)[0m             'reward_functions': {},
+[36m(TaskRunner pid=3071478)[0m             'reward_manager': {'_target_': 'verl.workers.config.reward_model.RewardManagerConfig',
+[36m(TaskRunner pid=3071478)[0m                                'module': {'_target_': 'verl.trainer.config.config.ModuleConfig',
+[36m(TaskRunner pid=3071478)[0m                                           'path': 'pkg://verl_omni.reward_loop.reward_manager'},
+[36m(TaskRunner pid=3071478)[0m                                'name': 'VisualRewardManager',
+[36m(TaskRunner pid=3071478)[0m                                'source': 'importlib'},
+[36m(TaskRunner pid=3071478)[0m             'reward_model': {'enable': True,
+[36m(TaskRunner pid=3071478)[0m                              'enable_resource_pool': False,
+[36m(TaskRunner pid=3071478)[0m                              'model_path': '/data/models/Qwen3-VL-8B-Instruct',
+[36m(TaskRunner pid=3071478)[0m                              'n_gpus_per_node': 8,
+[36m(TaskRunner pid=3071478)[0m                              'nnodes': 0,
+[36m(TaskRunner pid=3071478)[0m                              'rollout': {'_target_': 'verl.workers.config.RolloutConfig',
+[36m(TaskRunner pid=3071478)[0m                                          'cudagraph_capture_sizes': None,
+[36m(TaskRunner pid=3071478)[0m                                          'data_parallel_size': 1,
+[36m(TaskRunner pid=3071478)[0m                                          'disable_log_stats': True,
+[36m(TaskRunner pid=3071478)[0m                                          'disaggregation': {'bootstrap_port': None,
+[36m(TaskRunner pid=3071478)[0m                                                             'decode_replicas': 1,
+[36m(TaskRunner pid=3071478)[0m                                                             'decode_tensor_model_parallel_size': None,
+[36m(TaskRunner pid=3071478)[0m                                                             'enabled': False,
+[36m(TaskRunner pid=3071478)[0m                                                             'ib_device': None,
+[36m(TaskRunner pid=3071478)[0m                                                             'prefill_replicas': 1,
+[36m(TaskRunner pid=3071478)[0m                                                             'transfer_backend': 'nixl'},
+[36m(TaskRunner pid=3071478)[0m                                          'do_sample': True,
+[36m(TaskRunner pid=3071478)[0m                                          'dtype': 'bfloat16',
+[36m(TaskRunner pid=3071478)[0m                                          'enable_chunked_prefill': True,
+[36m(TaskRunner pid=3071478)[0m                                          'enable_prefix_caching': True,
+[36m(TaskRunner pid=3071478)[0m                                          'enforce_eager': True,
+[36m(TaskRunner pid=3071478)[0m                                          'engine_kwargs': {},
+[36m(TaskRunner pid=3071478)[0m                                          'expert_parallel_size': 1,
+[36m(TaskRunner pid=3071478)[0m                                          'free_cache_engine': True,
+[36m(TaskRunner pid=3071478)[0m                                          'gpu_memory_utilization': 0.5,
+[36m(TaskRunner pid=3071478)[0m                                          'ignore_eos': False,
+[36m(TaskRunner pid=3071478)[0m                                          'layered_summon': False,
+[36m(TaskRunner pid=3071478)[0m                                          'limit_images': None,
+[36m(TaskRunner pid=3071478)[0m                                          'load_format': 'auto',
+[36m(TaskRunner pid=3071478)[0m                                          'max_model_len': 32768,
+[36m(TaskRunner pid=3071478)[0m                                          'max_num_batched_tokens': 8192,
+[36m(TaskRunner pid=3071478)[0m                                          'max_num_seqs': 1024,
+[36m(TaskRunner pid=3071478)[0m                                          'mtp': None,
+[36m(TaskRunner pid=3071478)[0m                                          'multi_stage_wake_up': False,
+[36m(TaskRunner pid=3071478)[0m                                          'n': 1,
+[36m(TaskRunner pid=3071478)[0m                                          'name': 'vllm',
+[36m(TaskRunner pid=3071478)[0m                                          'pipeline_model_parallel_size': 1,
+[36m(TaskRunner pid=3071478)[0m                                          'profiler': {'_target_': 'verl.utils.profiler.ProfilerConfig',
+[36m(TaskRunner pid=3071478)[0m                                                       'all_ranks': False,
+[36m(TaskRunner pid=3071478)[0m                                                       'enable': False,
+[36m(TaskRunner pid=3071478)[0m                                                       'ranks': [],
+[36m(TaskRunner pid=3071478)[0m                                                       'save_path': 'outputs/profile/reward_model',
+[36m(TaskRunner pid=3071478)[0m                                                       'tool': 'torch',
+[36m(TaskRunner pid=3071478)[0m                                                       'tool_config': {'nsys': {'_target_': 'verl.utils.profiler.config.NsightToolConfig',
+[36m(TaskRunner pid=3071478)[0m                                                                                'discrete': False,
+[36m(TaskRunner pid=3071478)[0m                                                                                'name': 'nsight'},
+[36m(TaskRunner pid=3071478)[0m                                                                       'torch': {'_target_': 'verl.utils.profiler.config.TorchProfilerToolConfig',
+[36m(TaskRunner pid=3071478)[0m                                                                                 'contents': [],
+[36m(TaskRunner pid=3071478)[0m                                                                                 'discrete': False,
+[36m(TaskRunner pid=3071478)[0m                                                                                 'name': 'torch'},
+[36m(TaskRunner pid=3071478)[0m                                                                       'torch_memory': {'_target_': 'verl.utils.profiler.config.TorchMemoryToolConfig',
+[36m(TaskRunner pid=3071478)[0m                                                                                        'name': 'torch_memory',
+[36m(TaskRunner pid=3071478)[0m                                                                                        'stack_depth': 32,
+[36m(TaskRunner pid=3071478)[0m                                                                                        'trace_alloc_max_entries': 100000}}},
+[36m(TaskRunner pid=3071478)[0m                                          'prompt_length': 2048,
+[36m(TaskRunner pid=3071478)[0m                                          'quantization': None,
+[36m(TaskRunner pid=3071478)[0m                                          'quantization_config_file': None,
+[36m(TaskRunner pid=3071478)[0m                                          'response_length': 2048,
+[36m(TaskRunner pid=3071478)[0m                                          'scheduling_policy': 'fcfs',
+[36m(TaskRunner pid=3071478)[0m                                          'skip_tokenizer_init': False,
+[36m(TaskRunner pid=3071478)[0m                                          'temperature': 1.0,
+[36m(TaskRunner pid=3071478)[0m                                          'tensor_model_parallel_size': 1,
+[36m(TaskRunner pid=3071478)[0m                                          'top_k': -1,
+[36m(TaskRunner pid=3071478)[0m                                          'top_p': 1}},
+[36m(TaskRunner pid=3071478)[0m             'sandbox_fusion': {'max_concurrent': 64,
+[36m(TaskRunner pid=3071478)[0m                                'memory_limit_mb': 1024,
+[36m(TaskRunner pid=3071478)[0m                                'url': None}},
+[36m(TaskRunner pid=3071478)[0m  'skip': {'_target_': 'verl.utils.skip.SkipManagerConfig',
+[36m(TaskRunner pid=3071478)[0m           'async_rollout': {'action': 'cache',
+[36m(TaskRunner pid=3071478)[0m                             'dump_dir': '~/.verl/rollout_dump',
+[36m(TaskRunner pid=3071478)[0m                             'enable': False,
+[36m(TaskRunner pid=3071478)[0m                             'steps': []},
+[36m(TaskRunner pid=3071478)[0m           'rollout': {'action': 'cache',
+[36m(TaskRunner pid=3071478)[0m                       'dump_dir': '~/.verl/rollout_dump',
+[36m(TaskRunner pid=3071478)[0m                       'enable': False,
+[36m(TaskRunner pid=3071478)[0m                       'steps': []}},
+[36m(TaskRunner pid=3071478)[0m  'trainer': {'default_hdfs_dir': None,
+[36m(TaskRunner pid=3071478)[0m              'default_local_dir': 'checkpoints/dance_grpo/wan22_5b_t2v_ocr',
+[36m(TaskRunner pid=3071478)[0m              'del_local_ckpt_after_load': False,
+[36m(TaskRunner pid=3071478)[0m              'device': 'cuda',
+[36m(TaskRunner pid=3071478)[0m              'esi_redundant_time': 0,
+[36m(TaskRunner pid=3071478)[0m              'experiment_name': 'wan22_5b_t2v_ocr',
+[36m(TaskRunner pid=3071478)[0m              'log_val_generations': 4,
+[36m(TaskRunner pid=3071478)[0m              'logger': ['console', 'tensorboard'],
+[36m(TaskRunner pid=3071478)[0m              'max_actor_ckpt_to_keep': None,
+[36m(TaskRunner pid=3071478)[0m              'n_gpus_per_node': 2,
+[36m(TaskRunner pid=3071478)[0m              'nnodes': 1,
+[36m(TaskRunner pid=3071478)[0m              'project_name': 'dance_grpo',
+[36m(TaskRunner pid=3071478)[0m              'ray_wait_register_center_timeout': 300,
+[36m(TaskRunner pid=3071478)[0m              'resume_from_path': None,
+[36m(TaskRunner pid=3071478)[0m              'resume_mode': 'auto',
+[36m(TaskRunner pid=3071478)[0m              'rollout_data_dir': None,
+[36m(TaskRunner pid=3071478)[0m              'rollout_data_max_samples': None,
+[36m(TaskRunner pid=3071478)[0m              'rollout_data_save_freq': 1,
+[36m(TaskRunner pid=3071478)[0m              'save_freq': 30,
+[36m(TaskRunner pid=3071478)[0m              'test_freq': 30,
+[36m(TaskRunner pid=3071478)[0m              'total_epochs': 15,
+[36m(TaskRunner pid=3071478)[0m              'total_training_steps': 20,
+[36m(TaskRunner pid=3071478)[0m              'use_v1': False,
+[36m(TaskRunner pid=3071478)[0m              'v1': {'colocate_async': {'num_warmup_batches': 1},
+[36m(TaskRunner pid=3071478)[0m                     'sampler': {'custom_sampler': {'name': None, 'path': None},
+[36m(TaskRunner pid=3071478)[0m                                 'max_off_policy_strategy': 'drop',[36m(TaskRunner pid=3071478)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/utils/tokenizer.py:242: UserWarning: Failed to create processor: Unrecognized processing class in /data/models/Wan2.2-TI2V-5B-Diffusers. Can't instantiate a processor, a tokenizer, an image processor, a video processor or a feature extractor for this model. Make sure the repository contains the files of at least one of those processing classes.. This may affect multimodal processing
+[36m(TaskRunner pid=3071478)[0m   warnings.warn(f"Failed to create processor: {e}. This may affect multimodal processing", stacklevel=1)
+[36m(pid=3190086)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/engine/mindspeed/transformer_impl.py:24: UserWarning: NPU not support router replay for now.
+[36m(pid=3190086)[0m   from verl.utils.megatron.router_replay_patch import RouterReplay
+[36m(pid=3190326)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/engine/mindspeed/transformer_impl.py:24: UserWarning: NPU not support router replay for now.
+[36m(pid=3190326)[0m   from verl.utils.megatron.router_replay_patch import RouterReplay
+[36m(WorkerDict pid=3190326)[0m /data/verl-omni/verl_omni/workers/engine_workers.py:173: RuntimeWarning: DiffusionFlopsCounter: no FLOPs estimator registered for architecture 'WanPipeline'. MFU will report 0. Register one with @register_diffusion_architecture('WanPipeline').
+[36m(WorkerDict pid=3190326)[0m   self.flops_counter = DiffusionFlopsCounter(
+[36m(WorkerDict pid=3190326)[0m [0;93m2026-08-02 06:30:23.969069901 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"[m
+[36m(WorkerDict pid=3190086)[0m Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]
+[36m(WorkerDict pid=3190086)[0m Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:11,  2.81s/it]
+[36m(WorkerDict pid=3190086)[0m Loading checkpoint shards:  40%|████      | 2/5 [00:05<00:08,  2.96s/it]
+[36m(WorkerDict pid=3190086)[0m /data/verl-omni/verl_omni/workers/engine_workers.py:173: RuntimeWarning: DiffusionFlopsCounter: no FLOPs estimator registered for architecture 'WanPipeline'. MFU will report 0. Register one with @register_diffusion_architecture('WanPipeline').
+[36m(WorkerDict pid=3190086)[0m   self.flops_counter = DiffusionFlopsCounter(
+[36m(WorkerDict pid=3190086)[0m [0;93m2026-08-02 06:30:23.962146386 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"[m
+[36m(WorkerDict pid=3190086)[0m Loading checkpoint shards:  60%|██████    | 3/5 [00:08<00:05,  2.90s/it]
+[36m(WorkerDict pid=3190086)[0m Loading checkpoint shards:  80%|████████  | 4/5 [00:11<00:02,  2.85s/it]
+[36m(WorkerDict pid=3190086)[0m Loading checkpoint shards: 100%|██████████| 5/5 [00:11<00:00,  1.90s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:11<00:00,  2.34s/it]
+[36m(WorkerDict pid=3190086)[0m Attention backends are an experimental feature and the API may be subject to change.
+[36m(WorkerDict pid=3190326)[0m /data/verl-omni/verl_omni/workers/engine/fsdp/diffusers_impl.py:390: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+[36m(WorkerDict pid=3190326)[0m   FSDP.set_state_dict_type(
+[36m(WorkerDict pid=3190326)[0m WARNING:2026-08-02 06:30:45,235:Setting the sleep level to 1 may cause a memory overflow.
+[36m(vLLMHttpServer pid=3503456)[0m [transformers] The `use_fast` parameter is deprecated and will be removed in a future version. Use `backend="torchvision"` instead of `use_fast=True`, or `backend="pil"` instead of `use_fast=False`.
+[36m(WorkerDict pid=3190086)[0m /data/verl-omni/verl_omni/workers/engine/fsdp/diffusers_impl.py:390: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+[36m(WorkerDict pid=3190086)[0m   FSDP.set_state_dict_type(
+[36m(WorkerDict pid=3190086)[0m WARNING:2026-08-02 06:30:45,895:Setting the sleep level to 1 may cause a memory overflow.
+
+[36m(TaskRunner pid=3071478)[0m                                 'max_off_policy_threshold': 8,
+[36m(TaskRunner pid=3071478)[0m                                 'sampler_kwargs': {}},
+[36m(TaskRunner pid=3071478)[0m                     'separate_async': {'num_warmup_batches': 1,
+[36m(TaskRunner pid=3071478)[0m                                        'parameter_sync_step': 4},
+[36m(TaskRunner pid=3071478)[0m                     'sync': {},
+[36m(TaskRunner pid=3071478)[0m                     'trainer_mode': 'sync'},
+[36m(TaskRunner pid=3071478)[0m              'val_before_train': True,
+[36m(TaskRunner pid=3071478)[0m              'val_only': False,
+[36m(TaskRunner pid=3071478)[0m              'validation_data_dir': '/data/verl-omni/workspace/val_generations/wan22_5b_t2v_ocr',
+[36m(TaskRunner pid=3071478)[0m              'validation_data_max_samples': None,
+[36m(TaskRunner pid=3071478)[0m              'video_fps': 24},
+[36m(TaskRunner pid=3071478)[0m  'transfer_queue': {'backend': {'MooncakeStore': {'auto_init': False,
+[36m(TaskRunner pid=3071478)[0m                                                   'device_name': '',
+[36m(TaskRunner pid=3071478)[0m                                                   'global_segment_size': 4294967296,
+[36m(TaskRunner pid=3071478)[0m                                                   'local_buffer_size': 1073741824,
+[36m(TaskRunner pid=3071478)[0m                                                   'local_hostname': 'localhost',
+[36m(TaskRunner pid=3071478)[0m                                                   'master_server_address': 'localhost:50124',
+[36m(TaskRunner pid=3071478)[0m                                                   'metadata_server': 'localhost:50123',
+[36m(TaskRunner pid=3071478)[0m                                                   'protocol': 'tcp'},
+[36m(TaskRunner pid=3071478)[0m                                 'SimpleStorage': {'num_data_storage_units': 8,
+[36m(TaskRunner pid=3071478)[0m                                                   'total_storage_size': 100000},
+[36m(TaskRunner pid=3071478)[0m                                 'storage_backend': 'SimpleStorage'},
+[36m(TaskRunner pid=3071478)[0m                     'enable': False,
+[36m(TaskRunner pid=3071478)[0m                     'metrics': {'enabled': False, 'port': 0}}}
+[36m(TaskRunner pid=3071478)[0m dataset len: 19653
+[36m(TaskRunner pid=3071478)[0m dataset len: 16
+[36m(TaskRunner pid=3071478)[0m Size of train dataloader: 4913, Size of val dataloader: 2
+[36m(TaskRunner pid=3071478)[0m Total training steps: 20
+[36m(TaskRunner pid=3071478)[0m colocated worker base class <class 'verl.single_controller.base.worker.Worker'>
+[36m(WorkerDict pid=3190326)[0m Warning: Failed to set NUMA affinity: libnuma.so: cannot open shared object file: No such file or directory
+[36m(WorkerDict pid=3190086)[0m WanTransformer3DModel contains 5.00B parameters
+[36m(WorkerDict pid=3190086)[0m Before FSDP, memory allocated (GB): 0.00, memory reserved (GB): 0.00, device memory used/total (GB): 13.54/95.08
+[36m(WorkerDict pid=3190086)[0m Warning: Failed to set NUMA affinity: libnuma.so: cannot open shared object file: No such file or directory
+[36m(WorkerDict pid=3190086)[0m After FSDP, memory allocated (GB): 4.66, memory reserved (GB): 5.17, device memory used/total (GB): 19.49/95.08
+[36m(WorkerDict pid=3190086)[0m Total steps: 20, num_warmup_steps: 0
+[36m(vLLMHttpServer pid=3503456)[0m ['serve',
+[36m(vLLMHttpServer pid=3503456)[0m  '/data/models/Qwen3-VL-8B-Instruct',
+[36m(vLLMHttpServer pid=3503456)[0m  '--dtype',
+[36m(vLLMHttpServer pid=3503456)[0m  'bfloat16',
+[36m(vLLMHttpServer pid=3503456)[0m  '--load_format',
+[36m(vLLMHttpServer pid=3503456)[0m  'auto',
+[36m(vLLMHttpServer pid=3503456)[0m  '--distributed_executor_backend',
+[36m(vLLMHttpServer pid=3503456)[0m  'mp',
+[36m(vLLMHttpServer pid=3503456)[0m  '--worker_extension_cls',
+[36m(vLLMHttpServer pid=3503456)[0m  'verl.workers.rollout.vllm_rollout.utils.vLLMColocateWorkerExtension',
+[36m(vLLMHttpServer pid=3503456)[0m  '--max_model_len',
+[36m(vLLMHttpServer pid=3503456)[0m  '32768',
+[36m(vLLMHttpServer pid=3503456)[0m  '--max_num_seqs',
+[36m(vLLMHttpServer pid=3503456)[0m  '1024',
+[36m(vLLMHttpServer pid=3503456)[0m  '--enable_chunked_prefill',
+[36m(vLLMHttpServer pid=3503456)[0m  '--max_num_batched_tokens',
+[36m(vLLMHttpServer pid=3503456)[0m  '8192',
+[36m(vLLMHttpServer pid=3503456)[0m  '--enable_prefix_caching',
+[36m(vLLMHttpServer pid=3503456)[0m  '--enable_sleep_mode',
+[36m(vLLMHttpServer pid=3503456)[0m  '--logprobs_mode',
+[36m(vLLMHttpServer pid=3503456)[0m  'processed_logprobs',
+[36m(vLLMHttpServer pid=3503456)[0m  '--enforce_eager',
+[36m(vLLMHttpServer pid=3503456)[0m  '--gpu_memory_utilization',
+[36m(vLLMHttpServer pid=3503456)[0m  '0.5',
+[36m(vLLMHttpServer pid=3503456)[0m  '--disable_log_stats',
+[36m(vLLMHttpServer pid=3503456)[0m  '--tensor_parallel_size',
+[36m(vLLMHttpServer pid=3503456)[0m  '1',
+[36m(vLLMHttpServer pid=3503456)[0m  '--seed',
+[36m(vLLMHttpServer pid=3503456)[0m  '0',
+[36m(vLLMHttpServer pid=3503456)[0m  '--override_generation_config',
+[36m(vLLMHttpServer pid=3503456)[0m  '{"temperature": 1.0, "top_k": -1, "top_p": 1, "repetition_penalty": 1.0, '
+[36m(vLLMHttpServer pid=3503456)[0m  '"max_new_tokens": 2048}',
+[36m(vLLMHttpServer pid=3503456)[0m  '--hf_overrides',
+[36m(vLLMHttpServer pid=3503456)[0m  '{}',
+[36m(vLLMHttpServer pid=3503456)[0m  '--scheduling_policy',
+[36m(vLLMHttpServer pid=3503456)[0m  'fcfs',
+[36m(vLLMHttpServer pid=3503456)[0m  '--compilation_config',
+[36m(vLLMHttpServer pid=3503456)[0m  '{"cudagraph_mode": "FULL_AND_PIECEWISE"}',
+[36m(vLLMHttpServer pid=3503456)[0m  '--profiler_config',
+[36m(vLLMHttpServer pid=3503456)[0m  '{"profiler": "torch", "torch_profiler_dir": '
+[36m(vLLMHttpServer pid=3503456)[0m  '"outputs/profile/reward_model/agent_loop_rollout_replica_0", '
+[36m(vLLMHttpServer pid=3503456)[0m  '"torch_profiler_with_memory": false, "torch_profiler_with_stack": false, '
+[36m(vLLMHttpServer pid=3503456)[0m  '"torch_profiler_record_shapes": false, "delay_iterations": 0, '
+[36m(vLLMHttpServer pid=3503456)[0m  '"max_iterations": 0, "ignore_frontend": "true"}']
+[36m(vLLMHttpServer pid=3503456)[0m WARNING 08-02 06:31:16 [envs.py:2004] Unknown vLLM environment variable detected: VLLM_TORCH_PROFILER_DIR
+[36m(vLLMHttpServer pid=3503456)[0m WARNING 08-02 06:31:16 [envs.py:2004] Unknown vLLM environment variable detected: VLLM_TORCH_PROFILER_WITH_STACK
+[36m(vLLMHttpServer pid=3503456)[0m WARNING 08-02 06:31:16 [envs.py:2004] Unknown vLLM environment variable detected: VLLM_TORCH_PROFILER_RECORD_SHAPES
+[36m(vLLMHttpServer pid=3503456)[0m WARNING 08-02 06:31:16 [envs.py:2004] Unknown vLLM environment variable detected: VLLM_TORCH_PROFILER_WITH_PROFILE_MEMORY
+[36m(vLLMHttpServer pid=3503456)[0m WARNING 08-02 06:31:16 [vllm.py:1062] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(vLLMHttpServer pid=3503456)[0m WARNING 08-02 06:31:16 [vllm.py:1110] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(vLLMHttpServer pid=3503456)[0m WARNING 08-02 06:31:23 [system_utils.py:157] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: In a Ray actor and can only be spawned; CUDA is initialized
+[36m(vLLMHttpServer pid=3516653)[0m WARNING 08-02 06:31:20 [envs.py:2004] Unknown vLLM environment variable detected: VLLM_TORCH_PROFILER_DIR
+[36m(vLLMHttpServer pid=3516653)[0m WARNING 08-02 06:31:20 [envs.py:2004] Unknown vLLM environment variable detected: VLLM_TORCH_PROFILER_WITH_STACK
+[36m(vLLMHttpServer pid=3516653)[0m WARNING 08-02 06:31:20 [envs.py:2004] Unknown vLLM environment variable detected: VLLM_TORCH_PROFILER_RECORD_SHAPES
+[36m(vLLMHttpServer pid=3516653)[0m WARNING 08-02 06:31:20 [envs.py:2004] Unknown vLLM environment variable detected: VLLM_TORCH_PROFILER_WITH_PROFILE_MEMORY[36m(vLLMHttpServer pid=3516653)[0m [transformers] The `use_fast` parameter is deprecated and will be removed in a future version. Use `backend="torchvision"` instead of `use_fast=True`, or `backend="pil"` instead of `use_fast=False`.
+[36m(vLLMHttpServer pid=3503456)[0m (Worker pid=3656901) [transformers] The `use_fast` parameter is deprecated and will be removed in a future version. Use `backend="torchvision"` instead of `use_fast=True`, or `backend="pil"` instead of `use_fast=False`.
+[36m(vLLMHttpServer pid=3503456)[0m (Worker pid=3656901) Loading safetensors checkpoint shards:   0% Completed | 0/4 [00:00<?, ?it/s]
+[36m(vLLMHttpServer pid=3516653)[0m (Worker pid=3675059) [transformers] The `use_fast` parameter is deprecated and will be removed in a future version. Use `backend="torchvision"` instead of `use_fast=True`, or `backend="pil"` instead of `use_fast=False`.
+[36m(vLLMHttpServer pid=3503456)[0m (Worker pid=3656901) Loading safetensors checkpoint shards:  25% Completed | 1/4 [00:02<00:07,  2.44s/it]
+[36m(vLLMHttpServer pid=3503456)[0m (Worker pid=3656901) Loading safetensors checkpoint shards:  50% Completed | 2/4 [00:05<00:05,  2.57s/it]
+[36m(vLLMHttpServer pid=3516653)[0m (Worker pid=3675059) Loading safetensors checkpoint shards:   0% Completed | 0/4 [00:00<?, ?it/s]
+[36m(vLLMHttpServer pid=3516653)[0m (Worker pid=3675059) Loading safetensors checkpoint shards:  50% Completed | 2/4 [00:02<00:02,  1.33s/it][32m [repeated 2x across cluster] (Ray deduplicates logs by default. Set RAY_DEDUP_LOGS=0 to disable log deduplication, or see https://docs.ray.io/en/master/ray-observability/user-guides/configure-logging.html#log-deduplication for more options.)[0m
+[36m(vLLMHttpServer pid=3503456)[0m (Worker pid=3656901) 
+[36m(vLLMHttpServer pid=3516653)[0m (Worker pid=3675059) <frozen importlib._bootstrap_external>:1301: FutureWarning: The cuda.cudart module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.runtime module instead.
+[36m(vLLMHttpServer pid=3516653)[0m (Worker pid=3675059) <frozen importlib._bootstrap_external>:1301: FutureWarning: The cuda.nvrtc module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.nvrtc module instead.
+[36m(vLLMHttpServer pid=3516653)[0m (Worker pid=3675059) Loading safetensors checkpoint shards: 100% Completed | 4/4 [00:05<00:00,  1.27s/it][32m [repeated 6x across cluster][0m
+[36m(vLLMHttpServer pid=3516653)[0m (Worker pid=3675059) 
+[36m(vLLMHttpServer pid=3516653)[0m (Worker pid=3675059) 2026-08-02 06:42:53,675 - INFO - autotuner.py:622 - flashinfer.jit: [Autotuner]: Autotuning process starts ...
+[36m(vLLMHttpServer pid=3516653)[0m (Worker pid=3675059) 2026-08-02 06:42:53,705 - INFO - autotuner.py:641 - flashinfer.jit: [Autotuner]: Autotuning process ends
+[36m(vLLMHttpServer pid=3516653)[0m (EngineCore pid=3636307) [transformers] The `use_fast` parameter is deprecated and will be removed in a future version. Use `backend="torchvision"` instead of `use_fast=True`, or `backend="pil"` instead of `use_fast=False`.
+[36m(vLLMHttpServer pid=3503456)[0m (Worker pid=3656901) <frozen importlib._bootstrap_external>:1301: FutureWarning: The cuda.cudart module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.runtime module instead.
+[36m(vLLMHttpServer pid=3503456)[0m (Worker pid=3656901) <frozen importlib._bootstrap_external>:1301: FutureWarning: The cuda.nvrtc module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.nvrtc module instead.
+[36m(vLLMHttpServer pid=3503456)[0m (Worker pid=3656901) 2026-08-02 06:42:55,656 - INFO - autotuner.py:622 - flashinfer.jit: [Autotuner]: Autotuning process starts ...
+[36m(vLLMHttpServer pid=3503456)[0m (Worker pid=3656901) 2026-08-02 06:42:55,689 - INFO - autotuner.py:641 - flashinfer.jit: [Autotuner]: Autotuning process ends
+[36m(pid=2842283)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/engine/mindspeed/transformer_impl.py:24: UserWarning: NPU not support router replay for now.
+[36m(pid=2842283)[0m   from verl.utils.megatron.router_replay_patch import RouterReplay
+[36m(vLLMHttpServer pid=3503456)[0m (EngineCore pid=3608116) [transformers] The `use_fast` parameter is deprecated and will be removed in a future version. Use `backend="torchvision"` instead of `use_fast=True`, or `backend="pil"` instead of `use_fast=False`.
+[36m(vLLMOmniHttpServer pid=2842283)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/engine/mindspeed/transformer_impl.py:24: UserWarning: NPU not support router replay for now.[32m [repeated 4x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842283)[0m   from verl.utils.megatron.router_replay_patch import RouterReplay[32m [repeated 4x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842283)[0m Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|██████████| 242/242 [00:00<00:00, 9805.74it/s]
+[36m(vLLMOmniHttpServer pid=2842466)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/engine/mindspeed/transformer_impl.py:24: UserWarning: NPU not support router replay for now.
+[36m(vLLMOmniHttpServer pid=2842466)[0m   from verl.utils.megatron.router_replay_patch import RouterReplay
+[36m(vLLMOmniHttpServer pid=2842466)[0m The config attributes {'clip_output': False} were passed to DistributedAutoencoderKLWan, but are not expected and will be ignored. Please verify your config.json configuration file.
+[36m(vLLMOmniHttpServer pid=2842466)[0m Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|██████████| 242/242 [00:00<00:00, 6707.03it/s]
+[36m(vLLMOmniHttpServer pid=2842283)[0m Multi-thread loading shards:   0% Completed | 0/5 [00:00<?, ?it/s]
+[36m(vLLMOmniHttpServer pid=2842283)[0m The config attributes {'clip_output': False} were passed to DistributedAutoencoderKLWan, but are not expected and will be ignored. Please verify your config.json configuration file.
+[36m(vLLMOmniHttpServer pid=2842466)[0m Multi-thread loading shards:  20% Completed | 1/5 [00:01<00:07,  1.86s/it]
+[36m(vLLMOmniHttpServer pid=2842466)[0m Multi-thread loading shards:   0% Completed | 0/5 [00:00<?, ?it/s]
+[36m(vLLMOmniHttpServer pid=2842283)[0m 
+[36m(vLLMOmniHttpServer pid=2842283)[0m Multi-thread loading shards: 100% Completed | 5/5 [00:08<00:00,  1.68s/it][32m [repeated 9x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m 
+[36m(pid=3120725)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/engine/mindspeed/transformer_impl.py:24: UserWarning: NPU not support router replay for now.
+[36m(pid=3120725)[0m   from verl.utils.megatron.router_replay_patch import RouterReplay
+[36m(vLLMOmniHttpServer pid=2842466)[0m Multi-thread loading shards: 100% Completed | 5/5 [00:08<00:00,  1.69s/it][32m [repeated 2x across cluster][0m
+
+[36m(vLLMHttpServer pid=3516653)[0m WARNING 08-02 06:31:20 [vllm.py:1062] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(vLLMHttpServer pid=3516653)[0m WARNING 08-02 06:31:20 [vllm.py:1110] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(vLLMHttpServer pid=3516653)[0m WARNING 08-02 06:31:29 [system_utils.py:157] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: In a Ray actor and can only be spawned; CUDA is initialized
+[36m(vLLMHttpServer pid=3503456)[0m (Worker pid=3656901) WARNING 08-02 06:31:57 [vllm.py:1062] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(vLLMHttpServer pid=3503456)[0m (Worker pid=3656901) WARNING 08-02 06:31:57 [vllm.py:1110] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(vLLMHttpServer pid=3516653)[0m (Worker pid=3675059) WARNING 08-02 06:32:02 [vllm.py:1062] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(vLLMHttpServer pid=3516653)[0m (Worker pid=3675059) WARNING 08-02 06:32:02 [vllm.py:1110] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(vLLMHttpServer pid=3516653)[0m (EngineCore pid=3636307) WARNING 08-02 06:43:00 [vllm.py:1062] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(vLLMHttpServer pid=3516653)[0m (EngineCore pid=3636307) WARNING 08-02 06:43:00 [vllm.py:1110] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(vLLMHttpServer pid=3516653)[0m WARNING 08-02 06:43:00 [api_router.py:30] LoRA dynamic loading & unloading is enabled in the API server. This should ONLY be used for local development!
+[36m(vLLMHttpServer pid=3516653)[0m WARNING 08-02 06:43:00 [api_router.py:41] Profiler with mode 'torch' is enabled in the API server. This should ONLY be used for local development!
+[36m(vLLMHttpServer pid=3516653)[0m WARNING 08-02 06:43:00 [model.py:1477] Default vLLM sampling parameters have been overridden by the model's `generation_config.json`: `{'repetition_penalty': 1.0, 'temperature': 1.0, 'top_k': -1, 'top_p': 1, 'max_tokens': 2048}`. If this is not intended, please relaunch vLLM instance with `--generation-config vllm`.
+[36m(vLLMOmniHttpServer pid=2842283)[0m ['serve',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '/data/models/Wan2.2-TI2V-5B-Diffusers',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--dtype',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  'bfloat16',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--load_format',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  'safetensors',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--distributed_executor_backend',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  'mp',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--worker_extension_cls',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  'verl_omni.workers.rollout.vllm_rollout.utils.vLLMOmniColocateWorkerExtension',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--max_num_seqs',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '1024',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--enable_chunked_prefill',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--max_num_batched_tokens',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '8192',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--enable_prefix_caching',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--enable_sleep_mode',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--logprobs_mode',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  'processed_logprobs',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--gpu_memory_utilization',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '0.5',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--disable_log_stats',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--tensor_parallel_size',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '1',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--seed',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '42',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--override_generation_config',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '{}',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--hf_overrides',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '{}',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--scheduling_policy',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  'fcfs',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--compilation_config',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '{"cudagraph_mode": "FULL_AND_PIECEWISE"}',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '--profiler_config',
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '{"profiler": "torch", "torch_profiler_dir": '
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '"outputs/profile/agent_loop_rollout_replica_0", '
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '"torch_profiler_with_memory": false, "torch_profiler_with_stack": false, '
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '"torch_profiler_record_shapes": false, "delay_iterations": 0, '
+[36m(vLLMOmniHttpServer pid=2842283)[0m  '"max_iterations": 0, "ignore_frontend": "true"}']
+[36m(vLLMHttpServer pid=3503456)[0m (EngineCore pid=3608116) WARNING 08-02 06:43:03 [vllm.py:1062] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(vLLMHttpServer pid=3503456)[0m (EngineCore pid=3608116) WARNING 08-02 06:43:03 [vllm.py:1110] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(vLLMHttpServer pid=3503456)[0m WARNING 08-02 06:43:03 [api_router.py:30] LoRA dynamic loading & unloading is enabled in the API server. This should ONLY be used for local development!
+[36m(vLLMHttpServer pid=3503456)[0m WARNING 08-02 06:43:03 [api_router.py:41] Profiler with mode 'torch' is enabled in the API server. This should ONLY be used for local development!
+[36m(vLLMHttpServer pid=3503456)[0m WARNING 08-02 06:43:03 [model.py:1477] Default vLLM sampling parameters have been overridden by the model's `generation_config.json`: `{'repetition_penalty': 1.0, 'temperature': 1.0, 'top_k': -1, 'top_p': 1, 'max_tokens': 2048}`. If this is not intended, please relaunch vLLM instance with `--generation-config vllm`.
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 06:44:36 [api_router.py:30] LoRA dynamic loading & unloading is enabled in the API server. This should ONLY be used for local development!
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 06:44:36 [api_router.py:41] Profiler with mode 'torch' is enabled in the API server. This should ONLY be used for local development!
+[36m(TaskRunner pid=3071478)[0m LLMServerManager: ['10.10.11.162:35863', '10.10.11.162:38531']
+[36m(DiffusionAgentLoopWorker pid=3120725)[0m Using dataset class: RLHFDataset
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 06:44:37 [api_router.py:30] LoRA dynamic loading & unloading is enabled in the API server. This should ONLY be used for local development!
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 06:44:37 [api_router.py:41] Profiler with mode 'torch' is enabled in the API server. This should ONLY be used for local development!
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 06:45:00 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process
+[36m(DiffusionAgentLoopWorker pid=3120628)[0m Using dataset class: RLHFDataset
+[36m(TaskRunner pid=3071478)[0m Saving tensorboard log to tensorboard_log/dance_grpo/wan22_5b_t2v_ocr.
+[36m(TaskRunner pid=3071478)[0m Checkpoint tracker file does not exist: /data/verl-omni/checkpoints/dance_grpo/wan22_5b_t2v_ocr/latest_checkpointed_iteration.txt[36m(WorkerDict pid=3190326)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/plugin/platform/platform_cuda.py:99: FutureWarning: torch.cuda._set_allocator_settings is deprecated. Use torch._C._accelerator_setAllocatorSettings instead.
+[36m(WorkerDict pid=3190326)[0m   torch.cuda.memory._set_allocator_settings(settings)
+[36m(GlobalRequestLoadBalancer pid=3120826)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/engine/mindspeed/transformer_impl.py:24: UserWarning: NPU not support router replay for now.[32m [repeated 2x across cluster][0m
+[36m(GlobalRequestLoadBalancer pid=3120826)[0m   from verl.utils.megatron.router_replay_patch import RouterReplay[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m Training Progress:   0%|          | 0/20 [00:00<?, ?it/s]
+[36m(WorkerDict pid=3190086)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/plugin/platform/platform_cuda.py:99: FutureWarning: torch.cuda._set_allocator_settings is deprecated. Use torch._C._accelerator_setAllocatorSettings instead.[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3190086)[0m   torch.cuda.memory._set_allocator_settings(settings)[32m [repeated 3x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m W0802 07:12:24.466000 3071478 .venv/lib/python3.12/site-packages/torch/fx/_symbolic_trace.py:53] is_fx_tracing will return true for both fx.symbolic_trace and torch.export. Please use is_fx_tracing_symbolic_tracing() for specifically fx.symbolic_trace or torch.compiler.is_compiling() for specifically torch.export/compile.
+[36m(WorkerDict pid=3190326)[0m [rank1]:W0802 07:12:38.469000 3190326 .venv/lib/python3.12/site-packages/torch/fx/_symbolic_trace.py:53] is_fx_tracing will return true for both fx.symbolic_trace and torch.export. Please use is_fx_tracing_symbolic_tracing() for specifically fx.symbolic_trace or torch.compiler.is_compiling() for specifically torch.export/compile.
+[36m(WorkerDict pid=3190086)[0m [rank0]:W0802 07:12:38.434000 3190086 .venv/lib/python3.12/site-packages/torch/fx/_symbolic_trace.py:53] is_fx_tracing will return true for both fx.symbolic_trace and torch.export. Please use is_fx_tracing_symbolic_tracing() for specifically fx.symbolic_trace or torch.compiler.is_compiling() for specifically torch.export/compile.
+[36m(TaskRunner pid=3071478)[0m Training Progress:   5%|▌         | 1/20 [16:20<5:10:21, 980.10s/it]
+
+[36m(TaskRunner pid=3071478)[0m Training from scratch
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 06:45:04 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 06:45:04 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(TaskRunner pid=3071478)[0m test_gen_batch meta info: {'recompute_log_prob': False, 'validate': True, 'global_steps': 0}
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 06:48:04 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 4x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 06:45:04 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 06:45:04 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMHttpServer pid=3503456)[0m (Worker pid=3656901) WARNING 08-02 06:48:07 [jit_monitor.py:106] Triton kernel JIT compilation during inference: _compute_slot_mapping_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(vLLMHttpServer pid=3503456)[0m (Worker pid=3656901) WARNING 08-02 06:48:07 [jit_monitor.py:106] Triton kernel JIT compilation during inference: _bilinear_pos_embed_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(vLLMHttpServer pid=3503456)[0m (Worker pid=3656901) WARNING 08-02 06:48:09 [jit_monitor.py:106] Triton kernel JIT compilation during inference: _triton_mrope_forward. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 06:48:04 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 06:49:07 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 06:49:07 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 06:49:07 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process
+[36m(vLLMHttpServer pid=3516653)[0m (Worker pid=3675059) WARNING 08-02 06:48:07 [jit_monitor.py:106] Triton kernel JIT compilation during inference: _compute_slot_mapping_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(vLLMHttpServer pid=3516653)[0m (Worker pid=3675059) WARNING 08-02 06:48:07 [jit_monitor.py:106] Triton kernel JIT compilation during inference: _bilinear_pos_embed_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(vLLMHttpServer pid=3516653)[0m (Worker pid=3675059) WARNING 08-02 06:48:09 [jit_monitor.py:106] Triton kernel JIT compilation during inference: _triton_mrope_forward. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(TaskRunner pid=3071478)[0m validation generation end
+[36m(TaskRunner pid=3071478)[0m test_gen_batch meta info: {'recompute_log_prob': False, 'validate': True, 'global_steps': 0}
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 06:49:07 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 06:49:07 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 06:52:00 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 06:59:28 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 06:59:28 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 06:59:28 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m validation generation end
+[36m(TaskRunner pid=3071478)[0m Dumped generations to /data/verl-omni/workspace/val_generations/wan22_5b_t2v_ocr/0.jsonl
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 06:59:28 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 06:59:28 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 06:59:28 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process
+[36m(TaskRunner pid=3071478)[0m ("Initial validation metrics: {'val-core/dance_grpo/ocr/reward/mean@1': "
+[36m(TaskRunner pid=3071478)[0m  "np.float64(0.4295053194509819), 'val-aux/num_turns/min': np.int32(2), "
+[36m(TaskRunner pid=3071478)[0m  "'val-aux/num_turns/max': np.int32(2), 'val-aux/num_turns/mean': "
+[36m(TaskRunner pid=3071478)[0m  'np.float64(2.0)}')
+[36m(TaskRunner pid=3071478)[0m step:0 - val-core/dance_grpo/ocr/reward/mean@1:np.float64(0.4295053194509819) - val-aux/num_turns/min:np.int32(2) - val-aux/num_turns/max:np.int32(2) - val-aux/num_turns/mean:np.float64(2.0)
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 07:02:53 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process
+[36m(vLLMHttpServer pid=3503456)[0m (Worker pid=3656901) WARNING 08-02 07:03:19 [jit_monitor.py:106] Triton kernel JIT compilation during inference: _topk_topp_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 07:02:53 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 07:15:59 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 07:15:59 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 07:15:59 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process
+[36m(vLLMHttpServer pid=3516653)[0m (Worker pid=3675059) WARNING 08-02 07:03:19 [jit_monitor.py:106] Triton kernel JIT compilation during inference: _topk_topp_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(TaskRunner pid=3071478)[0m step:1 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(4.656612873077393e-10) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(6.51925802230835e-09) - actor/grad_norm:np.float64(0.0016326904296875) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:1 - training/epoch:0 - critic/rewards/mean:0.45016247034072876 - critic/rewards/max:0.9384615421295166 - critic/rewards/min:0.0 - critic/advantages/mean:-1.4901161193847656e-08 - critic/advantages/max:1.122506856918335 - critic/advantages/min:-1.743468165397644 - critic/returns/mean:-1.4901161193847656e-08 - critic/returns/max:1.122506856918335 - critic/returns/min:-1.743468165397644 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.18103428184986115 - critic/rewards/group_size:8.0 - timing_s/start_profile:0.00041296379640698433 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(11.99004325363785) - timing_s/agent_loop/generate_sequences/max:np.float64(176.84198440099135) - timing_s/agent_loop/generate_sequences/mean:np.float64(159.52840454070247) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(176.84198440099135) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:49 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:192.79751078179106 - timing_s/reward:569.3051649020053 - timing_s/old_log_prob:50.72229525120929 - timing_s/adv:0.0016082092188298702 - timing_s/update_actor:162.97570304991677 - timing_s/update_weights:3.9561379649676383 - timing_s/step:979.7608391488902 - timing_s/stop_profile:7.378123700618744e-05 - timing_per_image_ms/gen:6024.922211930971 - timing_per_image_ms/old_log_prob:1585.0717266002903 - timing_per_image_ms/adv:0.050256538088433444 - timing_per_image_ms/update_actor:5092.990720309899 - perf/total_num_images:32 - perf/time_per_step:979.7608391488902 - perf/throughput:0.01633051593886837[36m(TaskRunner pid=3071478)[0m Training Progress:  10%|█         | 2/20 [50:03<7:58:10, 1593.90s/it]
+[36m(TaskRunner pid=3071478)[0m Training Progress:  15%|█▌        | 3/20 [1:17:15<7:36:28, 1611.12s/it]
+
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 07:16:00 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 07:16:00 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 07:19:08 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 07:49:43 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 07:49:43 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 07:49:43 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:2 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(-7.566995918750763e-10) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(-3.725290298461914e-09) - actor/grad_norm:np.float64(0.000408172607421875) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:2 - training/epoch:0 - critic/rewards/mean:0.5450851917266846 - critic/rewards/max:1.0 - critic/rewards/min:0.0 - critic/advantages/mean:3.259629011154175e-09 - critic/advantages/max:0.5440492033958435 - critic/advantages/min:-0.2874957323074341 - critic/returns/mean:3.259629011154175e-09 - critic/returns/max:0.5440492033958435 - critic/returns/min:-0.2874957323074341 - critic/rewards/zero_std_ratio:0.5 - critic/rewards/std_mean:0.05500823259353638 - critic/rewards/group_size:8.0 - timing_s/start_profile:8.183997124433517e-05 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(22.30635343119502) - timing_s/agent_loop/generate_sequences/max:np.float64(169.27823160821572) - timing_s/agent_loop/generate_sequences/mean:np.float64(137.26829256680503) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(169.27823160821572) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:55 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:187.7862007850781 - timing_s/reward:1543.4562855097465 - timing_s/old_log_prob:67.29994703270495 - timing_s/adv:0.0016078678891062737 - timing_s/update_actor:218.99023708188906 - timing_s/update_weights:5.68106494564563 - timing_s/step:2023.2178851966746 - timing_s/stop_profile:5.482090637087822e-05 - timing_per_image_ms/gen:5868.318774533691 - timing_per_image_ms/old_log_prob:2103.1233447720297 - timing_per_image_ms/adv:0.05024587153457105 - timing_per_image_ms/update_actor:6843.444908809033 - perf/total_num_images:32 - perf/time_per_step:2023.2178851966746 - perf/throughput:0.007908194227160393
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 07:49:43 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 07:49:43 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 07:54:43 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 08:16:55 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 08:16:55 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 08:16:55 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:3 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(6.984919309616089e-10) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(6.891787052154541e-08) - actor/grad_norm:np.float64(0.01239013671875) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:3 - training/epoch:0 - critic/rewards/mean:0.45141303539276123 - critic/rewards/max:1.0 - critic/rewards/min:0.0 - critic/advantages/mean:-6.891787052154541e-08 - critic/advantages/max:0.8488538265228271 - critic/advantages/min:-0.8249731063842773 - critic/returns/mean:-6.891787052154541e-08 - critic/returns/max:0.8488538265228271 - critic/returns/min:-0.8249731063842773 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.1427702009677887 - critic/rewards/group_size:8.0 - timing_s/start_profile:9.069405496120453e-05 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(15.754918492864817) - timing_s/agent_loop/generate_sequences/max:np.float64(281.4645134299062) - timing_s/agent_loop/generate_sequences/mean:np.float64(258.6370048779645) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(281.4645134299062) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:61 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:298.60603976389393 - timing_s/reward:1045.691923955921 - timing_s/old_log_prob:65.46972719300538 - timing_s/adv:0.0017391270957887173 - timing_s/update_actor:216.2438226309605 - timing_s/update_weights:5.159207127057016 - timing_s/step:1631.1746556651779 - timing_s/stop_profile:0.00014971010386943817 - timing_per_image_ms/gen:9331.438742621685 - timing_per_image_ms/old_log_prob:2045.9289747814182 - timing_per_image_ms/adv:0.054347721743397415 - timing_per_image_ms/update_actor:6757.619457217515 - perf/total_num_images:32 - perf/time_per_step:1631.1746556651779 - perf/throughput:0.009808882172384752
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 08:16:55 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 08:16:55 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 08:21:30 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 08:35:42 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 08:35:42 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process[36m(TaskRunner pid=3071478)[0m Training Progress:  20%|██        | 4/20 [1:36:02<6:18:42, 1420.19s/it]
+[36m(TaskRunner pid=3071478)[0m Training Progress:  25%|██▌       | 5/20 [2:19:43<7:43:15, 1853.04s/it]
+[36m(TaskRunner pid=3071478)[0m Training Progress:  30%|███       | 6/20 [2:39:53<6:21:22, 1634.47s/it]
+
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 08:35:42 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:4 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(1.8335413187742233e-09) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(-6.332993507385254e-08) - actor/grad_norm:np.float64(0.0014495849609375) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:4 - training/epoch:0 - critic/rewards/mean:0.6100733280181885 - critic/rewards/max:1.0 - critic/rewards/min:0.05833333358168602 - critic/advantages/mean:6.332993507385254e-08 - critic/advantages/max:2.006572961807251 - critic/advantages/min:-1.1692979335784912 - critic/returns/mean:6.332993507385254e-08 - critic/returns/max:2.006572961807251 - critic/returns/min:-1.1692979335784912 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.18537598848342896 - critic/rewards/group_size:8.0 - timing_s/start_profile:0.00015323003754019737 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(12.634888472035527) - timing_s/agent_loop/generate_sequences/max:np.float64(258.39991898229346) - timing_s/agent_loop/generate_sequences/mean:np.float64(217.8874649614154) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(258.39991898229346) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:54 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:274.6693479688838 - timing_s/reward:562.0349165550433 - timing_s/old_log_prob:67.46520280977711 - timing_s/adv:0.0013655191287398338 - timing_s/update_actor:215.4252203218639 - timing_s/update_weights:7.5344425812363625 - timing_s/step:1127.1325481878594 - timing_s/stop_profile:4.8673711717128754e-05 - timing_per_image_ms/gen:8583.41712402762 - timing_per_image_ms/old_log_prob:2108.2875878055347 - timing_per_image_ms/adv:0.04267247277311981 - timing_per_image_ms/update_actor:6732.038135058247 - perf/total_num_images:32 - perf/time_per_step:1127.1325481878594 - perf/throughput:0.014195313608611431
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 08:35:42 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 08:35:42 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 08:40:20 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 09:19:23 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 09:19:23 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 09:19:23 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:5 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(2.0954757928848267e-09) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(-4.0978193283081055e-08) - actor/grad_norm:np.float64(0.0026092529296875) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:5 - training/epoch:0 - critic/rewards/mean:0.2217383086681366 - critic/rewards/max:0.8571428656578064 - critic/rewards/min:0.0 - critic/advantages/mean:4.842877388000488e-08 - critic/advantages/max:1.9405466318130493 - critic/advantages/min:-1.2995374202728271 - critic/returns/mean:4.842877388000488e-08 - critic/returns/max:1.9405466318130493 - critic/returns/min:-1.2995374202728271 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.20873615145683289 - critic/rewards/group_size:8.0 - timing_s/start_profile:0.00019090622663497925 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(15.566654827911407) - timing_s/agent_loop/generate_sequences/max:np.float64(260.98624593997374) - timing_s/agent_loop/generate_sequences/mean:np.float64(233.4259578937781) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(260.98624593997374) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:43 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:277.2257878659293 - timing_s/reward:2057.278927700594 - timing_s/old_log_prob:70.02066579088569 - timing_s/adv:0.0014626020565629005 - timing_s/update_actor:210.28425079910085 - timing_s/update_weights:5.3006062670610845 - timing_s/step:2620.1136808260344 - timing_s/stop_profile:0.00010176887735724449 - timing_per_image_ms/gen:8663.30587081029 - timing_per_image_ms/old_log_prob:2188.1458059651777 - timing_per_image_ms/adv:0.04570631426759064 - timing_per_image_ms/update_actor:6571.382837471901 - perf/total_num_images:32 - perf/time_per_step:2620.1136808260344 - perf/throughput:0.0061066052656752415
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 09:19:23 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 09:19:23 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 09:23:51 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 09:39:33 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 09:39:33 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 09:39:33 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:6 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(-2.6193447411060333e-10) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(-3.3527612686157227e-08) - actor/grad_norm:np.float64(0.0022735595703125) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:6 - training/epoch:0 - critic/rewards/mean:0.3154231309890747 - critic/rewards/max:1.0 - critic/rewards/min:0.0 - critic/advantages/mean:2.2351741790771484e-08 - critic/advantages/max:2.257254123687744 - critic/advantages/min:-1.6522170305252075 - critic/returns/mean:2.2351741790771484e-08 - critic/returns/max:2.257254123687744 - critic/returns/min:-1.6522170305252075 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.1692829430103302 - critic/rewards/group_size:8.0 - timing_s/start_profile:0.00016338471323251724 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(15.889207150321454) - timing_s/agent_loop/generate_sequences/max:np.float64(251.34096852177754) - timing_s/agent_loop/generate_sequences/mean:np.float64(235.15828876277374) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(251.34096852177754) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:57 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:267.69212173391134 - timing_s/reward:737.0320439389907 - timing_s/old_log_prob:50.38129030819982 - timing_s/adv:0.0017650737427175045 - timing_s/update_actor:149.75375240994617 - timing_s/update_weights:5.011951185297221 - timing_s/step:1209.8752179928124 - timing_s/stop_profile:0.00012785010039806366 - timing_per_image_ms/gen:8365.37880418473 - timing_per_image_ms/old_log_prob:1574.4153221312445 - timing_per_image_ms/adv:0.055158554459922016 - timing_per_image_ms/update_actor:4679.804762810818 - perf/total_num_images:32 - perf/time_per_step:1209.8752179928124 - perf/throughput:0.013224504281147324[36m(TaskRunner pid=3071478)[0m Training Progress:  35%|███▌      | 7/20 [2:52:26<4:51:41, 1346.27s/it]
+[36m(TaskRunner pid=3071478)[0m Training Progress:  40%|████      | 8/20 [3:11:37<4:16:48, 1284.03s/it]
+
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 09:39:33 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 09:39:33 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 09:42:56 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 09:52:06 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 09:52:06 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 09:52:06 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:7 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(-7.275957614183426e-10) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(-1.7695128917694092e-08) - actor/grad_norm:np.float64(0.0024566650390625) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:7 - training/epoch:0 - critic/rewards/mean:0.41268226504325867 - critic/rewards/max:1.0 - critic/rewards/min:0.0 - critic/advantages/mean:2.0489096641540527e-08 - critic/advantages/max:1.3999009132385254 - critic/advantages/min:-1.829935908317566 - critic/returns/mean:2.0489096641540527e-08 - critic/returns/max:1.3999009132385254 - critic/returns/min:-1.829935908317566 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.22261643409729004 - critic/rewards/group_size:8.0 - timing_s/start_profile:9.941915050148964e-05 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(12.11288013216108) - timing_s/agent_loop/generate_sequences/max:np.float64(186.08743124036118) - timing_s/agent_loop/generate_sequences/mean:np.float64(163.7354728970531) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(186.08743124036118) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:54 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:202.54513457091525 - timing_s/reward:353.1626535053365 - timing_s/old_log_prob:51.09463632805273 - timing_s/adv:0.0010191760957241058 - timing_s/update_actor:141.4475496262312 - timing_s/update_weights:4.394287309143692 - timing_s/step:752.6476554181427 - timing_s/stop_profile:0.00011075381189584732 - timing_per_image_ms/gen:6329.535455341102 - timing_per_image_ms/old_log_prob:1596.7073852516478 - timing_per_image_ms/adv:0.03184925299137831 - timing_per_image_ms/update_actor:4420.235925819725 - perf/total_num_images:32 - perf/time_per_step:752.6476554181427 - perf/throughput:0.021258287174376438
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 09:52:06 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 09:52:06 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 09:55:28 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 10:11:17 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 10:11:17 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 10:11:17 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:8 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(-1.5133991837501526e-09) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(-2.2351741790771484e-08) - actor/grad_norm:np.float64(0.010986328125) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:8 - training/epoch:0 - critic/rewards/mean:0.48067405819892883 - critic/rewards/max:0.8666666746139526 - critic/rewards/min:0.0 - critic/advantages/mean:1.4901161193847656e-08 - critic/advantages/max:2.216848850250244 - critic/advantages/min:-1.6608543395996094 - critic/returns/mean:1.4901161193847656e-08 - critic/returns/max:2.216848850250244 - critic/returns/min:-1.6608543395996094 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.15322422981262207 - critic/rewards/group_size:8.0 - timing_s/start_profile:0.00015097297728061676 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(8.906512361951172) - timing_s/agent_loop/generate_sequences/max:np.float64(184.43409970076755) - timing_s/agent_loop/generate_sequences/mean:np.float64(161.31731352118368) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(184.43409970076755) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:43 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:200.91234409296885 - timing_s/reward:746.7009771768935 - timing_s/old_log_prob:48.83761733723804 - timing_s/adv:0.0014313929714262486 - timing_s/update_actor:149.00189351011068 - timing_s/update_weights:4.989594838116318 - timing_s/step:1150.445785047952 - timing_s/stop_profile:9.602680802345276e-05 - timing_per_image_ms/gen:6278.510752905277 - timing_per_image_ms/old_log_prob:1526.1755417886889 - timing_per_image_ms/adv:0.04473103035707027 - timing_per_image_ms/update_actor:4656.309172190959 - perf/total_num_images:32 - perf/time_per_step:1150.445785047952 - perf/throughput:0.013907652327426363
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 10:11:17 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 10:11:17 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 10:14:13 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 10:24:34 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 10:24:34 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process[36m(TaskRunner pid=3071478)[0m Training Progress:  45%|████▌     | 9/20 [3:24:55<3:27:32, 1132.07s/it]
+[36m(TaskRunner pid=3071478)[0m Training Progress:  50%|█████     | 10/20 [3:36:10<2:45:12, 991.22s/it]
+[36m(TaskRunner pid=3071478)[0m Training Progress:  55%|█████▌    | 11/20 [3:52:13<2:27:23, 982.59s/it]
+
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 10:24:34 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:9 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(-5.820766091346741e-10) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(-5.8673322200775146e-08) - actor/grad_norm:np.float64(0.00098419189453125) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:9 - training/epoch:0 - critic/rewards/mean:0.3754420280456543 - critic/rewards/max:0.8374999761581421 - critic/rewards/min:0.0 - critic/advantages/mean:5.960464477539063e-08 - critic/advantages/max:0.8497095704078674 - critic/advantages/min:-0.6955029368400574 - critic/returns/mean:5.960464477539063e-08 - critic/returns/max:0.8497095704078674 - critic/returns/min:-0.6955029368400574 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.0982631966471672 - critic/rewards/group_size:8.0 - timing_s/start_profile:0.00011172797530889511 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(9.935559618286788) - timing_s/agent_loop/generate_sequences/max:np.float64(160.28412198694423) - timing_s/agent_loop/generate_sequences/mean:np.float64(144.298891406841) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(160.28412198694423) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:51 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:175.70253617083654 - timing_s/reward:420.5628344612196 - timing_s/old_log_prob:49.19344674795866 - timing_s/adv:0.0014350716955959797 - timing_s/update_actor:145.97701183706522 - timing_s/update_weights:6.1069849650375545 - timing_s/step:797.5458414610475 - timing_s/stop_profile:4.314165562391281e-05 - timing_per_image_ms/gen:5490.704255338642 - timing_per_image_ms/old_log_prob:1537.2952108737081 - timing_per_image_ms/adv:0.044845990487374365 - timing_per_image_ms/update_actor:4561.781619908288 - perf/total_num_images:32 - perf/time_per_step:797.5458414610475 - perf/throughput:0.020061542758080378
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 10:24:34 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 10:24:34 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 10:27:48 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 10:35:50 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 10:35:50 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 10:35:50 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:10 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(2.3283064365386963e-10) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(1.4901161193847656e-08) - actor/grad_norm:np.float64(0.004180908203125) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:10 - training/epoch:0 - critic/rewards/mean:0.3509148955345154 - critic/rewards/max:1.0 - critic/rewards/min:0.0 - critic/advantages/mean:-7.450580596923828e-09 - critic/advantages/max:2.4702417850494385 - critic/advantages/min:-1.502663016319275 - critic/returns/mean:-7.450580596923828e-09 - critic/returns/max:2.4702417850494385 - critic/returns/min:-1.502663016319275 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.22268690168857574 - critic/rewards/group_size:8.0 - timing_s/start_profile:7.565179839730263e-05 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(8.85303833289072) - timing_s/agent_loop/generate_sequences/max:np.float64(176.59384580235928) - timing_s/agent_loop/generate_sequences/mean:np.float64(164.8388881656283) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(176.59384580235928) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:57 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:192.43533853022382 - timing_s/reward:283.60304489033297 - timing_s/old_log_prob:47.65124495094642 - timing_s/adv:0.0014883740805089474 - timing_s/update_actor:146.9388243877329 - timing_s/update_weights:4.87344172084704 - timing_s/step:675.5052171861753 - timing_s/stop_profile:9.780004620552063e-05 - timing_per_image_ms/gen:6013.604329069494 - timing_per_image_ms/old_log_prob:1489.1014047170756 - timing_per_image_ms/adv:0.046511690015904605 - timing_per_image_ms/update_actor:4591.838262116653 - perf/total_num_images:32 - perf/time_per_step:675.5052171861753 - perf/throughput:0.023685975463887878
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 10:35:50 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 10:35:50 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 10:38:45 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 10:51:53 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 10:51:53 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 10:51:53 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:11 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(-1.2223608791828156e-09) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(3.725290298461914e-08) - actor/grad_norm:np.float64(0.00118255615234375) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:11 - training/epoch:0 - critic/rewards/mean:0.4153009355068207 - critic/rewards/max:1.0 - critic/rewards/min:0.0 - critic/advantages/mean:-2.9802322387695312e-08 - critic/advantages/max:1.8203073740005493 - critic/advantages/min:-1.2317053079605103 - critic/returns/mean:-2.9802322387695312e-08 - critic/returns/max:1.8203073740005493 - critic/returns/min:-1.2317053079605103 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.17312511801719666 - critic/rewards/group_size:8.0 - timing_s/start_profile:0.00013653282076120377 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(8.830212357919663) - timing_s/agent_loop/generate_sequences/max:np.float64(157.62063554674387) - timing_s/agent_loop/generate_sequences/mean:np.float64(143.37413222904433) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(157.62063554674387) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:57 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:173.45229467004538 - timing_s/reward:601.4220352219418 - timing_s/old_log_prob:51.249625723809004 - timing_s/adv:0.0012883762829005718 - timing_s/update_actor:131.76014251075685 - timing_s/update_weights:4.7908107452094555 - timing_s/step:962.6779633252881 - timing_s/stop_profile:8.986424654722214e-05 - timing_per_image_ms/gen:5420.384208438918 - timing_per_image_ms/old_log_prob:1601.5508038690314 - timing_per_image_ms/adv:0.04026175884064287 - timing_per_image_ms/update_actor:4117.504453461152 - perf/total_num_images:32 - perf/time_per_step:962.6779633252881 - perf/throughput:0.016620303579748207[36m(TaskRunner pid=3071478)[0m Training Progress:  60%|██████    | 12/20 [4:10:44<2:16:13, 1021.66s/it]
+[36m(TaskRunner pid=3071478)[0m Training Progress:  65%|██████▌   | 13/20 [4:28:17<2:00:17, 1031.04s/it]
+
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 10:51:53 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 10:51:53 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 10:54:57 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 11:10:24 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 11:10:24 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 11:10:24 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:12 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(-2.1827872842550278e-09) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(4.6566128730773926e-08) - actor/grad_norm:np.float64(0.0040283203125) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:12 - training/epoch:0 - critic/rewards/mean:0.44475695490837097 - critic/rewards/max:1.0 - critic/rewards/min:0.0 - critic/advantages/mean:-4.842877388000488e-08 - critic/advantages/max:2.188704490661621 - critic/advantages/min:-1.4289891719818115 - critic/returns/mean:-4.842877388000488e-08 - critic/returns/max:2.188704490661621 - critic/returns/min:-1.4289891719818115 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.2139548361301422 - critic/rewards/group_size:8.0 - timing_s/start_profile:0.00015373528003692627 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(7.382882707752287) - timing_s/agent_loop/generate_sequences/max:np.float64(167.11268910765648) - timing_s/agent_loop/generate_sequences/mean:np.float64(154.16260354559927) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(167.11268910765648) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:70 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:183.00204149261117 - timing_s/reward:730.6194718121551 - timing_s/old_log_prob:47.197305243927985 - timing_s/adv:0.0012963879853487015 - timing_s/update_actor:145.01205640565604 - timing_s/update_weights:4.881200731731951 - timing_s/step:1110.7156759430654 - timing_s/stop_profile:0.00010864902287721634 - timing_per_image_ms/gen:5718.813796644099 - timing_per_image_ms/old_log_prob:1474.9157888727495 - timing_per_image_ms/adv:0.04051212454214692 - timing_per_image_ms/update_actor:4531.626762676751 - perf/total_num_images:32 - perf/time_per_step:1110.7156759430654 - perf/throughput:0.0144051266643149
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 11:10:24 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 11:10:24 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 11:13:27 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 11:27:57 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 11:27:57 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 11:27:57 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:13 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(-1.7462298274040222e-10) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(2.1420419216156006e-08) - actor/grad_norm:np.float64(0.0014495849609375) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:13 - training/epoch:0 - critic/rewards/mean:0.5259853005409241 - critic/rewards/max:1.0 - critic/rewards/min:0.0 - critic/advantages/mean:-2.2351741790771484e-08 - critic/advantages/max:1.0623157024383545 - critic/advantages/min:-1.5570929050445557 - critic/returns/mean:-2.2351741790771484e-08 - critic/returns/max:1.0623157024383545 - critic/returns/min:-1.5570929050445557 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.19628241658210754 - critic/rewards/group_size:8.0 - timing_s/start_profile:0.00015642400830984116 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(11.753580885007977) - timing_s/agent_loop/generate_sequences/max:np.float64(165.9965778212063) - timing_s/agent_loop/generate_sequences/mean:np.float64(142.9659753250744) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(165.9965778212063) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:47 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:182.2142612710595 - timing_s/reward:678.0255862348713 - timing_s/old_log_prob:48.62706965999678 - timing_s/adv:0.0022664829157292843 - timing_s/update_actor:138.63113021990284 - timing_s/update_weights:4.773058190941811 - timing_s/step:1052.276451477781 - timing_s/stop_profile:0.00016678962856531143 - timing_per_image_ms/gen:5694.19566472061 - timing_per_image_ms/old_log_prob:1519.5959268748993 - timing_per_image_ms/adv:0.07082759111654013 - timing_per_image_ms/update_actor:4332.222819371964 - perf/total_num_images:32 - perf/time_per_step:1052.276451477781 - perf/throughput:0.01520512977129741
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 11:27:57 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 11:27:57 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 11:30:43 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 11:52:22 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 11:52:22 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process[36m(TaskRunner pid=3071478)[0m Training Progress:  70%|███████   | 14/20 [4:52:42<1:56:13, 1162.24s/it]
+[36m(TaskRunner pid=3071478)[0m Training Progress:  75%|███████▌  | 15/20 [5:04:48<1:25:52, 1030.45s/it]
+[36m(TaskRunner pid=3071478)[0m Training Progress:  80%|████████  | 16/20 [5:15:18<1:00:39, 909.95s/it] 
+
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 11:52:22 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:14 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(-1.8917489796876907e-09) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(2.0489096641540527e-08) - actor/grad_norm:np.float64(0.0091552734375) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:14 - training/epoch:0 - critic/rewards/mean:0.33373919129371643 - critic/rewards/max:1.0 - critic/rewards/min:0.0 - critic/advantages/mean:-2.421438694000244e-08 - critic/advantages/max:1.5516788959503174 - critic/advantages/min:-1.4133830070495605 - critic/returns/mean:-2.421438694000244e-08 - critic/returns/max:1.5516788959503174 - critic/returns/min:-1.4133830070495605 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.27843961119651794 - critic/rewards/group_size:8.0 - timing_s/start_profile:8.508376777172089e-05 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(10.45975338993594) - timing_s/agent_loop/generate_sequences/max:np.float64(146.93620764603838) - timing_s/agent_loop/generate_sequences/mean:np.float64(135.7623069682886) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(146.93620764603838) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:61 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:164.81514180311933 - timing_s/reward:1099.9115319279954 - timing_s/old_log_prob:49.558512115851045 - timing_s/adv:0.0019628293812274933 - timing_s/update_actor:146.4584189238958 - timing_s/update_weights:4.363553557079285 - timing_s/step:1465.111628483981 - timing_s/stop_profile:7.302220910787582e-05 - timing_per_image_ms/gen:5150.473181347479 - timing_per_image_ms/old_log_prob:1548.7035036203451 - timing_per_image_ms/adv:0.061338418163359165 - timing_per_image_ms/update_actor:4576.825591371744 - perf/total_num_images:32 - perf/time_per_step:1465.111628483981 - perf/throughput:0.010920669585126386
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 11:52:22 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 11:52:22 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 11:55:49 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 12:04:27 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 12:04:27 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 12:04:27 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:15 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(-2.8812792152166367e-09) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(3.0416869023497384e-09) - actor/loss:np.float64(2.9802322387695312e-08) - actor/grad_norm:np.float64(0.005126953125) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:15 - training/epoch:0 - critic/rewards/mean:0.34681758284568787 - critic/rewards/max:0.9176470637321472 - critic/rewards/min:0.0 - critic/advantages/mean:-4.470348358154297e-08 - critic/advantages/max:1.995147943496704 - critic/advantages/min:-1.517345666885376 - critic/returns/mean:-4.470348358154297e-08 - critic/returns/max:1.995147943496704 - critic/returns/min:-1.517345666885376 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.1639329493045807 - critic/rewards/group_size:8.0 - timing_s/start_profile:7.621338590979576e-05 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(9.516088768839836) - timing_s/agent_loop/generate_sequences/max:np.float64(190.28845516406) - timing_s/agent_loop/generate_sequences/mean:np.float64(161.55428130963992) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(190.28845516406) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:50 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:206.06655170070007 - timing_s/reward:314.7711730771698 - timing_s/old_log_prob:47.26631184108555 - timing_s/adv:0.001231510192155838 - timing_s/update_actor:152.36846793815494 - timing_s/update_weights:4.273755392059684 - timing_s/step:724.750410629902 - timing_s/stop_profile:6.975000724196434e-05 - timing_per_image_ms/gen:6439.579740646877 - timing_per_image_ms/old_log_prob:1477.0722450339235 - timing_per_image_ms/adv:0.03848469350486994 - timing_per_image_ms/update_actor:4761.514623067342 - perf/total_num_images:32 - perf/time_per_step:724.750410629902 - perf/throughput:0.022076565622217346
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 12:04:27 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 12:04:27 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 12:08:02 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 12:14:58 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 12:14:58 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 12:14:58 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:16 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(1.2514647096395493e-09) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(0.0) - actor/grad_norm:np.float64(0.006591796875) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:16 - training/epoch:0 - critic/rewards/mean:0.5628719925880432 - critic/rewards/max:1.0 - critic/rewards/min:0.0 - critic/advantages/mean:1.1175870895385742e-08 - critic/advantages/max:1.836397647857666 - critic/advantages/min:-2.1840012073516846 - critic/returns/mean:1.1175870895385742e-08 - critic/returns/max:1.836397647857666 - critic/returns/min:-2.1840012073516846 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.23103517293930054 - critic/rewards/group_size:8.0 - timing_s/start_profile:8.51931981742382e-05 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(9.286668388172984) - timing_s/agent_loop/generate_sequences/max:np.float64(196.529985900037) - timing_s/agent_loop/generate_sequences/mean:np.float64(165.53546182755963) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(196.529985900037) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:42 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:213.58796200202778 - timing_s/reward:220.83094616187736 - timing_s/old_log_prob:51.23209343384951 - timing_s/adv:0.0011462350375950336 - timing_s/update_actor:138.86627412494272 - timing_s/update_weights:5.2713972190395 - timing_s/step:629.7915122150443 - timing_s/stop_profile:8.72509554028511e-05 - timing_per_image_ms/gen:6674.623812563368 - timing_per_image_ms/old_log_prob:1601.0029198077973 - timing_per_image_ms/adv:0.0358198449248448 - timing_per_image_ms/update_actor:4339.57106640446 - perf/total_num_images:32 - perf/time_per_step:629.7915122150443 - perf/throughput:0.025405232826536964[36m(TaskRunner pid=3071478)[0m Training Progress:  85%|████████▌ | 17/20 [5:26:48<42:11, 843.98s/it]  
+[36m(TaskRunner pid=3071478)[0m Training Progress:  90%|█████████ | 18/20 [5:48:27<32:41, 980.57s/it]
+
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 12:14:58 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 12:14:58 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 12:18:15 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 12:26:28 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 12:26:28 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 12:26:28 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:17 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(1.0186340659856796e-09) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(5.587935447692871e-09) - actor/grad_norm:np.float64(0.001739501953125) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:17 - training/epoch:0 - critic/rewards/mean:0.37218520045280457 - critic/rewards/max:0.7857142686843872 - critic/rewards/min:0.0 - critic/advantages/mean:-2.2351741790771484e-08 - critic/advantages/max:1.7392579317092896 - critic/advantages/min:-1.3481823205947876 - critic/returns/mean:-2.2351741790771484e-08 - critic/returns/max:1.7392579317092896 - critic/returns/min:-1.3481823205947876 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.17187079787254333 - critic/rewards/group_size:8.0 - timing_s/start_profile:0.00018483027815818787 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(28.427391385193914) - timing_s/agent_loop/generate_sequences/max:np.float64(180.5158881712705) - timing_s/agent_loop/generate_sequences/mean:np.float64(153.12328323985275) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(180.5158881712705) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:45 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:196.46275978302583 - timing_s/reward:292.50952667277306 - timing_s/old_log_prob:47.85083285579458 - timing_s/adv:0.001205340027809143 - timing_s/update_actor:148.62152279587463 - timing_s/update_weights:4.746484286617488 - timing_s/step:690.1943417568691 - timing_s/stop_profile:0.0001500360667705536 - timing_per_image_ms/gen:6139.461243219557 - timing_per_image_ms/old_log_prob:1495.3385267435806 - timing_per_image_ms/adv:0.03766687586903572 - timing_per_image_ms/update_actor:4644.422587371082 - perf/total_num_images:32 - perf/time_per_step:690.1943417568691 - perf/throughput:0.02318187651216102
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 12:26:28 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 12:26:28 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 12:30:25 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 12:48:07 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 12:48:07 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 12:48:07 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:18 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(-1.2223608791828156e-09) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(1.30385160446167e-08) - actor/grad_norm:np.float64(0.002166748046875) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:18 - training/epoch:0 - critic/rewards/mean:0.27281251549720764 - critic/rewards/max:1.0 - critic/rewards/min:0.0 - critic/advantages/mean:-2.2351741790771484e-08 - critic/advantages/max:2.039489984512329 - critic/advantages/min:-1.2236939668655396 - critic/returns/mean:-2.2351741790771484e-08 - critic/returns/max:2.039489984512329 - critic/returns/min:-1.2236939668655396 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.1682855188846588 - critic/rewards/group_size:8.0 - timing_s/start_profile:0.0001605181023478508 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(12.717534771189094) - timing_s/agent_loop/generate_sequences/max:np.float64(219.54440723825246) - timing_s/agent_loop/generate_sequences/mean:np.float64(178.6058714377723) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(219.54440723825246) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:49 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:236.00085305515677 - timing_s/reward:859.1003294219263 - timing_s/old_log_prob:48.10452847415581 - timing_s/adv:0.0016768467612564564 - timing_s/update_actor:150.39803262101486 - timing_s/update_weights:4.608244020026177 - timing_s/step:1298.2154679899104 - timing_s/stop_profile:5.9773679822683334e-05 - timing_per_image_ms/gen:7375.026657973649 - timing_per_image_ms/old_log_prob:1503.2665148173692 - timing_per_image_ms/adv:0.05240146128926426 - timing_per_image_ms/update_actor:4699.9385194067145 - perf/total_num_images:32 - perf/time_per_step:1298.2154679899104 - perf/throughput:0.01232461050920428
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 12:48:07 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 12:48:07 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 12:51:31 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 13:07:13 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 13:07:13 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process[36m(TaskRunner pid=3071478)[0m Training Progress:  95%|█████████▌| 19/20 [6:07:33<17:10, 1030.39s/it]
+[36m(WorkerDict pid=3190326)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/plugin/platform/platform_cuda.py:99: FutureWarning: torch.cuda._set_allocator_settings is deprecated. Use torch._C._accelerator_setAllocatorSettings instead.
+[36m(WorkerDict pid=3190326)[0m   torch.cuda.memory._set_allocator_settings(settings)
+[36m(TaskRunner pid=3071478)[0m Training Progress: 100%|██████████| 20/20 [6:35:03<00:00, 1216.44s/it]Training Progress: 100%|██████████| 20/20 [6:35:03<00:00, 1185.19s/it]
+[36m(WorkerDict pid=3190086)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/plugin/platform/platform_cuda.py:99: FutureWarning: torch.cuda._set_allocator_settings is deprecated. Use torch._C._accelerator_setAllocatorSettings instead.
+[36m(WorkerDict pid=3190086)[0m   torch.cuda.memory._set_allocator_settings(settings)
+
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 13:07:13 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m step:19 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(3.7834979593753815e-10) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(4.470348358154297e-08) - actor/grad_norm:np.float64(0.004425048828125) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - training/global_step:19 - training/epoch:0 - critic/rewards/mean:0.3043749928474426 - critic/rewards/max:0.8666666746139526 - critic/rewards/min:0.0 - critic/advantages/mean:-4.842877388000488e-08 - critic/advantages/max:1.119899034500122 - critic/advantages/min:-1.9942588806152344 - critic/returns/mean:-4.842877388000488e-08 - critic/returns/max:1.119899034500122 - critic/returns/min:-1.9942588806152344 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.19025297462940216 - critic/rewards/group_size:8.0 - timing_s/start_profile:8.399412035942078e-05 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(12.080250605940819) - timing_s/agent_loop/generate_sequences/max:np.float64(187.89630861813203) - timing_s/agent_loop/generate_sequences/mean:np.float64(167.54014115134487) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(187.89630861813203) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:65 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:204.00935421697795 - timing_s/reward:735.975254308898 - timing_s/old_log_prob:50.04694911278784 - timing_s/adv:0.0013269158080220222 - timing_s/update_actor:151.25844661472365 - timing_s/update_weights:4.868256640154868 - timing_s/step:1146.1613142136484 - timing_s/stop_profile:7.163407281041145e-05 - timing_per_image_ms/gen:6375.292319280561 - timing_per_image_ms/old_log_prob:1563.96715977462 - timing_per_image_ms/adv:0.041466119000688195 - timing_per_image_ms/update_actor:4726.826456710114 - perf/total_num_images:32 - perf/time_per_step:1146.1613142136484 - perf/throughput:0.013959640586000048
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 13:07:13 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 13:07:13 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 13:10:29 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m local_global_step_folder: checkpoints/dance_grpo/wan22_5b_t2v_ocr/global_step_20
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 13:10:29 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 13:20:14 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 13:20:14 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 13:20:14 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process
+[36m(TaskRunner pid=3071478)[0m test_gen_batch meta info: {'recompute_log_prob': False, 'validate': True, 'global_steps': 20}
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 13:20:14 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 13:20:14 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 13:23:09 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 13:24:12 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 13:24:12 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 13:24:12 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m validation generation end
+[36m(TaskRunner pid=3071478)[0m test_gen_batch meta info: {'recompute_log_prob': False, 'validate': True, 'global_steps': 20}
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 13:24:12 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 13:24:12 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 13:27:21 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 13:34:25 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 13:34:25 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842466)[0m WARNING 08-02 13:34:25 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=3071478)[0m validation generation end
+[36m(TaskRunner pid=3071478)[0m Dumped generations to /data/verl-omni/workspace/val_generations/wan22_5b_t2v_ocr/20.jsonl
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 13:34:25 [async_omni.py:910] [AsyncOmni] reset_prefix_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 13:34:25 [async_omni.py:892] [AsyncOmni] reset_mm_cache not yet supported with Orchestrator process
+[36m(vLLMOmniHttpServer pid=2842283)[0m WARNING 08-02 13:34:25 [async_omni.py:899] [AsyncOmni] reset_encoder_cache not yet supported with Orchestrator process
+[36m(TaskRunner pid=3071478)[0m step:20 - perf/mfu/actor_infer:0.0 - actor/ppo_kl:np.float64(8.440110832452774e-10) - actor/pg_clipfrac:np.float64(0.0) - actor/pg_clipfrac_higher:np.float64(0.0) - actor/pg_clipfrac_lower:np.float64(0.0) - actor/ratio_mean:np.float64(1.0) - actor/ratio_std:np.float64(0.0) - actor/loss:np.float64(7.450580596923828e-09) - actor/grad_norm:np.float64(0.00177764892578125) - actor/lr:np.float64(1e-05) - perf/mfu/actor:np.float64(0.0) - val-core/dance_grpo/ocr/reward/mean@1:np.float64(0.46826020535081625) - val-aux/num_turns/min:np.int32(2) - val-aux/num_turns/max:np.int32(2) - val-aux/num_turns/mean:np.float64(2.0) - training/global_step:20 - training/epoch:0 - critic/rewards/mean:0.3448551595211029 - critic/rewards/max:0.6705882549285889 - critic/rewards/min:0.0 - critic/advantages/mean:-1.4901161193847656e-08 - critic/advantages/max:1.4450780153274536 - critic/advantages/min:-1.6580365896224976 - critic/returns/mean:-1.4901161193847656e-08 - critic/returns/max:1.4450780153274536 - critic/returns/min:-1.6580365896224976 - critic/rewards/zero_std_ratio:0.0 - critic/rewards/std_mean:0.11938093602657318 - critic/rewards/group_size:8.0 - timing_s/start_profile:0.00010431790724396706 - timing_s/agent_loop/num_preempted/min:np.int64(-1) - timing_s/agent_loop/num_preempted/max:np.int64(-1) - timing_s/agent_loop/num_preempted/mean:np.float64(-1.0) - timing_s/agent_loop/generate_sequences/min:np.float64(15.28102842811495) - timing_s/agent_loop/generate_sequences/max:np.float64(180.3683022330515) - timing_s/agent_loop/generate_sequences/mean:np.float64(158.30033392325277) - timing_s/agent_loop/tool_calls/min:np.float64(0.0) - timing_s/agent_loop/tool_calls/max:np.float64(0.0) - timing_s/agent_loop/tool_calls/mean:np.float64(0.0) - timing_s/agent_loop/compute_score/min:np.float64(0.0) - timing_s/agent_loop/compute_score/max:np.float64(0.0) - timing_s/agent_loop/compute_score/mean:np.float64(0.0) - timing_s/agent_loop/slowest/generate_sequences:np.float64(180.3683022330515) - timing_s/agent_loop/slowest/tool_calls:np.float64(0.0) - timing_s/agent_loop/slowest/compute_score:np.float64(0.0) - timing_s/agent_loop/slowest/num_preempted:np.int64(-1) - timing_s/agent_loop/slowest/prompt_length:53 - timing_s/agent_loop/slowest/response_length:0 - timing_s/gen:195.30993864592165 - timing_s/reward:360.5036912080832 - timing_s/old_log_prob:50.75328841339797 - timing_s/adv:0.0011661569587886333 - timing_s/update_actor:148.36433414788917 - timing_s/save_checkpoint:21.492588927969337 - timing_s/update_weights:4.517129058949649 - timing_s/step:780.9444092810154 - timing_s/testing:868.8033204739913 - timing_s/stop_profile:0.00031494908034801483 - timing_per_image_ms/gen:6103.4355826850515 - timing_per_image_ms/old_log_prob:1586.0402629186865 - timing_per_image_ms/adv:0.03644240496214479 - timing_per_image_ms/update_actor:4636.3854421215365 - perf/total_num_images:32 - perf/time_per_step:780.9444092810154 - perf/throughput:0.020488014012073622
+[36m(TaskRunner pid=3071478)[0m ("Final validation metrics: {'val-core/dance_grpo/ocr/reward/mean@1': "
+[36m(TaskRunner pid=3071478)[0m  "np.float64(0.46826020535081625), 'val-aux/num_turns/min': np.int32(2), "
+[36m(TaskRunner pid=3071478)[0m  "'val-aux/num_turns/max': np.int32(2), 'val-aux/num_turns/mean': "
+[36m(TaskRunner pid=3071478)[0m  'np.float64(2.0)}')
+[36m(vLLMHttpServer pid=3503456)[0m WARNING 08-02 13:34:45 [core_client.py:702] [shutdown] MPClient: engine core exited unexpectedly; starting cleanup
+[36m(vLLMHttpServer pid=3516653)[0m WARNING 08-02 13:34:45 [utils.py:620] [shutdown] Process manager: force killing remaining processes count=1
+[36m(vLLMHttpServer pid=3516653)[0m WARNING 08-02 13:34:45 [core_client.py:702] [shutdown] MPClient: engine core exited unexpectedly; starting cleanup
