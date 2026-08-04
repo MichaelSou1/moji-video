@@ -202,3 +202,40 @@ s100 vs s75：2 胜 1 负 5 平（+0.029）；s100 vs 基座：5 胜 1 负 2 平
 - 视频 `workspace/val_generations/eval_step100/100/{0..7}.mp4`；明细 `eval_step100/100.jsonl`；日志 `logs/eval_step100.log`。
 - ModelScope 推送 `michaelsou/wan22-ti2v-5b-dancegrpo-ocr-step100`（本次上行带宽受限，耗时显著长于前三次；日志 `logs/ms_upload_step100.log`）。
 - 磁盘处置记录：step-75 ckpt 已于 06:11Z 后按轮替规则删除（ModelScope 有备份），/data 回到 67G 空闲。
+
+---
+
+# 附录 D：step-125 ckpt 评测（2026-08-04T14:44Z，训练未暂停——GPU 2,5 并行评测）
+
+ckpt `global_step_125`（已推 [`michaelsou/wan22-ti2v-5b-dancegrpo-ocr-step125`](https://modelscope.cn/models/michaelsou/wan22-ti2v-5b-dancegrpo-ocr-step125)，0 失败）。同一 mini8 配对协议。**工程备注**：首次启动因 GPU5 上别家任务占 53.4GB，reward 引擎 vLLM 启动自检（gpu_memory_utilization=0.5 → 需 47.5GiB 空闲 > 实际 41.65GiB）拒绝；通过 CLI 覆盖 `reward.reward_model.rollout.gpu_memory_utilization=0.35` 后正常（纯运行参数，零代码改动），评测 0 Traceback。
+
+## D.1 六点对比
+
+| 指标 | 基座 | s25 | s50 | s75 | s100 | s125 |
+|---|---|---|---|---|---|---|
+| **OCR reward mean@1（mini8）** | 0.5864 | 0.6390 | 0.6233 | 0.6869 | 0.7161 | **0.6668** |
+
+| # | 基座 | s25 | s50 | s75 | s100 | s125 | gts |
+|---|---|---|---|---|---|---|---|
+| 0 | 0.930 | 0.950 | 1.000 | 1.000 | 1.000 | **1.000** | Spring Collection 2024 |
+| 1 | 1.000 | 0.938 | 0.938 | 0.938 | 0.938 | 0.938 | Step Goal Achieved |
+| 2 | 0.750 | 1.000 | 1.000 | 1.000 | 1.000 | **1.000** | Forever Yours |
+| 3 | 0.000 | 0.080 | 0.107 | 0.133 | 0.347 | 0.200 | Try Our New Burger |
+| 4 | 0.000 | 0.100 | 0.133 | 0.200 | 0.000 | 0.000 | Lost City Near |
+| 5 | 0.400 | 0.500 | 0.420 | 0.280 | 0.500 | **0.500** | Tonight Binary StandUp |
+| 6 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 0.875 | Fearless |
+| 7 | 0.611 | 0.544 | 0.389 | 0.944 | 0.944 | 0.822 | Loved And Remembered |
+
+s125 vs s100：0 胜 3 负 5 平（−0.049）；s125 vs 基座：5 胜 2 负 1 平（**+0.080，+13.7%**）。
+
+## D.2 解读
+
+- **mini8 在 s125 出现第二次样本级回落**（−0.049，s50 曾 −0.016）：滑落来自 p3（0.347→0.200）、p6（1.000→0.875，"Fearles" 少一个 s）、p7（0.944→0.822）——全部是高位样本的字符级瑕疵，无样本崩盘（最低非零样本结构完整）。
+- **n=8 的单样本权重 = 0.125/样本**：p6 一处掉字即贡献 −0.016 均值。结合 s50 的同类回落后 s75/s100 创新高，判断为噪声带内波动；**裁决指标是 64 行训练内 val@125**（异步落账中）。
+- 对基座优势依然明确（+0.080）；三个满分样本守住两个（p0/p2），难例 p3 仍显著高于早期 ckpt（0.200 vs s25 的 0.080）。
+
+## D.3 产物
+
+- 视频 `workspace/val_generations/eval_step125/125/{0..7}.mp4`；明细 `eval_step125/125.jsonl`；日志 `logs/eval_step125.log`。
+- ModelScope `…-step125` 推送日志 `logs/ms_upload_step125.log`（14:06Z 完成）。
+- 磁盘：step-100 ckpt 已按轮替+空间预案删除（ModelScope 备份 + 已评测），/data 53G 空闲，为 step-150 终版落盘预留。
