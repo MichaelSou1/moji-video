@@ -133,3 +133,6 @@ outputs
 
 # personal local dev notes (not part of upstream contribution docs)
 /MEMORY.md
+
+# local agent workspace (memory, temp scripts) — not project content
+.workbuddy/

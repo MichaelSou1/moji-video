@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>step-150 全量评测报告 · Wan2.2-TI2V-5B OCR (dance_grpo)</title>
+<style>
+  :root{--bg:#0f1115;--surface:#171a21;--surface2:#1f232c;--border:#2a2f3a;--text:#e6e8eb;--muted:#9aa3b0;--teal:#1D9E75;--teal-l:#5DCAA5;--purple:#7F77DD;--coral:#D85A30;--amber:#EF9F27;--gray:#888780}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.65;font-size:14px}
+  .wrap{max-width:980px;margin:0 auto;padding:32px 24px 64px}
+  h1{font-size:22px;font-weight:600;margin:0 0 4px}
+  h2{font-size:16px;font-weight:600;margin:32px 0 12px;color:var(--teal-l);border-left:3px solid var(--teal);padding-left:10px}
+  h3{font-size:14px;font-weight:600;margin:20px 0 8px;color:var(--text)}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:24px}
+  .pill{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2px 10px;font-size:12px;color:var(--muted);margin-right:6px}
+  .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:8px 0 8px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
+  .card .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .card .val{font-size:24px;font-weight:600;margin-top:4px}
+  .card .val.t{color:var(--teal-l)}
+  .card .val.up{color:var(--teal-l)}
+  .card .delta{font-size:12px;color:var(--teal-l);margin-top:2px}
+  table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;font-size:13px}
+  th,td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:var(--surface2);color:var(--muted);font-weight:500;font-size:12px}
+  tr:last-child td{border-bottom:none}
+  td.num{font-variant-numeric:tabular-nums;text-align:right}
+  td.pos{color:var(--teal-l)} td.neg{color:var(--coral)}
+  code,.mono{font-family:"SF Mono",Consolas,Menlo,monospace;font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:4px;color:var(--amber)}
+  .barrow{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:12px}
+  .barrow .lab{width:120px;color:var(--muted);text-align:right}
+  .barwrap{flex:1;background:var(--surface2);border-radius:4px;height:18px;overflow:hidden;position:relative}
+  .bar{height:100%;border-radius:4px}
+  .bar.b{background:var(--gray);opacity:.7}
+  .bar.s{background:linear-gradient(90deg,var(--purple),var(--teal))}
+  .barrow .cnt{width:80px;text-align:right;font-variant-numeric:tabular-nums;color:var(--text);font-size:11px}
+  .legend{display:flex;gap:16px;font-size:12px;color:var(--muted);margin-bottom:6px}
+  .legend span{display:flex;align-items:center;gap:4px}
+  .sw{width:10px;height:10px;border-radius:2px}
+  .sample{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0}
+  .sample .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .tag{font-size:11px;padding:1px 8px;border-radius:10px;font-weight:500}
+  .tag.high{background:rgba(29,158,117,.15);color:var(--teal-l)}
+  .tag.mid{background:rgba(239,159,39,.15);color:var(--amber)}
+  .tag.low{background:rgba(216,90,48,.15);color:var(--coral)}
+  .kv{font-size:12px;color:var(--muted);margin:3px 0}
+  .kv b{color:var(--text);font-weight:500}
+  .quote{color:var(--text);font-style:italic}
+  .note{background:rgba(127,119,221,.08);border:1px solid rgba(127,119,221,.3);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--muted);margin-top:16px}
+  .insight{background:rgba(29,158,117,.06);border:1px solid rgba(29,158,117,.3);border-radius:8px;padding:14px 16px;margin-top:12px}
+  footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);padding-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>step-150 全量评测报告</h1>
+  <div class="sub">Wan2.2-TI2V-5B-Diffusers · OCR 文本渲染奖励评测 · dance_grpo 训练 150 步</div>
+  <div>
+    <span class="pill">experiment: wan22_5b_t2v_ocr_s150</span>
+    <span class="pill">resume global_step_150</span>
+    <span class="pill">GPU 0,2</span>
+    <span class="pill">2026-08-05 22:15 → 08-06 11:19 (北京)</span>
+    <span class="pill">状态: COMPLETED</span>
+  </div>
+
+  <h2>核心指标</h2>
+  <div class="cards">
+    <div class="card"><div class="lbl">reward/mean@1</div><div class="val t">0.5216</div><div class="delta">vs baseline 0.4991 · +0.0225</div></div>
+    <div class="card"><div class="lbl">相对提升</div><div class="val up">+4.5%</div><div class="delta">p ≈ 0.0014 (配对 t=3.20)</div></div>
+    <div class="card"><div class="lbl">样本数</div><div class="val">1018</div></div>
+    <div class="card"><div class="lbl">全对 / 全错</div><div class="val">126 / 122</div><div class="delta">+3 全对 / −18 全错</div></div>
+  </div>
+  <div class="sub">奖励由 GenRM（Qwen3-VL-8B-Instruct）打分，连续值 [0,1]。<b style="color:var(--teal-l)">统计显著但效应量小</b>（Cohen's d≈0.10）。</div>
+
+  <h2>奖励分布对比 baseline</h2>
+  <div class="legend"><span><span class="sw" style="background:var(--gray)"></span>baseline</span><span><span class="sw" style="background:var(--teal)"></span>step-150</span></div>
+  <div class="barrow"><div class="lab">0.0（全错）</div><div class="barwrap"><div class="bar b" style="width:64%"></div><div class="bar s" style="width:56%;position:absolute;top:0;left:0;mix-blend-mode:screen;opacity:.85"></div></div><div class="cnt">140 → 122</div></div>
+  <div class="barrow"><div class="lab">0.01–0.25</div><div class="barwrap"><div class="bar b" style="width:85%"></div><div class="bar s" style="width:86%;position:absolute;top:0;left:0;mix-blend-mode:screen;opacity:.85"></div></div><div class="cnt">187 → 189</div></div>
+  <div class="barrow"><div class="lab">0.26–0.49</div><div class="barwrap"><div class="bar b" style="width:62%"></div><div class="bar s" style="width:62%;position:absolute;top:0;left:0;mix-blend-mode:screen;opacity:.85"></div></div><div class="cnt">137 → 137</div></div>
+  <div class="barrow"><div class="lab">0.50</div><div class="barwrap"><div class="bar b" style="width:5%"></div><div class="bar s" style="width:5%;position:absolute;top:0;left:0;mix-blend-mode:screen;opacity:.85"></div></div><div class="cnt">11 → 10</div></div>
+  <div class="barrow"><div class="lab">0.51–0.74</div><div class="barwrap"><div class="bar b" style="width:86%"></div><div class="bar s" style="width:86%;position:absolute;top:0;left:0;mix-blend-mode:screen;opacity:.85"></div></div><div class="cnt">189 → 189</div></div>
+  <div class="barrow"><div class="lab">0.75–0.99</div><div class="barwrap"><div class="bar b" style="width:96%"></div><div class="bar s" style="width:100%;position:absolute;top:0;left:0;mix-blend-mode:screen;opacity:.85"></div></div><div class="cnt">212 → 228</div></div>
+  <div class="barrow"><div class="lab">1.0（全对）</div><div class="barwrap"><div class="bar b" style="width:56%"></div><div class="bar s" style="width:57%;position:absolute;top:0;left:0;mix-blend-mode:screen;opacity:.85"></div></div><div class="cnt">123 → 126</div></div>
+  <div class="sub">提升集中在两头：<b style="color:var(--teal-l)">底部收缩</b>（全错 −18）、<b style="color:var(--teal-l)">顶部扩张</b>（高分段 +16、全对 +3）。中间段几乎不动。</div>
+
+  <h2>关键发现：向均值收敛（削峰填谷）</h2>
+  <div class="insight">按 baseline 原始奖励水平分桶看变化——step-150 把<b>底部难题大幅拉起</b>，却<b>把顶部简单题轻微压低</b>。这是 RL 微调典型的鲁棒性/精度权衡，而非内容或长度驱动。</div>
+  <table style="margin-top:10px">
+    <tr><th>baseline 水平</th><th>n</th><th>baseline 均值</th><th>step-150 均值</th><th>Δ</th><th>解读</th></tr>
+    <tr><td>b ≥ 0.9（已做对）</td><td class="num">175</td><td class="num">0.980</td><td class="num">0.895</td><td class="num neg">−0.086</td><td>简单题被轻微打坏（字符级出错）</td></tr>
+    <tr><td>0.5 ≤ b &lt; 0.9（中等）</td><td class="num">363</td><td class="num">0.712</td><td class="num">0.690</td><td class="num neg">−0.022</td><td>略退</td></tr>
+    <tr><td>b &lt; 0.5（做不出）</td><td class="num">480</td><td class="num">0.163</td><td class="num">0.258</td><td class="num pos">+0.095</td><td>难题大幅改善</td></tr>
+  </table>
+  <div class="sub">退步例子：baseline 接近满分、step-150 字符级出错——"Fearless"→"Fearles"、"Sea Wolf Crew"→"SEA W CREW"、"Gold Yes"→"Golad Yes"、"Loved And Remembered"→乱码。整体净正（+0.0225，p≈0.0014），约 1/3 样本退步。</div>
+
+  <h2>代表性样本</h2>
+  <h3>高分（reward = 1.0）</h3>
+  <div class="sample">
+    <div class="hd"><span class="tag high">high · 1.0</span><span class="mono">150/0.mp4</span></div>
+    <div class="kv">prompt: <span class="quote">A high-fashion runway … displaying "Spring Collection 2024" …</span></div>
+    <div class="kv">目标 (gts): <b>Spring Collection 2024</b> → 输出: <b>Spring / Collection 2024</b></div>
+  </div>
+  <div class="sample">
+    <div class="hd"><span class="tag high">high · 1.0</span><span class="mono">150/2.mp4</span></div>
+    <div class="kv">prompt: <span class="quote">An engraved silver ring with the inscription "Forever Yours" …</span></div>
+    <div class="kv">目标 (gts): <b>Forever Yours</b> → 输出: <b>Forever Yours</b></div>
+  </div>
+
+  <h3>中分（reward ≈ 0.46–0.52）</h3>
+  <div class="sample">
+    <div class="hd"><span class="tag mid">mid · 0.517</span><span class="mono">150/4.mp4</span></div>
+    <div class="kv">prompt: <span class="quote">A weathered cave explorer's journal page … "Lost City Near" …</span></div>
+    <div class="kv">目标 (gts): <b>Lost City Near</b> → 输出: <b>LOST... / WHO NEAR</b></div>
+  </div>
+  <div class="sample">
+    <div class="hd"><span class="tag mid">mid · 0.459</span><span class="mono">150/10.mp4</span></div>
+    <div class="kv">prompt: <span class="quote">A mountain summit signpost … "Elevation 8000 Feet" …</span></div>
+    <div class="kv">目标 (gts): <b>Elevation 8000 Feet</b> → 输出: <b>8000 Feet</b>（漏词）</div>
+  </div>
+
+  <h3>低分（reward = 0.0）</h3>
+  <div class="sample">
+    <div class="hd"><span class="tag low">low · 0.0</span><span class="mono">150/8.mp4</span></div>
+    <div class="kv">prompt: <span class="quote">A futuristic urban street … cyborg shop sign glowing "Upgrades Available" …</span></div>
+    <div class="kv">目标 (gts): <b>Upgrades Available</b> → 输出: <b>UREGORDEIAE / SUNRISE / IV / TERRA COHORT / TUIA</b>（幻觉）</div>
+  </div>
+  <div class="sample">
+    <div class="hd"><span class="tag low">low · 0.0</span><span class="mono">150/14.mp4</span></div>
+    <div class="kv">prompt: <span class="quote">A ski resort trail map … "Black Diamond Run" …</span></div>
+    <div class="kv">目标 (gts): <b>Black Diamond Run</b> → 输出: <b>BACET / BACKCOUNTRY / … VOLI ×多行</b>（重复退化）</div>
+  </div>
+
+  <h2>评测配置与产出</h2>
+  <table>
+    <tr><th>项</th><th>值</th></tr>
+    <tr><td>实验名</td><td><span class="mono">wan22_5b_t2v_ocr_s150</span>（resume_mode=auto, 加载 global_step_150）</td></tr>
+    <tr><td>checkpoint</td><td><span class="mono">/data/verl-omni/checkpoints/dance_grpo/wan22_5b_t2v_ocr_s150/global_step_150</span>（28G）</td></tr>
+    <tr><td>奖励模型</td><td>/data/models/Qwen3-VL-8B-Instruct（GenRM, max_model_len=16384）</td></tr>
+    <tr><td>数据</td><td><span class="mono">/data/verl-omni/workspace/data/ocr/wan22/test.parquet</span>（1018 条）</td></tr>
+    <tr><td>rollout / reward gpu_memory_utilization</td><td>0.24 / 0.32</td></tr>
+    <tr><td>逐样本结果</td><td><span class="mono">/data/verl-omni/workspace/val_generations/wan22_5b_t2v_ocr_s150/150.jsonl</span>（1018 行，727KB）</td></tr>
+    <tr><td>训练曲线各步验证</td><td><span class="mono">val_generations/wan22_5b_t2v_ocr_s150/{0,25,50,75,100,125}.jsonl</span>（小样本）</td></tr>
+  </table>
+
+  <div class="note"><b>建议下一步</b>：① 多 rollout（n=4–8）取均值以降低采样方差；② 换/加一个判官交叉验证 GenRM；③ 继续训练到 step 250/300 看是否饱和；④ 若需保住简单题精度，可加大 KL 约束 / 降 actor LR / 早停。</div>
+
+  <footer>生成于 2026-08-06 · 数据源 huirui (pku-tangh) · verl-omni dance_grpo 全量评测</footer>
+</div>
+</body>
+</html>
