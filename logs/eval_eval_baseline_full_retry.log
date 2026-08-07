@@ -1,0 +1,3 @@
+wrapper start Wed Aug  5 02:15:28 PM UTC 2026 EXP=eval_baseline_full RESUME=
+attempt 1/30 | GPU 6,4 (neighbors max=0.56) | rollout=0.24 reward=0.32
+attempt 1 COMPLETED (inner rc=0)

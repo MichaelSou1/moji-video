@@ -1,0 +1,249 @@
+=== attempt 1/5 | GPU 2,4 | rollout_util=0.30 reward_util=0.24 | 2026-08-05 08:16:18 UTC ===
+0, 52049 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 41385 MiB, 97871 MiB
+3, 74281 MiB, 97871 MiB
+4, 51582 MiB, 97871 MiB
+5, 58790 MiB, 97871 MiB
+6, 82464 MiB, 97871 MiB
+7, 54311 MiB, 97871 MiB
+=== attempt 1 exited rc=0 at 2026-08-05 08:16:18 UTC ===
+=== step-150 full eval COMPLETED ===
+=== attempt 1/5 | GPU 2,0 | rollout_util=0.30 reward_util=0.24 | 2026-08-05 08:19:14 UTC ===
+0, 52049 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 41385 MiB, 97871 MiB
+3, 61121 MiB, 97871 MiB
+4, 53660 MiB, 97871 MiB
+5, 58790 MiB, 97871 MiB
+6, 69536 MiB, 97871 MiB
+7, 55331 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 1/6 | GPU 2,4 | rollout_util=0.18 reward_util=0.20 | 2026-08-05 08:25:00 UTC ===
+0, 55911 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 41385 MiB, 97871 MiB
+3, 72893 MiB, 97871 MiB
+4, 53660 MiB, 97871 MiB
+5, 58790 MiB, 97871 MiB
+6, 82646 MiB, 97871 MiB
+7, 56381 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 1 FAILED (script_rc=0) at 2026-08-05 08:41:44 UTC ===
+    oom_lines=0
+=== sleeping 420s before retry ===
+=== attempt 1/14 | GPU 2,4 (neighbors 0.196,0.548) | rollout=0.24 reward=0.22 | 2026-08-05 08:45:44 UTC ===
+0, 85051 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 19218 MiB, 97871 MiB
+3, 26311 MiB, 97871 MiB
+4, 53620 MiB, 97871 MiB
+5, 59560 MiB, 97871 MiB
+6, 36836 MiB, 97871 MiB
+7, 56721 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 1 FAILED (rc=0) at 2026-08-05 09:02:16 UTC ===
+    oom_lines=0
+=== sleeping 180s before retry ===
+=== attempt 2/14 | GPU 0,2 (neighbors 0.183,0.372) | rollout=0.31 reward=0.22 | 2026-08-05 09:05:16 UTC ===
+0, 17883 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 36399 MiB, 97871 MiB
+3, 26311 MiB, 97871 MiB
+4, 53618 MiB, 97871 MiB
+5, 57778 MiB, 97871 MiB
+6, 36894 MiB, 97871 MiB
+7, 57213 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 1/20 | GPU 0,2 (neighbors 0.183,0.372) | rollout=0.29 reward=0.30 | 2026-08-05 09:07:18 UTC ===
+0, 17883 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 36399 MiB, 97871 MiB
+3, 26311 MiB, 97871 MiB
+4, 53618 MiB, 97871 MiB
+5, 59534 MiB, 97871 MiB
+6, 36894 MiB, 97871 MiB
+7, 57629 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 1 FAILED (rc=0) at 2026-08-05 09:25:01 UTC ===
+    oom_lines=0
+=== sleeping 150s before retry ===
+=== attempt 2/20 | GPU 0,2 (neighbors 0.183,0.386) | rollout=0.28 reward=0.30 | 2026-08-05 09:27:32 UTC ===
+0, 17883 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 37772 MiB, 97871 MiB
+3, 60635 MiB, 97871 MiB
+4, 53658 MiB, 97871 MiB
+5, 60464 MiB, 97871 MiB
+6, 37802 MiB, 97871 MiB
+7, 57673 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 2 FAILED (rc=0) at 2026-08-05 09:45:16 UTC ===
+    oom_lines=0
+=== sleeping 150s before retry ===
+=== attempt 3/20 | GPU 0,2 (neighbors 0.183,0.400) | rollout=0.28 reward=0.30 | 2026-08-05 09:47:46 UTC ===
+0, 17883 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 39132 MiB, 97871 MiB
+3, 60635 MiB, 97871 MiB
+4, 53772 MiB, 97871 MiB
+5, 59284 MiB, 97871 MiB
+6, 37074 MiB, 97871 MiB
+7, 54171 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 3 FAILED (rc=0) at 2026-08-05 10:05:36 UTC ===
+    oom_lines=0
+=== sleeping 150s before retry ===
+=== attempt 4/20 | GPU 0,2 (neighbors 0.183,0.400) | rollout=0.28 reward=0.30 | 2026-08-05 10:08:06 UTC ===
+0, 17883 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 39132 MiB, 97871 MiB
+3, 60655 MiB, 97871 MiB
+4, 54502 MiB, 97871 MiB
+5, 61532 MiB, 97871 MiB
+6, 39172 MiB, 97871 MiB
+7, 60085 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 4 FAILED (rc=0) at 2026-08-05 10:25:57 UTC ===
+    oom_lines=0
+=== sleeping 150s before retry ===
+=== attempt 5/20 | GPU 0,2 (neighbors 0.191,0.400) | rollout=0.28 reward=0.30 | 2026-08-05 10:28:27 UTC ===
+0, 18710 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 39132 MiB, 97871 MiB
+3, 60655 MiB, 97871 MiB
+4, 54564 MiB, 97871 MiB
+5, 61618 MiB, 97871 MiB
+6, 38836 MiB, 97871 MiB
+7, 60151 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 5 FAILED (rc=0) at 2026-08-05 10:46:19 UTC ===
+    oom_lines=0
+=== sleeping 150s before retry ===
+=== attempt 6/20 | GPU 0,2 (neighbors 0.191,0.400) | rollout=0.28 reward=0.30 | 2026-08-05 10:48:49 UTC ===
+0, 18710 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 39132 MiB, 97871 MiB
+3, 60655 MiB, 97871 MiB
+4, 54268 MiB, 97871 MiB
+5, 61300 MiB, 97871 MiB
+6, 39172 MiB, 97871 MiB
+7, 60127 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 6 FAILED (rc=0) at 2026-08-05 11:06:41 UTC ===
+    oom_lines=0
+=== sleeping 150s before retry ===
+=== attempt 7/20 | GPU 0,2 (neighbors 0.191,0.415) | rollout=0.28 reward=0.30 | 2026-08-05 11:09:12 UTC ===
+0, 18710 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 40658 MiB, 97871 MiB
+3, 60655 MiB, 97871 MiB
+4, 54564 MiB, 97871 MiB
+5, 61636 MiB, 97871 MiB
+6, 39048 MiB, 97871 MiB
+7, 60129 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 7 FAILED (rc=0) at 2026-08-05 11:27:03 UTC ===
+    oom_lines=0
+=== sleeping 150s before retry ===
+=== attempt 8/20 | GPU 0,2 (neighbors 0.191,0.415) | rollout=0.28 reward=0.30 | 2026-08-05 11:29:34 UTC ===
+0, 18710 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 40658 MiB, 97871 MiB
+3, 51883 MiB, 97871 MiB
+4, 52868 MiB, 97871 MiB
+5, 62034 MiB, 97871 MiB
+6, 38836 MiB, 97871 MiB
+7, 60563 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 8 FAILED (rc=0) at 2026-08-05 11:47:17 UTC ===
+    oom_lines=0
+=== sleeping 150s before retry ===
+=== attempt 9/20 | GPU 0,2 (neighbors 0.191,0.415) | rollout=0.28 reward=0.30 | 2026-08-05 11:49:47 UTC ===
+0, 18710 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 40658 MiB, 97871 MiB
+3, 53671 MiB, 97871 MiB
+4, 54524 MiB, 97871 MiB
+5, 61340 MiB, 97871 MiB
+6, 39132 MiB, 97871 MiB
+7, 60149 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 9 FAILED (rc=0) at 2026-08-05 12:07:38 UTC ===
+    oom_lines=0
+=== sleeping 150s before retry ===
+=== attempt 10/20 | GPU 0,2 (neighbors 0.191,0.426) | rollout=0.28 reward=0.30 | 2026-08-05 12:10:08 UTC ===
+0, 18710 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 41702 MiB, 97871 MiB
+3, 53671 MiB, 97871 MiB
+4, 52822 MiB, 97871 MiB
+5, 61216 MiB, 97871 MiB
+6, 38736 MiB, 97871 MiB
+7, 58135 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 10 FAILED (rc=0) at 2026-08-05 12:28:03 UTC ===
+    oom_lines=0
+=== sleeping 150s before retry ===
+=== attempt 11/20 | GPU 0,2 (neighbors 0.191,0.426) | rollout=0.28 reward=0.30 | 2026-08-05 12:30:34 UTC ===
+0, 18710 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 41702 MiB, 97871 MiB
+3, 53671 MiB, 97871 MiB
+4, 54526 MiB, 97871 MiB
+5, 61616 MiB, 97871 MiB
+6, 39172 MiB, 97871 MiB
+7, 60147 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 11 FAILED (rc=0) at 2026-08-05 12:48:17 UTC ===
+    oom_lines=0
+=== sleeping 150s before retry ===
+=== attempt 12/20 | GPU 0,2 (neighbors 0.191,0.426) | rollout=0.28 reward=0.30 | 2026-08-05 12:50:47 UTC ===
+0, 18710 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 41702 MiB, 97871 MiB
+3, 54445 MiB, 97871 MiB
+4, 54546 MiB, 97871 MiB
+5, 61656 MiB, 97871 MiB
+6, 39154 MiB, 97871 MiB
+7, 60069 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 12 FAILED (rc=0) at 2026-08-05 13:08:28 UTC ===
+    oom_lines=0
+=== sleeping 150s before retry ===
+=== attempt 13/20 | GPU 0,2 (neighbors 0.200,0.426) | rollout=0.28 reward=0.30 | 2026-08-05 13:10:58 UTC ===
+0, 19541 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 41702 MiB, 97871 MiB
+3, 54445 MiB, 97871 MiB
+4, 54188 MiB, 97871 MiB
+5, 61532 MiB, 97871 MiB
+6, 39048 MiB, 97871 MiB
+7, 60149 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 13 FAILED (rc=0) at 2026-08-05 13:28:55 UTC ===
+    oom_lines=0
+=== sleeping 150s before retry ===
+=== attempt 14/20 | GPU 0,2 (neighbors 0.200,0.426) | rollout=0.28 reward=0.30 | 2026-08-05 13:31:25 UTC ===
+0, 19541 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 41702 MiB, 97871 MiB
+3, 54445 MiB, 97871 MiB
+4, 54524 MiB, 97871 MiB
+5, 61656 MiB, 97871 MiB
+6, 39152 MiB, 97871 MiB
+7, 60069 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)
+=== attempt 14 FAILED (rc=0) at 2026-08-05 13:49:13 UTC ===
+    oom_lines=0
+=== sleeping 150s before retry ===
+=== attempt 15/20 | GPU 0,2 (neighbors 0.200,0.426) | rollout=0.28 reward=0.30 | 2026-08-05 13:51:43 UTC ===
+0, 19541 MiB, 97871 MiB
+1, 84267 MiB, 97871 MiB
+2, 41702 MiB, 97871 MiB
+3, 54445 MiB, 97871 MiB
+4, 54128 MiB, 97871 MiB
+5, 61300 MiB, 97871 MiB
+6, 39074 MiB, 97871 MiB
+7, 60171 MiB, 97871 MiB
+python: /data/verl-omni/.venv/bin/python3 (Python 3.12.13)

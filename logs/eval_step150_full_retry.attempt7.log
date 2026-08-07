@@ -1,0 +1,1105 @@
++ CUDA_COMPAT_DIR=/data/verl-omni/.cuda-compat/usr/local/cuda-13.3/compat
++ VENV_CU13_LIB=/data/verl-omni/.venv/lib/python3.12/site-packages/nvidia/cu13/lib
++ '[' -d /data/verl-omni/.cuda-compat/usr/local/cuda-13.3/compat ']'
++ export LD_LIBRARY_PATH=/data/verl-omni/.cuda-compat/usr/local/cuda-13.3/compat:/data/verl-omni/.venv/lib/python3.12/site-packages/nvidia/cu13/lib:/data1/miniconda3/envs/videorepa/lib/python3.10/site-packages/nvidia/cudnn/lib:/usr/local/cuda-12.8/lib64:/data1/miniconda3/envs/videorepa/lib/python3.10/site-packages/nvidia/cudnn/lib:/usr/local/cuda-12.8/lib64:
++ LD_LIBRARY_PATH=/data/verl-omni/.cuda-compat/usr/local/cuda-13.3/compat:/data/verl-omni/.venv/lib/python3.12/site-packages/nvidia/cu13/lib:/data1/miniconda3/envs/videorepa/lib/python3.10/site-packages/nvidia/cudnn/lib:/usr/local/cuda-12.8/lib64:/data1/miniconda3/envs/videorepa/lib/python3.10/site-packages/nvidia/cudnn/lib:/usr/local/cuda-12.8/lib64:
++ WORKSPACE=/data/verl-omni/workspace
++ ocr_train_path=/data/verl-omni/workspace/data/ocr/wan22/train.parquet
++ ocr_test_path=/data/verl-omni/workspace/data/ocr/wan22/test_smoke.parquet
++ model_name=/data/models/Wan2.2-TI2V-5B-Diffusers
++ reward_model_name=/data/models/Qwen3-VL-8B-Instruct
++ reward_function_path=verl_omni/utils/reward_score/genrm_ocr.py
++ CUDA_VISIBLE_DEVICES=0,2
++ export CUDA_VISIBLE_DEVICES
++ NUM_GPUS_ACTOR_ROLLOUT_REWARD=2
++ ROLLOUT_TP=1
++ REWARD_TP=1
++ ENGINE=vllm_omni
++ REWARD_ENGINE=vllm
++ python3 -m verl_omni.trainer.main_diffusion algorithm.adv_estimator=dance_grpo actor_rollout_ref.model.algorithm=dance_grpo actor_rollout_ref.actor.diffusion_loss.loss_mode=dance_grpo data.train_files=/data/verl-omni/workspace/data/ocr/wan22/train.parquet data.val_files=/data/verl-omni/workspace/data/ocr/wan22/test_smoke.parquet data.train_batch_size=4 data.val_batch_size=8 data.max_prompt_length=1024 data.seed=42 actor_rollout_ref.model.path=/data/models/Wan2.2-TI2V-5B-Diffusers actor_rollout_ref.model.attn_backend=native 'actor_rollout_ref.model.custom_chat_template="{% if messages %}{% for message in messages %}{% if message[\"role\"] == \"user\" %}{{ message[\"content\"] }}{% endif %}{% endfor %}{% endif %}</s>"' actor_rollout_ref.actor.optim.lr=1e-5 actor_rollout_ref.actor.optim.weight_decay=0.0001 actor_rollout_ref.actor.ppo_mini_batch_size=4 actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=4 actor_rollout_ref.actor.fsdp_config.param_offload=True actor_rollout_ref.actor.fsdp_config.optimizer_offload=True actor_rollout_ref.actor.fsdp_config.model_dtype=bfloat16 actor_rollout_ref.actor.fsdp_config.wrap_policy.min_num_params=10000 actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu=16 actor_rollout_ref.rollout.tensor_model_parallel_size=1 actor_rollout_ref.rollout.name=vllm_omni actor_rollout_ref.rollout.n=8 actor_rollout_ref.rollout.seed=42 actor_rollout_ref.rollout.agent.num_workers=2 actor_rollout_ref.rollout.load_format=safetensors actor_rollout_ref.rollout.layered_summon=True actor_rollout_ref.rollout.rollout_attn_backend=TORCH_SDPA actor_rollout_ref.rollout.pipeline.true_cfg_scale=5.0 actor_rollout_ref.rollout.pipeline.height=704 actor_rollout_ref.rollout.pipeline.width=1280 actor_rollout_ref.rollout.pipeline.num_frames=8 actor_rollout_ref.rollout.pipeline.num_inference_steps=10 actor_rollout_ref.rollout.pipeline.guidance_scale=5.0 actor_rollout_ref.rollout.pipeline.max_sequence_length=1024 actor_rollout_ref.rollout.algo.noise_level=1.2 actor_rollout_ref.rollout.algo.sde_type=dance_sde actor_rollout_ref.rollout.algo.sde_window_size=2 'actor_rollout_ref.rollout.algo.sde_window_range=[0,5]' actor_rollout_ref.rollout.val_kwargs.pipeline.num_inference_steps=50 actor_rollout_ref.rollout.val_kwargs.algo.noise_level=0.0 actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu=16 reward.num_workers=2 reward.reward_model.enable=True reward.reward_model.model_path=/data/models/Qwen3-VL-8B-Instruct reward.reward_model.rollout.name=vllm reward.reward_model.rollout.tensor_model_parallel_size=1 reward.reward_model.rollout.max_model_len=32768 reward.custom_reward_function.path=verl_omni/utils/reward_score/genrm_ocr.py reward.custom_reward_function.name=compute_score_ocr 'trainer.logger=["console", "tensorboard"]' trainer.project_name=dance_grpo trainer.experiment_name=wan22_5b_t2v_ocr_s150 trainer.log_val_generations=8 trainer.val_before_train=True trainer.validation_data_dir=/data/verl-omni/workspace/val_generations/wan22_5b_t2v_ocr_s150 trainer.n_gpus_per_node=2 trainer.nnodes=1 trainer.save_freq=25 trainer.test_freq=25 trainer.total_epochs=15 trainer.total_training_steps=150 trainer.val_only=True trainer.experiment_name=wan22_5b_t2v_ocr_s150 trainer.resume_mode=auto data.val_files=/data/verl-omni/workspace/data/ocr/wan22/test.parquet trainer.validation_data_dir=/data/verl-omni/workspace/val_generations/eval_step150_full actor_rollout_ref.rollout.gpu_memory_utilization=0.28 reward.reward_model.rollout.gpu_memory_utilization=0.30 reward.reward_model.rollout.max_model_len=16384
++ tee run_wan22_5b_t2v_ocr.log
+INFO 08-05 11:09:21 [patch.py:252] NVFP4 W4A4 weight_scale NaN-clamp: installed.
+/data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/engine/mindspeed/transformer_impl.py:24: UserWarning: NPU not support router replay for now.
+  from verl.utils.megatron.router_replay_patch import RouterReplay
+2026-08-05 11:09:32,678	INFO worker.py:2015 -- Started a local Ray instance. View the dashboard at [1m[32mhttp://127.0.0.1:8265 [39m[22m
+ray init kwargs: {'num_cpus': None, 'runtime_env': {'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN', 'VLLM_LOGGING_LEVEL': 'WARN', 'VLLM_ALLOW_RUNTIME_LORA_UPDATING': 'true', 'CUDA_DEVICE_MAX_CONNECTIONS': '1', 'VLLM_DISABLE_COMPILE_CACHE': '1', 'HCCL_HOST_SOCKET_PORT_RANGE': 'auto', 'HCCL_NPU_SOCKET_PORT_RANGE': 'auto', 'HSA_NO_SCRATCH_RECLAIM': '1'}, 'working_dir': None}}
+[36m(TaskRunner pid=772550)[0m TaskRunner hostname: huirui, PID: 772550
+[36m(TaskRunner pid=772550)[0m {'actor_rollout_ref': {'actor': {'_target_': 'verl_omni.workers.config.diffusion.FSDPDiffusionActorConfig',
+[36m(TaskRunner pid=772550)[0m                                  'checkpoint': {'_target_': 'verl.trainer.config.CheckpointConfig',
+[36m(TaskRunner pid=772550)[0m                                                 'async_save': False,
+[36m(TaskRunner pid=772550)[0m                                                 'load_contents': ['model',
+[36m(TaskRunner pid=772550)[0m                                                                   'optimizer',
+[36m(TaskRunner pid=772550)[0m                                                                   'extra'],
+[36m(TaskRunner pid=772550)[0m                                                 'save_contents': ['model',
+[36m(TaskRunner pid=772550)[0m                                                                   'optimizer',
+[36m(TaskRunner pid=772550)[0m                                                                   'extra']},
+[36m(TaskRunner pid=772550)[0m                                  'data_loader_seed': 42,
+[36m(TaskRunner pid=772550)[0m                                  'diffusion_loss': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionLossConfig',
+[36m(TaskRunner pid=772550)[0m                                                     'adaptive_weight_min': 1e-05,
+[36m(TaskRunner pid=772550)[0m                                                     'add_kl_coefficient': True,
+[36m(TaskRunner pid=772550)[0m                                                     'adv_clip_max': 5.0,
+[36m(TaskRunner pid=772550)[0m                                                     'clip_ratio': 0.0001,
+[36m(TaskRunner pid=772550)[0m                                                     'dpo_beta': 2000.0,
+[36m(TaskRunner pid=772550)[0m                                                     'kl_mask_threshold': 1e-05,
+[36m(TaskRunner pid=772550)[0m                                                     'loss_mode': 'dance_grpo',
+[36m(TaskRunner pid=772550)[0m                                                     'mix_beta': 0.5,
+[36m(TaskRunner pid=772550)[0m                                                     'ref_kl_coef': 0.0},
+[36m(TaskRunner pid=772550)[0m                                  'distill_loss_coef': 1.0,
+[36m(TaskRunner pid=772550)[0m                                  'distill_loss_mode': 'distill_kl',
+[36m(TaskRunner pid=772550)[0m                                  'fsdp_config': {'_target_': 'verl.workers.config.FSDPEngineConfig',
+[36m(TaskRunner pid=772550)[0m                                                  'dtype': 'bfloat16',
+[36m(TaskRunner pid=772550)[0m                                                  'forward_only': False,
+[36m(TaskRunner pid=772550)[0m                                                  'forward_prefetch': False,
+[36m(TaskRunner pid=772550)[0m                                                  'fsdp_size': -1,
+[36m(TaskRunner pid=772550)[0m                                                  'full_determinism': False,
+[36m(TaskRunner pid=772550)[0m                                                  'model_dtype': 'bfloat16',
+[36m(TaskRunner pid=772550)[0m                                                  'offload_policy': False,
+[36m(TaskRunner pid=772550)[0m                                                  'optimizer_offload': True,
+[36m(TaskRunner pid=772550)[0m                                                  'param_offload': True,
+[36m(TaskRunner pid=772550)[0m                                                  'reshard_after_forward': True,
+[36m(TaskRunner pid=772550)[0m                                                  'seed': 42,
+[36m(TaskRunner pid=772550)[0m                                                  'strategy': 'fsdp',
+[36m(TaskRunner pid=772550)[0m                                                  'ulysses_sequence_parallel_size': 1,
+[36m(TaskRunner pid=772550)[0m                                                  'use_orig_params': False,
+[36m(TaskRunner pid=772550)[0m                                                  'wrap_policy': {'min_num_params': 10000}},
+[36m(TaskRunner pid=772550)[0m                                  'grad_clip': 1.0,
+[36m(TaskRunner pid=772550)[0m                                  'kl_loss_coef': 0.001,
+[36m(TaskRunner pid=772550)[0m                                  'loss_scale_factor': None,
+[36m(TaskRunner pid=772550)[0m                                  'optim': {'_target_': 'verl.workers.config.FSDPOptimizerConfig',
+[36m(TaskRunner pid=772550)[0m                                            'betas': [0.9, 0.999],
+[36m(TaskRunner pid=772550)[0m                                            'clip_grad': 1.0,
+[36m(TaskRunner pid=772550)[0m                                            'lr': 1e-05,
+[36m(TaskRunner pid=772550)[0m                                            'lr_scheduler_type': 'constant',
+[36m(TaskRunner pid=772550)[0m                                            'lr_warmup_steps': -1,
+[36m(TaskRunner pid=772550)[0m                                            'lr_warmup_steps_ratio': 0.0,
+[36m(TaskRunner pid=772550)[0m                                            'min_lr_ratio': 0.0,
+[36m(TaskRunner pid=772550)[0m                                            'num_cycles': 0.5,
+[36m(TaskRunner pid=772550)[0m                                            'optimizer': 'AdamW',
+[36m(TaskRunner pid=772550)[0m                                            'optimizer_impl': 'torch.optim',
+[36m(TaskRunner pid=772550)[0m                                            'override_optimizer_config': None,
+[36m(TaskRunner pid=772550)[0m                                            'total_training_steps': -1,
+[36m(TaskRunner pid=772550)[0m                                            'warmup_style': None,
+[36m(TaskRunner pid=772550)[0m                                            'weight_decay': 0.0001,
+[36m(TaskRunner pid=772550)[0m                                            'zero_indexed_step': True},
+[36m(TaskRunner pid=772550)[0m                                  'ppo_epochs': 1,
+[36m(TaskRunner pid=772550)[0m                                  'ppo_micro_batch_size_per_gpu': 4,
+[36m(TaskRunner pid=772550)[0m                                  'ppo_mini_batch_size': 4,
+[36m(TaskRunner pid=772550)[0m                                  'profiler': {'_target_': 'verl.utils.profiler.ProfilerConfig',
+[36m(TaskRunner pid=772550)[0m                                               'all_ranks': False,
+[36m(TaskRunner pid=772550)[0m                                               'enable': False,
+[36m(TaskRunner pid=772550)[0m                                               'ranks': [],
+[36m(TaskRunner pid=772550)[0m                                               'save_path': 'outputs/profile',
+[36m(TaskRunner pid=772550)[0m                                               'tool': 'torch',
+[36m(TaskRunner pid=772550)[0m                                               'tool_config': {'nsys': {'_target_': 'verl.utils.profiler.config.NsightToolConfig',
+[36m(TaskRunner pid=772550)[0m                                                                        'discrete': False,
+[36m(TaskRunner pid=772550)[0m                                                                        'name': 'nsight'},
+[36m(TaskRunner pid=772550)[0m                                                               'torch': {'_target_': 'verl.utils.profiler.config.TorchProfilerToolConfig',
+[36m(TaskRunner pid=772550)[0m                                                                         'contents': [],
+[36m(TaskRunner pid=772550)[0m                                                                         'discrete': False,
+[36m(TaskRunner pid=772550)[0m                                                                         'name': 'torch'},
+[36m(TaskRunner pid=772550)[0m                                                               'torch_memory': {'_target_': 'verl.utils.profiler.config.TorchMemoryToolConfig',
+[36m(TaskRunner pid=772550)[0m                                                                                'name': 'torch_memory',
+[36m(TaskRunner pid=772550)[0m                                                                                'stack_depth': 32,
+[36m(TaskRunner pid=772550)[0m                                                                                'trace_alloc_max_entries': 100000}}},
+[36m(TaskRunner pid=772550)[0m                                  'rollout_correction': {'_target_': 'verl.trainer.config.algorithm.RolloutCorrectionConfig',
+[36m(TaskRunner pid=772550)[0m                                                         'bypass_mode': False,
+[36m(TaskRunner pid=772550)[0m                                                         'loss_type': 'ppo_clip',
+[36m(TaskRunner pid=772550)[0m                                                         'rollout_is': None,
+[36m(TaskRunner pid=772550)[0m                                                         'rollout_is_batch_normalize': False,
+[36m(TaskRunner pid=772550)[0m                                                         'rollout_is_threshold': 2.0,
+[36m(TaskRunner pid=772550)[0m                                                         'rollout_rs': None,
+[36m(TaskRunner pid=772550)[0m                                                         'rollout_rs_threshold': None},
+[36m(TaskRunner pid=772550)[0m                                  'rollout_n': 8,
+[36m(TaskRunner pid=772550)[0m                                  'shuffle': False,
+[36m(TaskRunner pid=772550)[0m                                  'strategy': 'fsdp',
+[36m(TaskRunner pid=772550)[0m                                  'use_distill_loss': False,
+[36m(TaskRunner pid=772550)[0m                                  'use_kl_loss': False},
+[36m(TaskRunner pid=772550)[0m                        'hybrid_engine': True,
+[36m(TaskRunner pid=772550)[0m                        'model': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionModelConfig',
+[36m(TaskRunner pid=772550)[0m                                  'algo': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionRolloutAlgoConfig',
+[36m(TaskRunner pid=772550)[0m                                           'noise_level': 1.2,
+[36m(TaskRunner pid=772550)[0m                                           'sde_type': 'dance_sde',
+[36m(TaskRunner pid=772550)[0m                                           'sde_window_range': [0, 5],
+[36m(TaskRunner pid=772550)[0m                                           'sde_window_size': 2},
+[36m(TaskRunner pid=772550)[0m                                  'algorithm': 'dance_grpo',
+[36m(TaskRunner pid=772550)[0m                                  'attn_backend': 'native',
+[36m(TaskRunner pid=772550)[0m                                  'config_path': None,
+[36m(TaskRunner pid=772550)[0m                                  'custom_chat_template': '{% if messages %}{% '
+[36m(TaskRunner pid=772550)[0m                                                          'for message in '
+[36m(TaskRunner pid=772550)[0m                                                          'messages %}{% if '
+[36m(TaskRunner pid=772550)[0m                                                          'message["role"] == '
+[36m(TaskRunner pid=772550)[0m                                                          '"user" %}{{ '
+[36m(TaskRunner pid=772550)[0m                                                          'message["content"] '
+[36m(TaskRunner pid=772550)[0m                                                          '}}{% endif %}{% '
+[36m(TaskRunner pid=772550)[0m                                                          'endfor %}{% endif '
+[36m(TaskRunner pid=772550)[0m                                                          '%}</s>',
+[36m(TaskRunner pid=772550)[0m                                  'enable_gradient_checkpointing': True,
+[36m(TaskRunner pid=772550)[0m                                  'exclude_modules': None,
+[36m(TaskRunner pid=772550)[0m                                  'external_lib': None,
+[36m(TaskRunner pid=772550)[0m                                  'fsdp_layer_prefixes': ['transformer_blocks.'],
+[36m(TaskRunner pid=772550)[0m                                  'lora_adapter_path': None,
+[36m(TaskRunner pid=772550)[0m                                  'lora_alpha': 64,
+[36m(TaskRunner pid=772550)[0m                                  'lora_dtype': None,
+[36m(TaskRunner pid=772550)[0m                                  'lora_init_weights': 'gaussian',
+[36m(TaskRunner pid=772550)[0m                                  'lora_rank': 0,
+[36m(TaskRunner pid=772550)[0m                                  'model_type': 'diffusion_model',
+[36m(TaskRunner pid=772550)[0m                                  'mtp': {'_target_': 'verl.workers.config.MtpConfig',
+[36m(TaskRunner pid=772550)[0m                                          'enable': False},
+[36m(TaskRunner pid=772550)[0m                                  'path': '/data/models/Wan2.2-TI2V-5B-Diffusers',
+[36m(TaskRunner pid=772550)[0m                                  'pipeline': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionPipelineConfig',
+[36m(TaskRunner pid=772550)[0m                                               'guidance_scale': 5.0,
+[36m(TaskRunner pid=772550)[0m                                               'height': 704,
+[36m(TaskRunner pid=772550)[0m                                               'max_sequence_length': 1024,
+[36m(TaskRunner pid=772550)[0m                                               'num_frames': 8,
+[36m(TaskRunner pid=772550)[0m                                               'num_inference_steps': 10,
+[36m(TaskRunner pid=772550)[0m                                               'true_cfg_scale': 5.0,
+[36m(TaskRunner pid=772550)[0m                                               'width': 1280},
+[36m(TaskRunner pid=772550)[0m                                  'policy_state_adapters': ['default'],
+[36m(TaskRunner pid=772550)[0m                                  'target_modules': 'all-linear',
+[36m(TaskRunner pid=772550)[0m                                  'target_parameters': None,
+[36m(TaskRunner pid=772550)[0m                                  'tokenizer_path': None,
+[36m(TaskRunner pid=772550)[0m                                  'transformer_subfolder': 'transformer',
+[36m(TaskRunner pid=772550)[0m                                  'trust_remote_code': False,
+[36m(TaskRunner pid=772550)[0m                                  'use_shm': False},
+[36m(TaskRunner pid=772550)[0m                        'nccl_timeout': 600,
+[36m(TaskRunner pid=772550)[0m                        'ref': {'_target_': 'verl_omni.workers.config.diffusion.FSDPDiffusionActorConfig',
+[36m(TaskRunner pid=772550)[0m                                'fsdp_config': {'_target_': 'verl.workers.config.FSDPEngineConfig',
+[36m(TaskRunner pid=772550)[0m                                                'dtype': 'bfloat16',
+[36m(TaskRunner pid=772550)[0m                                                'forward_only': True,
+[36m(TaskRunner pid=772550)[0m                                                'forward_prefetch': False,
+[36m(TaskRunner pid=772550)[0m                                                'fsdp_size': -1,
+[36m(TaskRunner pid=772550)[0m                                                'full_determinism': False,
+[36m(TaskRunner pid=772550)[0m                                                'model_dtype': 'fp32',
+[36m(TaskRunner pid=772550)[0m                                                'offload_policy': False,
+[36m(TaskRunner pid=772550)[0m                                                'optimizer_offload': False,
+[36m(TaskRunner pid=772550)[0m                                                'param_offload': False,
+[36m(TaskRunner pid=772550)[0m                                                'reshard_after_forward': True,
+[36m(TaskRunner pid=772550)[0m                                                'seed': 42,
+[36m(TaskRunner pid=772550)[0m                                                'strategy': 'fsdp',
+[36m(TaskRunner pid=772550)[0m                                                'ulysses_sequence_parallel_size': 1,
+[36m(TaskRunner pid=772550)[0m                                                'use_orig_params': False,
+[36m(TaskRunner pid=772550)[0m                                                'wrap_policy': {'min_num_params': 0}},
+[36m(TaskRunner pid=772550)[0m                                'log_prob_micro_batch_size_per_gpu': 16,
+[36m(TaskRunner pid=772550)[0m                                'profiler': {'_target_': 'verl.utils.profiler.ProfilerConfig',
+[36m(TaskRunner pid=772550)[0m                                             'all_ranks': False,
+[36m(TaskRunner pid=772550)[0m                                             'enable': False,
+[36m(TaskRunner pid=772550)[0m                                             'ranks': [],
+[36m(TaskRunner pid=772550)[0m                                             'save_path': 'outputs/profile',
+[36m(TaskRunner pid=772550)[0m                                             'tool': 'torch',
+[36m(TaskRunner pid=772550)[0m                                             'tool_config': {'nsys': {'_target_': 'verl.utils.profiler.config.NsightToolConfig',
+[36m(TaskRunner pid=772550)[0m                                                                      'discrete': False,
+[36m(TaskRunner pid=772550)[0m                                                                      'name': 'nsight'},
+[36m(TaskRunner pid=772550)[0m                                                             'torch': {'_target_': 'verl.utils.profiler.config.TorchProfilerToolConfig',
+[36m(TaskRunner pid=772550)[0m                                                                       'contents': [],
+[36m(TaskRunner pid=772550)[0m                                                                       'discrete': False,
+[36m(TaskRunner pid=772550)[0m                                                                       'name': 'torch'},
+[36m(TaskRunner pid=772550)[0m                                                             'torch_memory': {'_target_': 'verl.utils.profiler.config.TorchMemoryToolConfig',
+[36m(TaskRunner pid=772550)[0m                                                                              'name': 'torch_memory',
+[36m(TaskRunner pid=772550)[0m                                                                              'stack_depth': 32,
+[36m(TaskRunner pid=772550)[0m                                                                              'trace_alloc_max_entries': 100000}}},
+[36m(TaskRunner pid=772550)[0m                                'rollout_n': 8,
+[36m(TaskRunner pid=772550)[0m                                'strategy': 'fsdp'},
+[36m(TaskRunner pid=772550)[0m                        'rollout': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionRolloutConfig',
+[36m(TaskRunner pid=772550)[0m                                    'agent': {'_target_': 'verl.workers.config.AgentLoopConfig',
+[36m(TaskRunner pid=772550)[0m                                              'default_agent_loop': 'diffusion_single_turn_agent',
+[36m(TaskRunner pid=772550)[0m                                              'num_workers': 2},
+[36m(TaskRunner pid=772550)[0m                                    'algo': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionRolloutAlgoConfig',
+[36m(TaskRunner pid=772550)[0m                                             'iters_per_group': 1,
+[36m(TaskRunner pid=772550)[0m                                             'noise_level': 1.2,
+[36m(TaskRunner pid=772550)[0m                                             'sample_strategy': 'random',
+[36m(TaskRunner pid=772550)[0m                                             'sde_type': 'dance_sde',
+[36m(TaskRunner pid=772550)[0m                                             'sde_window_range': [0, 5],
+[36m(TaskRunner pid=772550)[0m                                             'sde_window_seed': 0,
+[36m(TaskRunner pid=772550)[0m                                             'sde_window_size': 2},
+[36m(TaskRunner pid=772550)[0m                                    'calculate_log_probs': False,
+[36m(TaskRunner pid=772550)[0m                                    'checkpoint_engine': {'_target_': 'verl.workers.config.CheckpointEngineConfig',
+[36m(TaskRunner pid=772550)[0m                                                          'backend': 'naive',
+[36m(TaskRunner pid=772550)[0m                                                          'custom_backend_module': None,
+[36m(TaskRunner pid=772550)[0m                                                          'engine_kwargs': {},
+[36m(TaskRunner pid=772550)[0m                                                          'update_weights_bucket_megabytes': 2048},
+[36m(TaskRunner pid=772550)[0m                                    'cudagraph_capture_sizes': None,
+[36m(TaskRunner pid=772550)[0m                                    'data_parallel_size': 1,
+[36m(TaskRunner pid=772550)[0m                                    'disable_log_stats': True,
+[36m(TaskRunner pid=772550)[0m                                    'disaggregation': {'_target_': 'verl.workers.config.DisaggregationConfig',
+[36m(TaskRunner pid=772550)[0m                                                       'enabled': False},
+[36m(TaskRunner pid=772550)[0m                                    'dtype': 'bfloat16',
+[36m(TaskRunner pid=772550)[0m                                    'enable_chunked_prefill': True,
+[36m(TaskRunner pid=772550)[0m                                    'enable_prefix_caching': True,
+[36m(TaskRunner pid=772550)[0m                                    'enable_rollout_routing_replay': False,
+[36m(TaskRunner pid=772550)[0m                                    'enforce_eager': False,
+[36m(TaskRunner pid=772550)[0m                                    'engine_kwargs': {'vllm_omni': {}},
+[36m(TaskRunner pid=772550)[0m                                    'expert_parallel_size': 1,
+[36m(TaskRunner pid=772550)[0m                                    'external_lib': None,
+[36m(TaskRunner pid=772550)[0m                                    'free_cache_engine': True,
+[36m(TaskRunner pid=772550)[0m                                    'gpu_memory_utilization': 0.28,
+[36m(TaskRunner pid=772550)[0m                                    'layered_summon': True,
+[36m(TaskRunner pid=772550)[0m                                    'load_format': 'safetensors',
+[36m(TaskRunner pid=772550)[0m                                    'log_prob_micro_batch_size_per_gpu': 16,
+[36m(TaskRunner pid=772550)[0m                                    'logprobs_mode': 'processed_logprobs',
+[36m(TaskRunner pid=772550)[0m                                    'max_model_len': None,
+[36m(TaskRunner pid=772550)[0m                                    'max_num_batched_tokens': 8192,
+[36m(TaskRunner pid=772550)[0m                                    'max_num_seqs': 1024,
+[36m(TaskRunner pid=772550)[0m                                    'mode': 'async',
+[36m(TaskRunner pid=772550)[0m                                    'mtp': {'_target_': 'verl.workers.config.MtpConfig',
+[36m(TaskRunner pid=772550)[0m                                            'enable': False},
+[36m(TaskRunner pid=772550)[0m                                    'multi_turn': {'_target_': 'verl.workers.config.MultiTurnConfig',
+[36m(TaskRunner pid=772550)[0m                                                   'enable': False},
+[36m(TaskRunner pid=772550)[0m                                    'n': 8,
+[36m(TaskRunner pid=772550)[0m                                    'n_gpus_per_node': 2,
+[36m(TaskRunner pid=772550)[0m                                    'name': 'vllm_omni',
+[36m(TaskRunner pid=772550)[0m                                    'nnodes': 0,
+[36m(TaskRunner pid=772550)[0m                                    'pipeline': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionPipelineConfig',
+[36m(TaskRunner pid=772550)[0m                                                 'guidance_scale': 5.0,
+[36m(TaskRunner pid=772550)[0m                                                 'height': 704,
+[36m(TaskRunner pid=772550)[0m                                                 'max_sequence_length': 1024,
+[36m(TaskRunner pid=772550)[0m                                                 'num_frames': 8,
+[36m(TaskRunner pid=772550)[0m                                                 'num_inference_steps': 10,
+[36m(TaskRunner pid=772550)[0m                                                 'true_cfg_scale': 5.0,
+[36m(TaskRunner pid=772550)[0m                                                 'width': 1280},
+[36m(TaskRunner pid=772550)[0m                                    'pipeline_model_parallel_size': 1,
+[36m(TaskRunner pid=772550)[0m                                    'profiler': {'_target_': 'verl.utils.profiler.ProfilerConfig',
+[36m(TaskRunner pid=772550)[0m                                                 'all_ranks': False,
+[36m(TaskRunner pid=772550)[0m                                                 'enable': False,
+[36m(TaskRunner pid=772550)[0m                                                 'ranks': [],
+[36m(TaskRunner pid=772550)[0m                                                 'save_path': 'outputs/profile',
+[36m(TaskRunner pid=772550)[0m                                                 'tool': 'torch',
+[36m(TaskRunner pid=772550)[0m                                                 'tool_config': {'nsys': {'_target_': 'verl.utils.profiler.config.NsightToolConfig',
+[36m(TaskRunner pid=772550)[0m                                                                          'discrete': False,
+[36m(TaskRunner pid=772550)[0m                                                                          'name': 'nsight'},
+[36m(TaskRunner pid=772550)[0m                                                                 'torch': {'_target_': 'verl.utils.profiler.config.TorchProfilerToolConfig',
+[36m(TaskRunner pid=772550)[0m                                                                           'contents': [],
+[36m(TaskRunner pid=772550)[0m                                                                           'discrete': False,
+[36m(TaskRunner pid=772550)[0m                                                                           'name': 'torch'},
+[36m(TaskRunner pid=772550)[0m                                                                 'torch_memory': {'_target_': 'verl.utils.profiler.config.TorchMemoryToolConfig',
+[36m(TaskRunner pid=772550)[0m                                                                                  'name': 'torch_memory',
+[36m(TaskRunner pid=772550)[0m                                                                                  'stack_depth': 32,
+[36m(TaskRunner pid=772550)[0m                                                                                  'trace_alloc_max_entries': 100000}}},
+[36m(TaskRunner pid=772550)[0m                                    'prometheus': {'_target_': 'verl.workers.config.PrometheusConfig',
+[36m(TaskRunner pid=772550)[0m                                                   'enable': False},
+[36m(TaskRunner pid=772550)[0m                                    'prompt_length': 1024,
+[36m(TaskRunner pid=772550)[0m                                    'quantization': None,
+[36m(TaskRunner pid=772550)[0m                                    'rollout_adapter': 'default',
+[36m(TaskRunner pid=772550)[0m                                    'rollout_attn_backend': 'TORCH_SDPA',
+[36m(TaskRunner pid=772550)[0m                                    'scheduling_policy': 'fcfs',
+[36m(TaskRunner pid=772550)[0m                                    'seed': 42,
+[36m(TaskRunner pid=772550)[0m                                    'skip_tokenizer_init': True,
+[36m(TaskRunner pid=772550)[0m                                    'step_execution': False,
+[36m(TaskRunner pid=772550)[0m                                    'tensor_model_parallel_size': 1,
+[36m(TaskRunner pid=772550)[0m                                    'val_kwargs': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionSamplingConfig',
+[36m(TaskRunner pid=772550)[0m                                                   'algo': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionRolloutAlgoConfig',
+[36m(TaskRunner pid=772550)[0m                                                            'noise_level': 0.0,
+[36m(TaskRunner pid=772550)[0m                                                            'sde_type': 'dance_sde',
+[36m(TaskRunner pid=772550)[0m                                                            'sde_window_range': [0,
+[36m(TaskRunner pid=772550)[0m                                                                                 5],
+[36m(TaskRunner pid=772550)[0m                                                            'sde_window_size': 2},
+[36m(TaskRunner pid=772550)[0m                                                   'n': 1,
+[36m(TaskRunner pid=772550)[0m                                                   'pipeline': {'_target_': 'verl_omni.workers.config.diffusion.DiffusionPipelineConfig',
+[36m(TaskRunner pid=772550)[0m                                                                'guidance_scale': 5.0,
+[36m(TaskRunner pid=772550)[0m                                                                'height': 704,
+[36m(TaskRunner pid=772550)[0m                                                                'max_sequence_length': 1024,
+[36m(TaskRunner pid=772550)[0m                                                                'num_frames': 8,
+[36m(TaskRunner pid=772550)[0m                                                                'num_inference_steps': 50,
+[36m(TaskRunner pid=772550)[0m                                                                'true_cfg_scale': 5.0,
+[36m(TaskRunner pid=772550)[0m                                                                'width': 1280}}}},
+[36m(TaskRunner pid=772550)[0m  'algorithm': {'_target_': 'verl_omni.trainer.config.DiffusionAlgoConfig',
+[36m(TaskRunner pid=772550)[0m                'adv_estimator': 'dance_grpo',
+[36m(TaskRunner pid=772550)[0m                'adv_mode': 'continuous',
+[36m(TaskRunner pid=772550)[0m                'global_std': True,
+[36m(TaskRunner pid=772550)[0m                'norm_adv_by_std_in_grpo': True,
+[36m(TaskRunner pid=772550)[0m                'old_policy_decay': None,
+[36m(TaskRunner pid=772550)[0m                'old_policy_decay_schedule': 'copy',
+[36m(TaskRunner pid=772550)[0m                'old_policy_update_interval': 1,
+[36m(TaskRunner pid=772550)[0m                'paired_preference': False,
+[36m(TaskRunner pid=772550)[0m                'rollout_correction': {'_target_': 'verl.trainer.config.algorithm.RolloutCorrectionConfig',
+[36m(TaskRunner pid=772550)[0m                                       'bypass_mode': False,
+[36m(TaskRunner pid=772550)[0m                                       'loss_type': 'ppo_clip',
+[36m(TaskRunner pid=772550)[0m                                       'rollout_is': None,
+[36m(TaskRunner pid=772550)[0m                                       'rollout_is_batch_normalize': False,
+[36m(TaskRunner pid=772550)[0m                                       'rollout_is_threshold': 2.0,
+[36m(TaskRunner pid=772550)[0m                                       'rollout_rs': None,
+[36m(TaskRunner pid=772550)[0m                                       'rollout_rs_threshold': None},
+[36m(TaskRunner pid=772550)[0m                'sample_source': 'online',
+[36m(TaskRunner pid=772550)[0m                'timestep_fraction': 1.0,
+[36m(TaskRunner pid=772550)[0m                'trainer_type': 'policy_gradient'},
+[36m(TaskRunner pid=772550)[0m  'data': {'apply_chat_template_kwargs': {},
+[36m(TaskRunner pid=772550)[0m           'custom_cls': {'collate_fn': None, 'name': None, 'path': None},
+[36m(TaskRunner pid=772550)[0m           'datagen': {'name': None, 'path': None},
+[36m(TaskRunner pid=772550)[0m           'dataloader_num_workers': 8,
+[36m(TaskRunner pid=772550)[0m           'filter_overlong_prompts': False,
+[36m(TaskRunner pid=772550)[0m           'filter_overlong_prompts_workers': 1,
+[36m(TaskRunner pid=772550)[0m           'image_key': 'images',
+[36m(TaskRunner pid=772550)[0m           'image_patch_size': 14,
+[36m(TaskRunner pid=772550)[0m           'max_prompt_length': 1024,
+[36m(TaskRunner pid=772550)[0m           'max_response_length': 512,
+[36m(TaskRunner pid=772550)[0m           'prompt_key': 'prompt',
+[36m(TaskRunner pid=772550)[0m           'return_full_prompt': False,
+[36m(TaskRunner pid=772550)[0m           'return_multi_modal_inputs': True,
+[36m(TaskRunner pid=772550)[0m           'return_raw_chat': True,
+[36m(TaskRunner pid=772550)[0m           'return_raw_input_ids': False,
+[36m(TaskRunner pid=772550)[0m           'reward_fn_key': 'data_source',
+[36m(TaskRunner pid=772550)[0m           'sampler': {'class_name': None, 'class_path': None},
+[36m(TaskRunner pid=772550)[0m           'seed': 42,
+[36m(TaskRunner pid=772550)[0m           'shuffle': True,
+[36m(TaskRunner pid=772550)[0m           'tokenizer': None,
+[36m(TaskRunner pid=772550)[0m           'tool_config_path': None,
+[36m(TaskRunner pid=772550)[0m           'train_batch_size': 4,
+[36m(TaskRunner pid=772550)[0m           'train_files': '/data/verl-omni/workspace/data/ocr/wan22/train.parquet',
+[36m(TaskRunner pid=772550)[0m           'train_max_samples': -1,
+[36m(TaskRunner pid=772550)[0m           'truncation': 'error',
+[36m(TaskRunner pid=772550)[0m           'trust_remote_code': False,
+[36m(TaskRunner pid=772550)[0m           'use_shm': False,
+[36m(TaskRunner pid=772550)[0m           'val_batch_size': 8,
+[36m(TaskRunner pid=772550)[0m           'val_files': '/data/verl-omni/workspace/data/ocr/wan22/test.parquet',
+[36m(TaskRunner pid=772550)[0m           'val_max_samples': -1,
+[36m(TaskRunner pid=772550)[0m           'validation_shuffle': False,
+[36m(TaskRunner pid=772550)[0m           'video_key': 'videos'},
+[36m(TaskRunner pid=772550)[0m  'global_profiler': {'_target_': 'verl.utils.profiler.ProfilerConfig',
+[36m(TaskRunner pid=772550)[0m                      'global_tool_config': {'nsys': {'_target_': 'verl.utils.profiler.config.NsightToolConfig',
+[36m(TaskRunner pid=772550)[0m                                                      'controller_nsight_options': {'cuda-graph-trace': 'graph',
+[36m(TaskRunner pid=772550)[0m                                                                                    'cuda-memory-usage': 'true',
+[36m(TaskRunner pid=772550)[0m                                                                                    'trace': 'cuda,nvtx,cublas,ucx'},
+[36m(TaskRunner pid=772550)[0m                                                      'discrete': False,
+[36m(TaskRunner pid=772550)[0m                                                      'worker_nsight_options': {'capture-range': 'cudaProfilerApi',
+[36m(TaskRunner pid=772550)[0m                                                                                'capture-range-end': None,
+[36m(TaskRunner pid=772550)[0m                                                                                'cuda-graph-trace': 'graph',
+[36m(TaskRunner pid=772550)[0m                                                                                'cuda-memory-usage': 'true',
+[36m(TaskRunner pid=772550)[0m                                                                                'kill': 'none',
+[36m(TaskRunner pid=772550)[0m                                                                                'trace': 'cuda,nvtx,cublas,ucx'}},
+[36m(TaskRunner pid=772550)[0m                                             'torch_memory': {'context': 'all',
+[36m(TaskRunner pid=772550)[0m                                                              'kw_args': {},
+[36m(TaskRunner pid=772550)[0m                                                              'stack_depth': 32,
+[36m(TaskRunner pid=772550)[0m                                                              'stacks': 'all',
+[36m(TaskRunner pid=772550)[0m                                                              'trace_alloc_max_entries': 100000}},
+[36m(TaskRunner pid=772550)[0m                      'profile_continuous_steps': False,
+[36m(TaskRunner pid=772550)[0m                      'save_path': 'outputs/profile',
+[36m(TaskRunner pid=772550)[0m                      'steps': None,
+[36m(TaskRunner pid=772550)[0m                      'tool': None},
+[36m(TaskRunner pid=772550)[0m  'model_engine': 'dp_diffusion',
+[36m(TaskRunner pid=772550)[0m  'ray_kwargs': {'ray_init': {'num_cpus': None}, 'timeline_json_file': None},
+[36m(TaskRunner pid=772550)[0m  'reward': {'aggregation': 'weighted_sum',
+[36m(TaskRunner pid=772550)[0m             'custom_reward_function': {'name': 'compute_score_ocr',
+[36m(TaskRunner pid=772550)[0m                                        'path': 'verl_omni/utils/reward_score/genrm_ocr.py'},
+[36m(TaskRunner pid=772550)[0m             'num_workers': 2,
+[36m(TaskRunner pid=772550)[0m             'reward_functions': {},
+[36m(TaskRunner pid=772550)[0m             'reward_manager': {'_target_': 'verl.workers.config.reward_model.RewardManagerConfig',
+[36m(TaskRunner pid=772550)[0m                                'module': {'_target_': 'verl.trainer.config.config.ModuleConfig',
+[36m(TaskRunner pid=772550)[0m                                           'path': 'pkg://verl_omni.reward_loop.reward_manager'},
+[36m(TaskRunner pid=772550)[0m                                'name': 'VisualRewardManager',
+[36m(TaskRunner pid=772550)[0m                                'source': 'importlib'},
+[36m(TaskRunner pid=772550)[0m             'reward_model': {'enable': True,
+[36m(TaskRunner pid=772550)[0m                              'enable_resource_pool': False,
+[36m(TaskRunner pid=772550)[0m                              'model_path': '/data/models/Qwen3-VL-8B-Instruct',
+[36m(TaskRunner pid=772550)[0m                              'n_gpus_per_node': 8,
+[36m(TaskRunner pid=772550)[0m                              'nnodes': 0,
+[36m(TaskRunner pid=772550)[0m                              'rollout': {'_target_': 'verl.workers.config.RolloutConfig',
+[36m(TaskRunner pid=772550)[0m                                          'cudagraph_capture_sizes': None,
+[36m(TaskRunner pid=772550)[0m                                          'data_parallel_size': 1,
+[36m(TaskRunner pid=772550)[0m                                          'disable_log_stats': True,
+[36m(TaskRunner pid=772550)[0m                                          'disaggregation': {'bootstrap_port': None,
+[36m(TaskRunner pid=772550)[0m                                                             'decode_replicas': 1,
+[36m(TaskRunner pid=772550)[0m                                                             'decode_tensor_model_parallel_size': None,
+[36m(TaskRunner pid=772550)[0m                                                             'enabled': False,
+[36m(TaskRunner pid=772550)[0m                                                             'ib_device': None,
+[36m(TaskRunner pid=772550)[0m                                                             'prefill_replicas': 1,
+[36m(TaskRunner pid=772550)[0m                                                             'transfer_backend': 'nixl'},
+[36m(TaskRunner pid=772550)[0m                                          'do_sample': True,
+[36m(TaskRunner pid=772550)[0m                                          'dtype': 'bfloat16',
+[36m(TaskRunner pid=772550)[0m                                          'enable_chunked_prefill': True,
+[36m(TaskRunner pid=772550)[0m                                          'enable_prefix_caching': True,
+[36m(TaskRunner pid=772550)[0m                                          'enforce_eager': True,
+[36m(TaskRunner pid=772550)[0m                                          'engine_kwargs': {},
+[36m(TaskRunner pid=772550)[0m                                          'expert_parallel_size': 1,
+[36m(TaskRunner pid=772550)[0m                                          'free_cache_engine': True,
+[36m(TaskRunner pid=772550)[0m                                          'gpu_memory_utilization': 0.3,
+[36m(TaskRunner pid=772550)[0m                                          'ignore_eos': False,
+[36m(TaskRunner pid=772550)[0m                                          'layered_summon': False,
+[36m(TaskRunner pid=772550)[0m                                          'limit_images': None,
+[36m(TaskRunner pid=772550)[0m                                          'load_format': 'auto',
+[36m(TaskRunner pid=772550)[0m                                          'max_model_len': 16384,
+[36m(TaskRunner pid=772550)[0m                                          'max_num_batched_tokens': 8192,
+[36m(TaskRunner pid=772550)[0m                                          'max_num_seqs': 1024,
+[36m(TaskRunner pid=772550)[0m                                          'mtp': None,
+[36m(TaskRunner pid=772550)[0m                                          'multi_stage_wake_up': False,
+[36m(TaskRunner pid=772550)[0m                                          'n': 1,
+[36m(TaskRunner pid=772550)[0m                                          'name': 'vllm',
+[36m(TaskRunner pid=772550)[0m                                          'pipeline_model_parallel_size': 1,
+[36m(TaskRunner pid=772550)[0m                                          'profiler': {'_target_': 'verl.utils.profiler.ProfilerConfig',
+[36m(TaskRunner pid=772550)[0m                                                       'all_ranks': False,
+[36m(TaskRunner pid=772550)[0m                                                       'enable': False,
+[36m(TaskRunner pid=772550)[0m                                                       'ranks': [],
+[36m(TaskRunner pid=772550)[0m                                                       'save_path': 'outputs/profile/reward_model',
+[36m(TaskRunner pid=772550)[0m                                                       'tool': 'torch',
+[36m(TaskRunner pid=772550)[0m                                                       'tool_config': {'nsys': {'_target_': 'verl.utils.profiler.config.NsightToolConfig',
+[36m(TaskRunner pid=772550)[0m                                                                                'discrete': False,
+[36m(TaskRunner pid=772550)[0m                                                                                'name': 'nsight'},
+[36m(TaskRunner pid=772550)[0m                                                                       'torch': {'_target_': 'verl.utils.profiler.config.TorchProfilerToolConfig',
+[36m(TaskRunner pid=772550)[0m                                                                                 'contents': [],
+[36m(TaskRunner pid=772550)[0m                                                                                 'discrete': False,
+[36m(TaskRunner pid=772550)[0m                                                                                 'name': 'torch'},
+[36m(TaskRunner pid=772550)[0m                                                                       'torch_memory': {'_target_': 'verl.utils.profiler.config.TorchMemoryToolConfig',
+[36m(TaskRunner pid=772550)[0m                                                                                        'name': 'torch_memory',
+[36m(TaskRunner pid=772550)[0m                                                                                        'stack_depth': 32,
+[36m(TaskRunner pid=772550)[0m                                                                                        'trace_alloc_max_entries': 100000}}},
+[36m(TaskRunner pid=772550)[0m                                          'prompt_length': 2048,
+[36m(TaskRunner pid=772550)[0m                                          'quantization': None,
+[36m(TaskRunner pid=772550)[0m                                          'quantization_config_file': None,
+[36m(TaskRunner pid=772550)[0m                                          'response_length': 2048,
+[36m(TaskRunner pid=772550)[0m                                          'scheduling_policy': 'fcfs',
+[36m(TaskRunner pid=772550)[0m                                          'skip_tokenizer_init': False,
+[36m(TaskRunner pid=772550)[0m                                          'temperature': 1.0,
+[36m(TaskRunner pid=772550)[0m                                          'tensor_model_parallel_size': 1,
+[36m(TaskRunner pid=772550)[0m                                          'top_k': -1,
+[36m(TaskRunner pid=772550)[0m                                          'top_p': 1}},
+[36m(TaskRunner pid=772550)[0m             'sandbox_fusion': {'max_concurrent': 64,
+[36m(TaskRunner pid=772550)[0m                                'memory_limit_mb': 1024,
+[36m(TaskRunner pid=772550)[0m                                'url': None}},
+[36m(TaskRunner pid=772550)[0m  'skip': {'_target_': 'verl.utils.skip.SkipManagerConfig',
+[36m(TaskRunner pid=772550)[0m           'async_rollout': {'action': 'cache',
+[36m(TaskRunner pid=772550)[0m                             'dump_dir': '~/.verl/rollout_dump',
+[36m(TaskRunner pid=772550)[0m                             'enable': False,
+[36m(TaskRunner pid=772550)[0m                             'steps': []},
+[36m(TaskRunner pid=772550)[0m           'rollout': {'action': 'cache',
+[36m(TaskRunner pid=772550)[0m                       'dump_dir': '~/.verl/rollout_dump',
+[36m(TaskRunner pid=772550)[0m                       'enable': False,
+[36m(TaskRunner pid=772550)[0m                       'steps': []}},
+[36m(TaskRunner pid=772550)[0m  'trainer': {'default_hdfs_dir': None,
+[36m(TaskRunner pid=772550)[0m              'default_local_dir': 'checkpoints/dance_grpo/wan22_5b_t2v_ocr_s150',
+[36m(TaskRunner pid=772550)[0m              'del_local_ckpt_after_load': False,
+[36m(TaskRunner pid=772550)[0m              'device': 'cuda',
+[36m(TaskRunner pid=772550)[0m              'esi_redundant_time': 0,
+[36m(TaskRunner pid=772550)[0m              'experiment_name': 'wan22_5b_t2v_ocr_s150',
+[36m(TaskRunner pid=772550)[0m              'log_val_generations': 8,
+[36m(TaskRunner pid=772550)[0m              'logger': ['console', 'tensorboard'],
+[36m(TaskRunner pid=772550)[0m              'max_actor_ckpt_to_keep': None,
+[36m(TaskRunner pid=772550)[0m              'n_gpus_per_node': 2,
+[36m(TaskRunner pid=772550)[0m              'nnodes': 1,
+[36m(TaskRunner pid=772550)[0m              'project_name': 'dance_grpo',
+[36m(TaskRunner pid=772550)[0m              'ray_wait_register_center_timeout': 300,
+[36m(TaskRunner pid=772550)[0m              'resume_from_path': None,
+[36m(TaskRunner pid=772550)[0m              'resume_mode': 'auto',
+[36m(TaskRunner pid=772550)[0m              'rollout_data_dir': None,
+[36m(TaskRunner pid=772550)[0m              'rollout_data_max_samples': None,
+[36m(TaskRunner pid=772550)[0m              'rollout_data_save_freq': 1,
+[36m(TaskRunner pid=772550)[0m              'save_freq': 25,
+[36m(TaskRunner pid=772550)[0m              'test_freq': 25,
+[36m(TaskRunner pid=772550)[0m              'total_epochs': 15,
+[36m(TaskRunner pid=772550)[0m              'total_training_steps': 150,
+[36m(TaskRunner pid=772550)[0m              'use_v1': False,
+[36m(TaskRunner pid=772550)[0m              'v1': {'colocate_async': {'num_warmup_batches': 1},
+[36m(TaskRunner pid=772550)[0m                     'sampler': {'custom_sampler': {'name': None, 'path': None},
+[36m(TaskRunner pid=772550)[0m                                 'max_off_policy_strategy': 'drop',
+[36m(TaskRunner pid=772550)[0m                                 'max_off_policy_threshold': 8,
+[36m(TaskRunner pid=772550)[0m                                 'sampler_kwargs': {}},
+[36m(TaskRunner pid=772550)[0m                     'separate_async': {'num_warmup_batches': 1,
+[36m(TaskRunner pid=772550)[0m                                        'parameter_sync_step': 4},
+[36m(TaskRunner pid=772550)[0m                     'sync': {},[36m(pid=772550)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/engine/mindspeed/transformer_impl.py:24: UserWarning: NPU not support router replay for now.
+[36m(pid=772550)[0m   from verl.utils.megatron.router_replay_patch import RouterReplay
+[36m(TaskRunner pid=772550)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/utils/tokenizer.py:242: UserWarning: Failed to create processor: Unrecognized processing class in /data/models/Wan2.2-TI2V-5B-Diffusers. Can't instantiate a processor, a tokenizer, an image processor, a video processor or a feature extractor for this model. Make sure the repository contains the files of at least one of those processing classes.. This may affect multimodal processing
+[36m(TaskRunner pid=772550)[0m   warnings.warn(f"Failed to create processor: {e}. This may affect multimodal processing", stacklevel=1)
+[36m(pid=778488)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/engine/mindspeed/transformer_impl.py:24: UserWarning: NPU not support router replay for now.
+[36m(pid=778488)[0m   from verl.utils.megatron.router_replay_patch import RouterReplay
+[36m(pid=778489)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/engine/mindspeed/transformer_impl.py:24: UserWarning: NPU not support router replay for now.
+[36m(pid=778489)[0m   from verl.utils.megatron.router_replay_patch import RouterReplay
+[36m(WorkerDict pid=778488)[0m /data/verl-omni/verl_omni/workers/engine_workers.py:173: RuntimeWarning: DiffusionFlopsCounter: no FLOPs estimator registered for architecture 'WanPipeline'. MFU will report 0. Register one with @register_diffusion_architecture('WanPipeline').
+[36m(WorkerDict pid=778488)[0m   self.flops_counter = DiffusionFlopsCounter(
+[36m(WorkerDict pid=778488)[0m [0;93m2026-08-05 11:10:12.094561942 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"[m
+[36m(WorkerDict pid=778488)[0m Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]
+[36m(WorkerDict pid=778488)[0m Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:10,  2.62s/it]
+[36m(WorkerDict pid=778488)[0m Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:07,  2.39s/it]
+[36m(WorkerDict pid=778488)[0m Loading checkpoint shards:  60%|██████    | 3/5 [00:07<00:04,  2.38s/it]
+[36m(WorkerDict pid=778489)[0m /data/verl-omni/verl_omni/workers/engine_workers.py:173: RuntimeWarning: DiffusionFlopsCounter: no FLOPs estimator registered for architecture 'WanPipeline'. MFU will report 0. Register one with @register_diffusion_architecture('WanPipeline').
+[36m(WorkerDict pid=778489)[0m   self.flops_counter = DiffusionFlopsCounter(
+[36m(WorkerDict pid=778489)[0m [0;93m2026-08-05 11:10:12.094562000 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"[m
+[36m(WorkerDict pid=778488)[0m Loading checkpoint shards:  80%|████████  | 4/5 [00:09<00:02,  2.19s/it]
+[36m(WorkerDict pid=778488)[0m Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.46s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.86s/it]
+[36m(WorkerDict pid=778488)[0m Attention backends are an experimental feature and the API may be subject to change.
+[36m(WorkerDict pid=778488)[0m /data/verl-omni/verl_omni/workers/engine/fsdp/diffusers_impl.py:390: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+[36m(WorkerDict pid=778488)[0m   FSDP.set_state_dict_type(
+[36m(WorkerDict pid=778488)[0m WARNING:2026-08-05 11:10:31,635:Setting the sleep level to 1 may cause a memory overflow.
+[36m(vLLMHttpServer pid=789650)[0m [transformers] The `use_fast` parameter is deprecated and will be removed in a future version. Use `backend="torchvision"` instead of `use_fast=True`, or `backend="pil"` instead of `use_fast=False`.
+[36m(WorkerDict pid=778489)[0m /data/verl-omni/verl_omni/workers/engine/fsdp/diffusers_impl.py:390: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+[36m(WorkerDict pid=778489)[0m   FSDP.set_state_dict_type(
+[36m(WorkerDict pid=778489)[0m WARNING:2026-08-05 11:10:32,449:Setting the sleep level to 1 may cause a memory overflow.
+
+[36m(TaskRunner pid=772550)[0m                     'trainer_mode': 'sync'},
+[36m(TaskRunner pid=772550)[0m              'val_before_train': True,
+[36m(TaskRunner pid=772550)[0m              'val_only': True,
+[36m(TaskRunner pid=772550)[0m              'validation_data_dir': '/data/verl-omni/workspace/val_generations/eval_step150_full',
+[36m(TaskRunner pid=772550)[0m              'validation_data_max_samples': None,
+[36m(TaskRunner pid=772550)[0m              'video_fps': 24},
+[36m(TaskRunner pid=772550)[0m  'transfer_queue': {'backend': {'MooncakeStore': {'auto_init': False,
+[36m(TaskRunner pid=772550)[0m                                                   'device_name': '',
+[36m(TaskRunner pid=772550)[0m                                                   'global_segment_size': 4294967296,
+[36m(TaskRunner pid=772550)[0m                                                   'local_buffer_size': 1073741824,
+[36m(TaskRunner pid=772550)[0m                                                   'local_hostname': 'localhost',
+[36m(TaskRunner pid=772550)[0m                                                   'master_server_address': 'localhost:50124',
+[36m(TaskRunner pid=772550)[0m                                                   'metadata_server': 'localhost:50123',
+[36m(TaskRunner pid=772550)[0m                                                   'protocol': 'tcp'},
+[36m(TaskRunner pid=772550)[0m                                 'SimpleStorage': {'num_data_storage_units': 8,
+[36m(TaskRunner pid=772550)[0m                                                   'total_storage_size': 100000},
+[36m(TaskRunner pid=772550)[0m                                 'storage_backend': 'SimpleStorage'},
+[36m(TaskRunner pid=772550)[0m                     'enable': False,
+[36m(TaskRunner pid=772550)[0m                     'metrics': {'enabled': False, 'port': 0}}}
+[36m(TaskRunner pid=772550)[0m dataset len: 19653
+[36m(TaskRunner pid=772550)[0m dataset len: 1018
+[36m(TaskRunner pid=772550)[0m Size of train dataloader: 4913, Size of val dataloader: 128
+[36m(TaskRunner pid=772550)[0m Total training steps: 150
+[36m(TaskRunner pid=772550)[0m colocated worker base class <class 'verl.single_controller.base.worker.Worker'>
+[36m(WorkerDict pid=778488)[0m Warning: Failed to set NUMA affinity: libnuma.so: cannot open shared object file: No such file or directory
+[36m(WorkerDict pid=778488)[0m WanTransformer3DModel contains 5.00B parameters
+[36m(WorkerDict pid=778488)[0m Before FSDP, memory allocated (GB): 0.00, memory reserved (GB): 0.00, device memory used/total (GB): 18.64/95.08
+[36m(WorkerDict pid=778489)[0m Warning: Failed to set NUMA affinity: libnuma.so: cannot open shared object file: No such file or directory
+[36m(WorkerDict pid=778488)[0m After FSDP, memory allocated (GB): 4.66, memory reserved (GB): 5.17, device memory used/total (GB): 24.59/95.08
+[36m(WorkerDict pid=778488)[0m Total steps: 150, num_warmup_steps: 0
+[36m(vLLMHttpServer pid=789461)[0m ['serve',
+[36m(vLLMHttpServer pid=789461)[0m  '/data/models/Qwen3-VL-8B-Instruct',
+[36m(vLLMHttpServer pid=789461)[0m  '--dtype',
+[36m(vLLMHttpServer pid=789461)[0m  'bfloat16',
+[36m(vLLMHttpServer pid=789461)[0m  '--load_format',
+[36m(vLLMHttpServer pid=789461)[0m  'auto',
+[36m(vLLMHttpServer pid=789461)[0m  '--distributed_executor_backend',
+[36m(vLLMHttpServer pid=789461)[0m  'mp',
+[36m(vLLMHttpServer pid=789461)[0m  '--worker_extension_cls',
+[36m(vLLMHttpServer pid=789461)[0m  'verl.workers.rollout.vllm_rollout.utils.vLLMColocateWorkerExtension',
+[36m(vLLMHttpServer pid=789461)[0m  '--max_model_len',
+[36m(vLLMHttpServer pid=789461)[0m  '16384',
+[36m(vLLMHttpServer pid=789461)[0m  '--max_num_seqs',
+[36m(vLLMHttpServer pid=789461)[0m  '1024',
+[36m(vLLMHttpServer pid=789461)[0m  '--enable_chunked_prefill',
+[36m(vLLMHttpServer pid=789461)[0m  '--max_num_batched_tokens',
+[36m(vLLMHttpServer pid=789461)[0m  '8192',
+[36m(vLLMHttpServer pid=789461)[0m  '--enable_prefix_caching',
+[36m(vLLMHttpServer pid=789461)[0m  '--enable_sleep_mode',
+[36m(vLLMHttpServer pid=789461)[0m  '--logprobs_mode',
+[36m(vLLMHttpServer pid=789461)[0m  'processed_logprobs',
+[36m(vLLMHttpServer pid=789461)[0m  '--enforce_eager',
+[36m(vLLMHttpServer pid=789461)[0m  '--gpu_memory_utilization',
+[36m(vLLMHttpServer pid=789461)[0m  '0.3',
+[36m(vLLMHttpServer pid=789461)[0m  '--disable_log_stats',
+[36m(vLLMHttpServer pid=789461)[0m  '--tensor_parallel_size',
+[36m(vLLMHttpServer pid=789461)[0m  '1',
+[36m(vLLMHttpServer pid=789461)[0m  '--seed',
+[36m(vLLMHttpServer pid=789461)[0m  '0',
+[36m(vLLMHttpServer pid=789461)[0m  '--override_generation_config',
+[36m(vLLMHttpServer pid=789461)[0m  '{"temperature": 1.0, "top_k": -1, "top_p": 1, "repetition_penalty": 1.0, '
+[36m(vLLMHttpServer pid=789461)[0m  '"max_new_tokens": 2048}',
+[36m(vLLMHttpServer pid=789461)[0m  '--hf_overrides',
+[36m(vLLMHttpServer pid=789461)[0m  '{}',
+[36m(vLLMHttpServer pid=789461)[0m  '--scheduling_policy',
+[36m(vLLMHttpServer pid=789461)[0m  'fcfs',
+[36m(vLLMHttpServer pid=789461)[0m  '--compilation_config',
+[36m(vLLMHttpServer pid=789461)[0m  '{"cudagraph_mode": "FULL_AND_PIECEWISE"}',
+[36m(vLLMHttpServer pid=789461)[0m  '--profiler_config',
+[36m(vLLMHttpServer pid=789461)[0m  '{"profiler": "torch", "torch_profiler_dir": '
+[36m(vLLMHttpServer pid=789461)[0m  '"outputs/profile/reward_model/agent_loop_rollout_replica_0", '
+[36m(vLLMHttpServer pid=789461)[0m  '"torch_profiler_with_memory": false, "torch_profiler_with_stack": false, '
+[36m(vLLMHttpServer pid=789461)[0m  '"torch_profiler_record_shapes": false, "delay_iterations": 0, '
+[36m(vLLMHttpServer pid=789461)[0m  '"max_iterations": 0, "ignore_frontend": "true"}']
+[36m(vLLMHttpServer pid=789461)[0m WARNING 08-05 11:11:04 [envs.py:2004] Unknown vLLM environment variable detected: VLLM_TORCH_PROFILER_DIR
+[36m(vLLMHttpServer pid=789461)[0m WARNING 08-05 11:11:04 [envs.py:2004] Unknown vLLM environment variable detected: VLLM_TORCH_PROFILER_WITH_STACK
+[36m(vLLMHttpServer pid=789461)[0m WARNING 08-05 11:11:04 [envs.py:2004] Unknown vLLM environment variable detected: VLLM_TORCH_PROFILER_RECORD_SHAPES
+[36m(vLLMHttpServer pid=789461)[0m WARNING 08-05 11:11:04 [envs.py:2004] Unknown vLLM environment variable detected: VLLM_TORCH_PROFILER_WITH_PROFILE_MEMORY
+[36m(vLLMHttpServer pid=789461)[0m WARNING 08-05 11:11:04 [vllm.py:1062] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(vLLMHttpServer pid=789461)[0m WARNING 08-05 11:11:04 [vllm.py:1110] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(vLLMHttpServer pid=789461)[0m WARNING 08-05 11:11:11 [system_utils.py:157] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: In a Ray actor and can only be spawned; CUDA is initialized
+[36m(vLLMHttpServer pid=789650)[0m WARNING 08-05 11:11:05 [envs.py:2004] Unknown vLLM environment variable detected: VLLM_TORCH_PROFILER_DIR
+[36m(vLLMHttpServer pid=789650)[0m WARNING 08-05 11:11:05 [envs.py:2004] Unknown vLLM environment variable detected: VLLM_TORCH_PROFILER_WITH_STACK
+[36m(vLLMHttpServer pid=789650)[0m WARNING 08-05 11:11:05 [envs.py:2004] Unknown vLLM environment variable detected: VLLM_TORCH_PROFILER_RECORD_SHAPES
+[36m(vLLMHttpServer pid=789650)[0m WARNING 08-05 11:11:05 [envs.py:2004] Unknown vLLM environment variable detected: VLLM_TORCH_PROFILER_WITH_PROFILE_MEMORY
+[36m(vLLMHttpServer pid=789650)[0m WARNING 08-05 11:11:05 [vllm.py:1062] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(vLLMHttpServer pid=789650)[0m WARNING 08-05 11:11:05 [vllm.py:1110] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.[36m(vLLMHttpServer pid=789461)[0m (Worker pid=793687) [transformers] The `use_fast` parameter is deprecated and will be removed in a future version. Use `backend="torchvision"` instead of `use_fast=True`, or `backend="pil"` instead of `use_fast=False`.
+[36m(vLLMHttpServer pid=789461)[0m [transformers] The `use_fast` parameter is deprecated and will be removed in a future version. Use `backend="torchvision"` instead of `use_fast=True`, or `backend="pil"` instead of `use_fast=False`.
+[36m(vLLMHttpServer pid=789461)[0m (Worker pid=793687) Loading safetensors checkpoint shards:   0% Completed | 0/4 [00:00<?, ?it/s]
+[36m(vLLMHttpServer pid=789461)[0m (Worker pid=793687) Loading safetensors checkpoint shards:  25% Completed | 1/4 [00:00<00:02,  1.11it/s]
+[36m(vLLMHttpServer pid=789461)[0m (Worker pid=793687) Loading safetensors checkpoint shards:  50% Completed | 2/4 [00:01<00:01,  1.02it/s]
+[36m(vLLMHttpServer pid=789650)[0m (Worker pid=793641) [transformers] The `use_fast` parameter is deprecated and will be removed in a future version. Use `backend="torchvision"` instead of `use_fast=True`, or `backend="pil"` instead of `use_fast=False`.
+[36m(vLLMHttpServer pid=789461)[0m (Worker pid=793687) Loading safetensors checkpoint shards:  75% Completed | 3/4 [00:02<00:00,  1.00it/s]
+[36m(vLLMHttpServer pid=789461)[0m (Worker pid=793687) Loading safetensors checkpoint shards: 100% Completed | 4/4 [00:03<00:00,  1.15it/s]
+[36m(vLLMHttpServer pid=789461)[0m (Worker pid=793687) Loading safetensors checkpoint shards: 100% Completed | 4/4 [00:03<00:00,  1.10it/s]
+[36m(vLLMHttpServer pid=789461)[0m (Worker pid=793687) 
+[36m(vLLMHttpServer pid=789650)[0m (Worker pid=793641) Loading safetensors checkpoint shards:   0% Completed | 0/4 [00:00<?, ?it/s]
+[36m(vLLMHttpServer pid=789650)[0m (Worker pid=793641) Loading safetensors checkpoint shards:  75% Completed | 3/4 [00:03<00:01,  1.04s/it][32m [repeated 3x across cluster] (Ray deduplicates logs by default. Set RAY_DEDUP_LOGS=0 to disable log deduplication, or see https://docs.ray.io/en/master/ray-observability/user-guides/configure-logging.html#log-deduplication for more options.)[0m
+[36m(vLLMHttpServer pid=789461)[0m (Worker pid=793687) <frozen importlib._bootstrap_external>:1301: FutureWarning: The cuda.cudart module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.runtime module instead.
+[36m(vLLMHttpServer pid=789461)[0m (Worker pid=793687) <frozen importlib._bootstrap_external>:1301: FutureWarning: The cuda.nvrtc module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.nvrtc module instead.
+[36m(vLLMHttpServer pid=789650)[0m (Worker pid=793641) 
+[36m(vLLMHttpServer pid=789650)[0m (Worker pid=793641) Loading safetensors checkpoint shards: 100% Completed | 4/4 [00:04<00:00,  1.05s/it][32m [repeated 2x across cluster][0m
+[36m(vLLMHttpServer pid=789461)[0m (Worker pid=793687) 2026-08-05 11:19:24,149 - INFO - autotuner.py:622 - flashinfer.jit: [Autotuner]: Autotuning process starts ...
+[36m(vLLMHttpServer pid=789461)[0m (Worker pid=793687) 2026-08-05 11:19:24,170 - INFO - autotuner.py:641 - flashinfer.jit: [Autotuner]: Autotuning process ends
+[36m(vLLMHttpServer pid=789461)[0m (EngineCore pid=791943) [transformers] The `use_fast` parameter is deprecated and will be removed in a future version. Use `backend="torchvision"` instead of `use_fast=True`, or `backend="pil"` instead of `use_fast=False`.
+[36m(vLLMHttpServer pid=789650)[0m (Worker pid=793641) <frozen importlib._bootstrap_external>:1301: FutureWarning: The cuda.cudart module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.runtime module instead.
+[36m(vLLMHttpServer pid=789650)[0m (Worker pid=793641) <frozen importlib._bootstrap_external>:1301: FutureWarning: The cuda.nvrtc module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.nvrtc module instead.
+[36m(vLLMHttpServer pid=789650)[0m (Worker pid=793641) 2026-08-05 11:25:34,453 - INFO - autotuner.py:622 - flashinfer.jit: [Autotuner]: Autotuning process starts ...
+[36m(vLLMHttpServer pid=789650)[0m (Worker pid=793641) 2026-08-05 11:25:34,476 - INFO - autotuner.py:641 - flashinfer.jit: [Autotuner]: Autotuning process ends
+[36m(vLLMHttpServer pid=789650)[0m (EngineCore pid=791992) [transformers] The `use_fast` parameter is deprecated and will be removed in a future version. Use `backend="torchvision"` instead of `use_fast=True`, or `backend="pil"` instead of `use_fast=False`.
+[36m(pid=929309)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/engine/mindspeed/transformer_impl.py:24: UserWarning: NPU not support router replay for now.
+[36m(pid=929309)[0m   from verl.utils.megatron.router_replay_patch import RouterReplay
+[36m(RewardLoopWorker pid=929284)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/engine/mindspeed/transformer_impl.py:24: UserWarning: NPU not support router replay for now.[32m [repeated 3x across cluster][0m
+[36m(RewardLoopWorker pid=929284)[0m   from verl.utils.megatron.router_replay_patch import RouterReplay[32m [repeated 3x across cluster][0m
+[36m(vLLMOmniHttpServer pid=929309)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/engine/mindspeed/transformer_impl.py:24: UserWarning: NPU not support router replay for now.
+[36m(vLLMOmniHttpServer pid=929309)[0m   from verl.utils.megatron.router_replay_patch import RouterReplay
+[36m(vLLMOmniHttpServer pid=929315)[0m /data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/engine/mindspeed/transformer_impl.py:24: UserWarning: NPU not support router replay for now.
+[36m(vLLMOmniHttpServer pid=929315)[0m   from verl.utils.megatron.router_replay_patch import RouterReplay
+[36m(vLLMOmniHttpServer pid=929309)[0m Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]
+[36m(vLLMOmniHttpServer pid=929309)[0m Loading weights: 100%|██████████| 242/242 [00:00<00:00, 5989.18it/s]
+[36m(vLLMOmniHttpServer pid=929309)[0m The config attributes {'clip_output': False} were passed to DistributedAutoencoderKLWan, but are not expected and will be ignored. Please verify your config.json configuration file.
+[36m(vLLMOmniHttpServer pid=929315)[0m Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|██████████| 242/242 [00:00<00:00, 8753.05it/s]
+[36m(vLLMOmniHttpServer pid=929309)[0m Process DiffusionWorker-0:
+[36m(vLLMOmniHttpServer pid=929309)[0m Traceback (most recent call last):
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+[36m(vLLMOmniHttpServer pid=929309)[0m     self.run()
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/process.py", line 108, in run
+[36m(vLLMOmniHttpServer pid=929309)[0m     self._target(*self._args, **self._kwargs)
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/worker/diffusion_worker.py", line 1004, in worker_main
+[36m(vLLMOmniHttpServer pid=929309)[0m     worker_proc = WorkerProc(
+[36m(vLLMOmniHttpServer pid=929309)[0m                   ^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/worker/diffusion_worker.py", line 786, in __init__
+[36m(vLLMOmniHttpServer pid=929309)[0m     self.worker = self._create_worker(gpu_id, od_config, worker_extension_cls, custom_pipeline_args)
+[36m(vLLMOmniHttpServer pid=929309)[0m                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/worker/diffusion_worker.py", line 799, in _create_worker
+[36m(vLLMOmniHttpServer pid=929309)[0m     wrapper = WorkerWrapperBase(
+[36m(vLLMOmniHttpServer pid=929309)[0m               ^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/worker/diffusion_worker.py", line 1085, in __init__
+[36m(vLLMOmniHttpServer pid=929309)[0m     self.worker.re_init_pipeline(self.custom_pipeline_args)
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/worker/diffusion_worker.py", line 739, in re_init_pipeline
+[36m(vLLMOmniHttpServer pid=929309)[0m     self.load_model(
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/worker/diffusion_worker.py", line 352, in load_model
+[36m(vLLMOmniHttpServer pid=929309)[0m     self.model_runner.load_model(
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/worker/diffusion_model_runner.py", line 201, in load_model
+[36m(vLLMOmniHttpServer pid=929309)[0m     self.pipeline = model_loader.load_model(
+[36m(vLLMOmniHttpServer pid=929309)[0m                     ^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/model_loader/diffusers_loader.py", line 377, in load_model
+[36m(vLLMOmniHttpServer pid=929309)[0m     model = self._init_from_load_format(load_format, target_device, custom_pipeline_name, is_hsdp=False)
+[36m(vLLMOmniHttpServer pid=929309)[0m             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/model_loader/diffusers_loader.py", line 636, in _init_from_load_format
+[36m(vLLMOmniHttpServer pid=929309)[0m     model = model_cls(od_config=self.od_config)
+[36m(vLLMOmniHttpServer pid=929309)[0m             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/distributed/pipeline_parallel.py", line 117, in wrapped_init
+[36m(vLLMOmniHttpServer pid=929309)[0m     init(self, *args, **kwargs)
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/verl_omni/pipelines/wan22_dance_grpo/vllm_omni_rollout_adapter.py", line 66, in __init__
+[36m(vLLMOmniHttpServer pid=929309)[0m     super().__init__(od_config=od_config, prefix=prefix)
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/distributed/pipeline_parallel.py", line 117, in wrapped_init
+[36m(vLLMOmniHttpServer pid=929309)[0m     init(self, *args, **kwargs)
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/models/wan2_2/pipeline_wan2_2.py", line 389, in __init__
+[36m(vLLMOmniHttpServer pid=929309)[0m     self.transformer = self._create_transformer(transformer_config)
+[36m(vLLMOmniHttpServer pid=929309)[0m                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/models/wan2_2/pipeline_wan2_2.py", line 426, in _create_transformer
+[36m(vLLMOmniHttpServer pid=929309)[0m     return create_transformer_from_config(config, quant_config=quant_config)
+[36m(vLLMOmniHttpServer pid=929309)[0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/models/wan2_2/pipeline_wan2_2.py", line 173, in create_transformer_from_config
+[36m(vLLMOmniHttpServer pid=929309)[0m     return WanTransformer3DModel(**kwargs)
+[36m(vLLMOmniHttpServer pid=929309)[0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/models/wan2_2/wan2_2_transformer.py", line 916, in __init__
+[36m(vLLMOmniHttpServer pid=929309)[0m     self.start_layer, self.end_layer, self.blocks = make_layers(
+[36m(vLLMOmniHttpServer pid=929309)[0m                                                     ^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm/model_executor/models/utils.py", line 666, in make_layers
+[36m(vLLMOmniHttpServer pid=929309)[0m     + get_offloader().wrap_modules(
+[36m(vLLMOmniHttpServer pid=929309)[0m       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm/model_executor/offloader/base.py", line 104, in wrap_modules
+[36m(vLLMOmniHttpServer pid=929309)[0m     return list(modules_generator)
+[36m(vLLMOmniHttpServer pid=929309)[0m            ^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm/model_executor/models/utils.py", line 667, in <genexpr>
+[36m(vLLMOmniHttpServer pid=929309)[0m     layer_fn(prefix=f"{prefix}.{idx}") for idx in range(start_layer, end_layer)
+[36m(vLLMOmniHttpServer pid=929309)[0m     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/models/wan2_2/wan2_2_transformer.py", line 918, in <lambda>
+[36m(vLLMOmniHttpServer pid=929309)[0m     lambda prefix: WanTransformerBlock(
+[36m(vLLMOmniHttpServer pid=929309)[0m                    ^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/models/wan2_2/wan2_2_transformer.py", line 671, in __init__
+[36m(vLLMOmniHttpServer pid=929309)[0m     self.attn1 = WanSelfAttention(
+[36m(vLLMOmniHttpServer pid=929309)[0m                  ^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/models/wan2_2/wan2_2_transformer.py", line 412, in __init__
+[36m(vLLMOmniHttpServer pid=929309)[0m     self.attn = Attention(
+[36m(vLLMOmniHttpServer pid=929309)[0m                 ^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/attention/layer.py", line 80, in __init__
+[36m(vLLMOmniHttpServer pid=929309)[0m     attn_backend_cls, spec = get_attn_backend_for_role(
+[36m(vLLMOmniHttpServer pid=929309)[0m                              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/attention/selector.py", line 133, in get_attn_backend_for_role
+[36m(vLLMOmniHttpServer pid=929309)[0m     backend_cls = _cached_get_backend_cls(spec.backend, head_size)
+[36m(vLLMOmniHttpServer pid=929309)[0m                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/attention/selector.py", line 63, in _cached_get_backend_cls
+[36m(vLLMOmniHttpServer pid=929309)[0m     backend_cls_path = current_omni_platform.get_diffusion_attn_backend_cls(
+[36m(vLLMOmniHttpServer pid=929309)[0m                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/platforms/cuda/platform.py", line 100, in get_diffusion_attn_backend_cls
+[36m(vLLMOmniHttpServer pid=929309)[0m     cudnn_version = torch.backends.cudnn.version() or 0
+[36m(vLLMOmniHttpServer pid=929309)[0m                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/torch/backends/cudnn/__init__.py", line 112, in version
+[36m(vLLMOmniHttpServer pid=929309)[0m     if not _init():
+[36m(vLLMOmniHttpServer pid=929309)[0m            ^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/torch/backends/cudnn/__init__.py", line 74, in _init
+[36m(vLLMOmniHttpServer pid=929309)[0m     raise RuntimeError(
+[36m(vLLMOmniHttpServer pid=929309)[0m RuntimeError: cuDNN version incompatibility: PyTorch was compiled  against (9, 17, 1) but found runtime version (9, 1, 0). PyTorch already comes bundled with cuDNN. One option to resolving this error is to ensure PyTorch can find the bundled cuDNN. Looks like your LD_LIBRARY_PATH contains incompatible version of cudnn. Please either remove it from the path or install cudnn (9, 17, 1)
+
+[36m(vLLMHttpServer pid=789461)[0m (Worker pid=793687) WARNING 08-05 11:11:38 [vllm.py:1062] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(vLLMHttpServer pid=789461)[0m (Worker pid=793687) WARNING 08-05 11:11:38 [vllm.py:1110] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(vLLMHttpServer pid=789650)[0m WARNING 08-05 11:11:11 [system_utils.py:157] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: In a Ray actor and can only be spawned; CUDA is initialized
+[36m(vLLMHttpServer pid=789461)[0m (EngineCore pid=791943) WARNING 08-05 11:19:30 [vllm.py:1062] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(vLLMHttpServer pid=789461)[0m (EngineCore pid=791943) WARNING 08-05 11:19:30 [vllm.py:1110] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(vLLMHttpServer pid=789650)[0m (Worker pid=793641) WARNING 08-05 11:11:40 [vllm.py:1062] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(vLLMHttpServer pid=789650)[0m (Worker pid=793641) WARNING 08-05 11:11:40 [vllm.py:1110] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(vLLMHttpServer pid=789461)[0m WARNING 08-05 11:19:30 [api_router.py:30] LoRA dynamic loading & unloading is enabled in the API server. This should ONLY be used for local development!
+[36m(vLLMHttpServer pid=789461)[0m WARNING 08-05 11:19:30 [api_router.py:41] Profiler with mode 'torch' is enabled in the API server. This should ONLY be used for local development!
+[36m(vLLMHttpServer pid=789461)[0m WARNING 08-05 11:19:30 [model.py:1477] Default vLLM sampling parameters have been overridden by the model's `generation_config.json`: `{'repetition_penalty': 1.0, 'temperature': 1.0, 'top_k': -1, 'top_p': 1, 'max_tokens': 2048}`. If this is not intended, please relaunch vLLM instance with `--generation-config vllm`.
+[36m(vLLMHttpServer pid=789650)[0m (EngineCore pid=791992) WARNING 08-05 11:25:40 [vllm.py:1062] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(vLLMHttpServer pid=789650)[0m (EngineCore pid=791992) WARNING 08-05 11:25:40 [vllm.py:1110] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(vLLMHttpServer pid=789650)[0m WARNING 08-05 11:25:40 [api_router.py:30] LoRA dynamic loading & unloading is enabled in the API server. This should ONLY be used for local development!
+[36m(vLLMHttpServer pid=789650)[0m WARNING 08-05 11:25:41 [api_router.py:41] Profiler with mode 'torch' is enabled in the API server. This should ONLY be used for local development!
+[36m(vLLMHttpServer pid=789650)[0m WARNING 08-05 11:25:41 [model.py:1477] Default vLLM sampling parameters have been overridden by the model's `generation_config.json`: `{'repetition_penalty': 1.0, 'temperature': 1.0, 'top_k': -1, 'top_p': 1, 'max_tokens': 2048}`. If this is not intended, please relaunch vLLM instance with `--generation-config vllm`.
+[36m(vLLMOmniHttpServer pid=929309)[0m ['serve',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '/data/models/Wan2.2-TI2V-5B-Diffusers',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--dtype',
+[36m(vLLMOmniHttpServer pid=929309)[0m  'bfloat16',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--load_format',
+[36m(vLLMOmniHttpServer pid=929309)[0m  'safetensors',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--distributed_executor_backend',
+[36m(vLLMOmniHttpServer pid=929309)[0m  'mp',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--worker_extension_cls',
+[36m(vLLMOmniHttpServer pid=929309)[0m  'verl_omni.workers.rollout.vllm_rollout.utils.vLLMOmniColocateWorkerExtension',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--max_num_seqs',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '1024',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--enable_chunked_prefill',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--max_num_batched_tokens',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '8192',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--enable_prefix_caching',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--enable_sleep_mode',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--logprobs_mode',
+[36m(vLLMOmniHttpServer pid=929309)[0m  'processed_logprobs',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--gpu_memory_utilization',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '0.28',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--disable_log_stats',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--tensor_parallel_size',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '1',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--seed',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '42',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--override_generation_config',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '{}',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--hf_overrides',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '{}',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--scheduling_policy',
+[36m(vLLMOmniHttpServer pid=929309)[0m  'fcfs',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--compilation_config',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '{"cudagraph_mode": "FULL_AND_PIECEWISE"}',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '--profiler_config',
+[36m(vLLMOmniHttpServer pid=929309)[0m  '{"profiler": "torch", "torch_profiler_dir": '
+[36m(vLLMOmniHttpServer pid=929309)[0m  '"outputs/profile/agent_loop_rollout_replica_0", '
+[36m(vLLMOmniHttpServer pid=929309)[0m  '"torch_profiler_with_memory": false, "torch_profiler_with_stack": false, '
+[36m(vLLMOmniHttpServer pid=929309)[0m  '"torch_profiler_record_shapes": false, "delay_iterations": 0, '
+[36m(vLLMOmniHttpServer pid=929309)[0m  '"max_iterations": 0, "ignore_frontend": "true"}']
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [multiproc_executor.py:233] Rank 0 scheduler is dead. Please check if there are relevant logs.
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [multiproc_executor.py:235] Exit code: 1
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251] [StageRuntime] Stage initialization failed; shutting down 0 initialized client(s)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251] Traceback (most recent call last):
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 238, in initialize
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]     initialized_clients = self._initialize_stage_replicas(stage_plans, self._stage_init_timeout)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 499, in _initialize_stage_replicas
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]     raise primary_exc
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 460, in _init_group
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]     client = self._initialize_replica(
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]              ^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 524, in _initialize_replica
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]     return self._initialize_local_diffusion_replica(plan, stage_init_timeout)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 644, in _initialize_local_diffusion_replica
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]     client, resources = launch_diffusion_stage_replica(
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_engine_startup.py", line 1357, in launch_diffusion_stage_replica
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]     client = initialize_diffusion_stage(
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_init_utils.py", line 1123, in initialize_diffusion_stage
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]     return create_diffusion_client(model, od_config, metadata, stage_init_timeout, batch_size, use_inline)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/stage_diffusion_client.py", line 55, in create_diffusion_client
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]     return InlineStageDiffusionClient(model, od_config, metadata, batch_size=batch_size)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/inline_stage_diffusion_client.py", line 62, in __init__
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]     self._engine = DiffusionEngine.make_engine(self.od_config)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/diffusion_engine.py", line 668, in make_engine
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]     return engine_class(config, scheduler=scheduler)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/diffusion_engine.py", line 177, in __init__
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]     self.executor = executor_class(od_config)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/executor/abstract.py", line 64, in __init__
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]     self._init_executor()
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/executor/multiproc_executor.py", line 85, in _init_executor
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]     processes, result_handle = self._launch_workers(broadcast_handle, self.wake_events)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/executor/multiproc_executor.py", line 231, in _launch_workers
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]     data = reader.recv()
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]            ^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]   File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/connection.py", line 250, in recv
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]     buf = self._recv_bytes()
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]           ^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]   File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/connection.py", line 430, in _recv_bytes
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]     buf = self._recv(4)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]           ^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]   File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/connection.py", line 399, in _recv
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251]     raise EOFError
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [stage_runtime.py:251] EOFError
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456] [AsyncOmniEngine] Orchestrator thread crashed
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456] Traceback (most recent call last):
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/async_omni_engine.py", line 450, in _bootstrap_orchestrator
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     loop.run_until_complete(_run_orchestrator())
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/async_omni_engine.py", line 426, in _run_orchestrator
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     self._initialize_stages(stage_init_timeout)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/async_omni_engine.py", line 376, in _initialize_stages
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     self._runtime.initialize()
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 257, in initialize
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     raise exc
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 238, in initialize
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     initialized_clients = self._initialize_stage_replicas(stage_plans, self._stage_init_timeout)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 499, in _initialize_stage_replicas
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     raise primary_exc
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 460, in _init_group
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     client = self._initialize_replica(
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]              ^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 524, in _initialize_replica
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     return self._initialize_local_diffusion_replica(plan, stage_init_timeout)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 644, in _initialize_local_diffusion_replica
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     client, resources = launch_diffusion_stage_replica(
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_engine_startup.py", line 1357, in launch_diffusion_stage_replica
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     client = initialize_diffusion_stage(
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_init_utils.py", line 1123, in initialize_diffusion_stage
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     return create_diffusion_client(model, od_config, metadata, stage_init_timeout, batch_size, use_inline)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/stage_diffusion_client.py", line 55, in create_diffusion_client
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     return InlineStageDiffusionClient(model, od_config, metadata, batch_size=batch_size)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/inline_stage_diffusion_client.py", line 62, in __init__
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     self._engine = DiffusionEngine.make_engine(self.od_config)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/diffusion_engine.py", line 668, in make_engine
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     return engine_class(config, scheduler=scheduler)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/diffusion_engine.py", line 177, in __init__
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     self.executor = executor_class(od_config)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/executor/abstract.py", line 64, in __init__
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     self._init_executor()
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/executor/multiproc_executor.py", line 85, in _init_executor
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     processes, result_handle = self._launch_workers(broadcast_handle, self.wake_events)
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/executor/multiproc_executor.py", line 231, in _launch_workers
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     data = reader.recv()
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]            ^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/connection.py", line 250, in recv
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     buf = self._recv_bytes()
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]           ^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/connection.py", line 430, in _recv_bytes
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     buf = self._recv(4)[36m(vLLMOmniHttpServer pid=929309)[0m Exception in thread orchestrator:
+[36m(vLLMOmniHttpServer pid=929309)[0m Traceback (most recent call last):
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/threading.py", line 1075, in _bootstrap_inner
+[36m(vLLMOmniHttpServer pid=929309)[0m     self.run()
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/threading.py", line 1012, in run
+[36m(vLLMOmniHttpServer pid=929309)[0m     self._target(*self._args, **self._kwargs)
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/async_omni_engine.py", line 450, in _bootstrap_orchestrator
+[36m(vLLMOmniHttpServer pid=929309)[0m     loop.run_until_complete(_run_orchestrator())
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/async_omni_engine.py", line 426, in _run_orchestrator
+[36m(vLLMOmniHttpServer pid=929309)[0m     self._initialize_stages(stage_init_timeout)
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/async_omni_engine.py", line 376, in _initialize_stages
+[36m(vLLMOmniHttpServer pid=929309)[0m     self._runtime.initialize()
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 257, in initialize
+[36m(vLLMOmniHttpServer pid=929309)[0m     raise exc
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 238, in initialize
+[36m(vLLMOmniHttpServer pid=929309)[0m     initialized_clients = self._initialize_stage_replicas(stage_plans, self._stage_init_timeout)
+[36m(vLLMOmniHttpServer pid=929309)[0m                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 499, in _initialize_stage_replicas
+[36m(vLLMOmniHttpServer pid=929309)[0m     raise primary_exc
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 460, in _init_group
+[36m(vLLMOmniHttpServer pid=929309)[0m     client = self._initialize_replica(
+[36m(vLLMOmniHttpServer pid=929309)[0m              ^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 524, in _initialize_replica
+[36m(vLLMOmniHttpServer pid=929309)[0m     return self._initialize_local_diffusion_replica(plan, stage_init_timeout)
+[36m(vLLMOmniHttpServer pid=929309)[0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 644, in _initialize_local_diffusion_replica
+[36m(vLLMOmniHttpServer pid=929309)[0m     client, resources = launch_diffusion_stage_replica(
+[36m(vLLMOmniHttpServer pid=929309)[0m                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_engine_startup.py", line 1357, in launch_diffusion_stage_replica
+[36m(vLLMOmniHttpServer pid=929309)[0m     client = initialize_diffusion_stage(
+[36m(vLLMOmniHttpServer pid=929309)[0m              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_init_utils.py", line 1123, in initialize_diffusion_stage
+[36m(vLLMOmniHttpServer pid=929309)[0m     return create_diffusion_client(model, od_config, metadata, stage_init_timeout, batch_size, use_inline)
+[36m(vLLMOmniHttpServer pid=929309)[0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/stage_diffusion_client.py", line 55, in create_diffusion_client
+[36m(vLLMOmniHttpServer pid=929309)[0m     return InlineStageDiffusionClient(model, od_config, metadata, batch_size=batch_size)
+[36m(vLLMOmniHttpServer pid=929309)[0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/inline_stage_diffusion_client.py", line 62, in __init__
+[36m(vLLMOmniHttpServer pid=929309)[0m     self._engine = DiffusionEngine.make_engine(self.od_config)
+[36m(vLLMOmniHttpServer pid=929309)[0m                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/diffusion_engine.py", line 668, in make_engine
+[36m(vLLMOmniHttpServer pid=929309)[0m     return engine_class(config, scheduler=scheduler)
+[36m(vLLMOmniHttpServer pid=929309)[0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/diffusion_engine.py", line 177, in __init__
+[36m(vLLMOmniHttpServer pid=929309)[0m     self.executor = executor_class(od_config)
+[36m(vLLMOmniHttpServer pid=929309)[0m                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/executor/abstract.py", line 64, in __init__
+[36m(vLLMOmniHttpServer pid=929309)[0m     self._init_executor()
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/executor/multiproc_executor.py", line 85, in _init_executor
+[36m(vLLMOmniHttpServer pid=929309)[0m     processes, result_handle = self._launch_workers(broadcast_handle, self.wake_events)
+[36m(vLLMOmniHttpServer pid=929309)[0m                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/executor/multiproc_executor.py", line 231, in _launch_workers
+[36m(vLLMOmniHttpServer pid=929309)[0m     data = reader.recv()
+[36m(vLLMOmniHttpServer pid=929309)[0m            ^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/connection.py", line 250, in recv
+[36m(vLLMOmniHttpServer pid=929309)[0m     buf = self._recv_bytes()
+[36m(vLLMOmniHttpServer pid=929309)[0m           ^^^^^^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/connection.py", line 430, in _recv_bytes
+[36m(vLLMOmniHttpServer pid=929309)[0m     buf = self._recv(4)
+[36m(vLLMOmniHttpServer pid=929309)[0m           ^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m   File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/connection.py", line 399, in _recv
+[36m(vLLMOmniHttpServer pid=929309)[0m     raise EOFError
+[36m(vLLMOmniHttpServer pid=929309)[0m EOFError
+[36m(vLLMOmniHttpServer pid=929315)[0m The config attributes {'clip_output': False} were passed to DistributedAutoencoderKLWan, but are not expected and will be ignored. Please verify your config.json configuration file.
+
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]           ^^^^^^^^^^^^^
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]   File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/connection.py", line 399, in _recv
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456]     raise EOFError
+[36m(vLLMOmniHttpServer pid=929309)[0m ERROR 08-05 11:26:55 [async_omni_engine.py:456] EOFError
+Error executing job with overrides: ['algorithm.adv_estimator=dance_grpo', 'actor_rollout_ref.model.algorithm=dance_grpo', 'actor_rollout_ref.actor.diffusion_loss.loss_mode=dance_grpo', 'data.train_files=/data/verl-omni/workspace/data/ocr/wan22/train.parquet', 'data.val_files=/data/verl-omni/workspace/data/ocr/wan22/test_smoke.parquet', 'data.train_batch_size=4', 'data.val_batch_size=8', 'data.max_prompt_length=1024', 'data.seed=42', 'actor_rollout_ref.model.path=/data/models/Wan2.2-TI2V-5B-Diffusers', 'actor_rollout_ref.model.attn_backend=native', 'actor_rollout_ref.model.custom_chat_template="{% if messages %}{% for message in messages %}{% if message[\\"role\\"] == \\"user\\" %}{{ message[\\"content\\"] }}{% endif %}{% endfor %}{% endif %}</s>"', 'actor_rollout_ref.actor.optim.lr=1e-5', 'actor_rollout_ref.actor.optim.weight_decay=0.0001', 'actor_rollout_ref.actor.ppo_mini_batch_size=4', 'actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=4', 'actor_rollout_ref.actor.fsdp_config.param_offload=True', 'actor_rollout_ref.actor.fsdp_config.optimizer_offload=True', 'actor_rollout_ref.actor.fsdp_config.model_dtype=bfloat16', 'actor_rollout_ref.actor.fsdp_config.wrap_policy.min_num_params=10000', 'actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu=16', 'actor_rollout_ref.rollout.tensor_model_parallel_size=1', 'actor_rollout_ref.rollout.name=vllm_omni', 'actor_rollout_ref.rollout.n=8', 'actor_rollout_ref.rollout.seed=42', 'actor_rollout_ref.rollout.agent.num_workers=2', 'actor_rollout_ref.rollout.load_format=safetensors', 'actor_rollout_ref.rollout.layered_summon=True', 'actor_rollout_ref.rollout.rollout_attn_backend=TORCH_SDPA', 'actor_rollout_ref.rollout.pipeline.true_cfg_scale=5.0', 'actor_rollout_ref.rollout.pipeline.height=704', 'actor_rollout_ref.rollout.pipeline.width=1280', 'actor_rollout_ref.rollout.pipeline.num_frames=8', 'actor_rollout_ref.rollout.pipeline.num_inference_steps=10', 'actor_rollout_ref.rollout.pipeline.guidance_scale=5.0', 'actor_rollout_ref.rollout.pipeline.max_sequence_length=1024', 'actor_rollout_ref.rollout.algo.noise_level=1.2', 'actor_rollout_ref.rollout.algo.sde_type=dance_sde', 'actor_rollout_ref.rollout.algo.sde_window_size=2', 'actor_rollout_ref.rollout.algo.sde_window_range=[0,5]', 'actor_rollout_ref.rollout.val_kwargs.pipeline.num_inference_steps=50', 'actor_rollout_ref.rollout.val_kwargs.algo.noise_level=0.0', 'actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu=16', 'reward.num_workers=2', 'reward.reward_model.enable=True', 'reward.reward_model.model_path=/data/models/Qwen3-VL-8B-Instruct', 'reward.reward_model.rollout.name=vllm', 'reward.reward_model.rollout.tensor_model_parallel_size=1', 'reward.reward_model.rollout.max_model_len=32768', 'reward.custom_reward_function.path=verl_omni/utils/reward_score/genrm_ocr.py', 'reward.custom_reward_function.name=compute_score_ocr', 'trainer.logger=["console", "tensorboard"]', 'trainer.project_name=dance_grpo', 'trainer.experiment_name=wan22_5b_t2v_ocr_s150', 'trainer.log_val_generations=8', 'trainer.val_before_train=True', 'trainer.validation_data_dir=/data/verl-omni/workspace/val_generations/wan22_5b_t2v_ocr_s150', 'trainer.n_gpus_per_node=2', 'trainer.nnodes=1', 'trainer.save_freq=25', 'trainer.test_freq=25', 'trainer.total_epochs=15', 'trainer.total_training_steps=150', 'trainer.val_only=True', 'trainer.experiment_name=wan22_5b_t2v_ocr_s150', 'trainer.resume_mode=auto', 'data.val_files=/data/verl-omni/workspace/data/ocr/wan22/test.parquet', 'trainer.validation_data_dir=/data/verl-omni/workspace/val_generations/eval_step150_full', 'actor_rollout_ref.rollout.gpu_memory_utilization=0.28', 'reward.reward_model.rollout.gpu_memory_utilization=0.30', 'reward.reward_model.rollout.max_model_len=16384']
+Traceback (most recent call last):
+  File "/data/verl-omni/verl_omni/trainer/main_diffusion.py", line 46, in main
+    run_diffusion(config)
+  File "/data/verl-omni/verl_omni/trainer/main_diffusion.py", line 93, in run_diffusion
+    ray.get(runner.run.remote(config))
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 110, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/ray/_private/worker.py", line 2968, in get
+    values, debugger_breakpoint = worker.get_objects(
+                                  ^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/ray/_private/worker.py", line 1050, in get_objects
+    raise value.as_instanceof_cause()
+ray.exceptions.RayTaskError(RuntimeError): [36mray::TaskRunner.run()[39m (pid=772550, ip=10.10.11.162, actor_id=0a5f23ee1d9abb91dc71320f01000000, repr=<main_diffusion.TaskRunner object at 0x7179b9c42180>)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/verl_omni/trainer/main_diffusion.py", line 312, in run
+    trainer.init_workers()
+  File "/data/verl-omni/verl_omni/trainer/diffusion/ray_diffusion_trainer.py", line 589, in init_workers
+    self._init_online_rollout_stack(actor_rollout_resource_pool)
+  File "/data/verl-omni/verl_omni/trainer/diffusion/ray_diffusion_trainer.py", line 719, in _init_online_rollout_stack
+    self.llm_server_manager = LLMServerManager.create(
+                              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/verl/utils/ray_utils.py", line 123, in wrapper
+    return asyncio.run(coro)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/rollout/llm_server.py", line 372, in create
+    await instance._initialize_llm_servers()
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/rollout/llm_server.py", line 425, in _initialize_llm_servers
+    await asyncio.gather(*[server.init_hybrid(self.worker_group) for server in self.rollout_replicas])
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/rollout/replica.py", line 141, in init_hybrid
+    await self.launch_servers()
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/rollout/vllm_rollout/vllm_async_server.py", line 1061, in launch_servers
+    await asyncio.gather(
+  File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/tasks.py", line 684, in _wrap_awaitable
+    return await awaitable
+           ^^^^^^^^^^^^^^^
+ray.exceptions.RayTaskError(RuntimeError): [36mray::vLLMOmniHttpServer.launch_server()[39m (pid=929309, ip=10.10.11.162, actor_id=fcebf18979532dfe32648a5001000000, repr=<verl_omni.workers.rollout.vllm_rollout.vllm_omni_async_server.vLLMOmniHttpServer object at 0x757e68bf3980>)
+  File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/async_omni_engine.py", line 450, in _bootstrap_orchestrator
+    loop.run_until_complete(_run_orchestrator())
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/async_omni_engine.py", line 426, in _run_orchestrator
+    self._initialize_stages(stage_init_timeout)
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/async_omni_engine.py", line 376, in _initialize_stages
+    self._runtime.initialize()
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 257, in initialize
+    raise exc
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 238, in initialize
+    initialized_clients = self._initialize_stage_replicas(stage_plans, self._stage_init_timeout)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 499, in _initialize_stage_replicas
+    raise primary_exc
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 460, in _init_group
+    client = self._initialize_replica(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 524, in _initialize_replica
+    return self._initialize_local_diffusion_replica(plan, stage_init_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_runtime.py", line 644, in _initialize_local_diffusion_replica
+    client, resources = launch_diffusion_stage_replica(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_engine_startup.py", line 1357, in launch_diffusion_stage_replica
+    client = initialize_diffusion_stage(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/stage_init_utils.py", line 1123, in initialize_diffusion_stage
+    return create_diffusion_client(model, od_config, metadata, stage_init_timeout, batch_size, use_inline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/stage_diffusion_client.py", line 55, in create_diffusion_client
+    return InlineStageDiffusionClient(model, od_config, metadata, batch_size=batch_size)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/inline_stage_diffusion_client.py", line 62, in __init__
+    self._engine = DiffusionEngine.make_engine(self.od_config)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/diffusion_engine.py", line 668, in make_engine
+    return engine_class(config, scheduler=scheduler)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/diffusion_engine.py", line 177, in __init__
+    self.executor = executor_class(od_config)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/executor/abstract.py", line 64, in __init__
+    self._init_executor()
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/executor/multiproc_executor.py", line 85, in _init_executor
+    processes, result_handle = self._launch_workers(broadcast_handle, self.wake_events)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/diffusion/executor/multiproc_executor.py", line 231, in _launch_workers
+    data = reader.recv()
+           ^^^^^^^^^^^^^
+  File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/connection.py", line 250, in recv
+    buf = self._recv_bytes()
+          ^^^^^^^^^^^^^^^^^^
+  File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/connection.py", line 430, in _recv_bytes
+    buf = self._recv(4)
+          ^^^^^^^^^^^^^
+  File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/connection.py", line 399, in _recv
+    raise EOFError
+EOFError
+
+The above exception was the direct cause of the following exception:
+
+[36mray::vLLMOmniHttpServer.launch_server()[39m (pid=929309, ip=10.10.11.162, actor_id=fcebf18979532dfe32648a5001000000, repr=<verl_omni.workers.rollout.vllm_rollout.vllm_omni_async_server.vLLMOmniHttpServer object at 0x757e68bf3980>)
+  File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/verl/workers/rollout/vllm_rollout/vllm_async_server.py", line 386, in launch_server
+    await self.run_server(server_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/verl_omni/workers/rollout/vllm_rollout/vllm_omni_async_server.py", line 262, in run_server
+    engine_client = AsyncOmni(**engine_args)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/entrypoints/async_omni.py", line 141, in __init__
+    OmniBase.__init__(self, model=model, **kwargs)
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/entrypoints/omni_base.py", line 173, in __init__
+    self.engine = AsyncOmniEngine(
+                  ^^^^^^^^^^^^^^^^
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/async_omni_engine.py", line 329, in __init__
+    self._wait_for_orchestrator_init(startup_future, startup_timeout)
+  File "/data/verl-omni/.venv/lib/python3.12/site-packages/vllm_omni/engine/async_omni_engine.py", line 494, in _wait_for_orchestrator_init
+    startup_future.result(
+  File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+RuntimeError: Orchestrator initialization failed:
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
