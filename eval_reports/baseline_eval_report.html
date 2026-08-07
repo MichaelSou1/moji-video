@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>baseline 全量评测报告 · Wan2.2-TI2V-5B OCR</title>
+<style>
+  :root{--bg:#0f1115;--surface:#171a21;--surface2:#1f232c;--border:#2a2f3a;--text:#e6e8eb;--muted:#9aa3b0;--teal:#1D9E75;--teal-l:#5DCAA5;--purple:#7F77DD;--coral:#D85A30;--amber:#EF9F27}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.65;font-size:14px}
+  .wrap{max-width:980px;margin:0 auto;padding:32px 24px 64px}
+  h1{font-size:22px;font-weight:600;margin:0 0 4px}
+  h2{font-size:16px;font-weight:600;margin:32px 0 12px;color:var(--teal-l);border-left:3px solid var(--teal);padding-left:10px}
+  h3{font-size:14px;font-weight:600;margin:20px 0 8px;color:var(--text)}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:24px}
+  .pill{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2px 10px;font-size:12px;color:var(--muted);margin-right:6px}
+  .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:8px 0 8px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
+  .card .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .card .val{font-size:24px;font-weight:600;margin-top:4px}
+  .card .val.t{color:var(--teal-l)}
+  table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;font-size:13px}
+  th,td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:var(--surface2);color:var(--muted);font-weight:500;font-size:12px}
+  tr:last-child td{border-bottom:none}
+  td.num{font-variant-numeric:tabular-nums;text-align:right}
+  code,.mono{font-family:"SF Mono",Consolas,Menlo,monospace;font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:4px;color:var(--amber)}
+  .barrow{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:12px}
+  .barrow .lab{width:120px;color:var(--muted);text-align:right}
+  .barwrap{flex:1;background:var(--surface2);border-radius:4px;height:18px;overflow:hidden}
+  .bar{height:100%;background:linear-gradient(90deg,var(--purple),var(--teal));border-radius:4px}
+  .barrow .cnt{width:40px;text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}
+  .sample{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0}
+  .sample .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .tag{font-size:11px;padding:1px 8px;border-radius:10px;font-weight:500}
+  .tag.high{background:rgba(29,158,117,.15);color:var(--teal-l)}
+  .tag.mid{background:rgba(239,159,39,.15);color:var(--amber)}
+  .tag.low{background:rgba(216,90,48,.15);color:var(--coral)}
+  .kv{font-size:12px;color:var(--muted);margin:3px 0}
+  .kv b{color:var(--text);font-weight:500}
+  .quote{color:var(--text);font-style:italic}
+  .note{background:rgba(127,119,221,.08);border:1px solid rgba(127,119,221,.3);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--muted);margin-top:16px}
+  footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);padding-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>baseline 全量评测报告</h1>
+  <div class="sub">Wan2.2-TI2V-5B-Diffusers · OCR 文本渲染奖励评测 · 基座模型（step 0）</div>
+  <div>
+    <span class="pill">experiment: eval_baseline_full</span>
+    <span class="pill">val_only</span>
+    <span class="pill">GPU 6,4</span>
+    <span class="pill">2026-08-05 22:15 → 08-06 12:48 (北京)</span>
+    <span class="pill">状态: COMPLETED</span>
+  </div>
+
+  <h2>核心指标</h2>
+  <div class="cards">
+    <div class="card"><div class="lbl">reward/mean@1</div><div class="val t">0.4991</div></div>
+    <div class="card"><div class="lbl">样本数</div><div class="val">1018</div></div>
+    <div class="card"><div class="lbl">num_turns</div><div class="val">2</div></div>
+    <div class="card"><div class="lbl">全对 / 全错</div><div class="val">123 / 140</div></div>
+  </div>
+  <div class="sub">奖励由 GenRM（Qwen3-VL-8B-Instruct）打分，连续值 [0,1]，<span class="mono">mean@1</span> 表示每条 prompt 单次 rollout 取平均。</div>
+
+  <h2>奖励分布</h2>
+  <div class="barrow"><div class="lab">0.0（全错）</div><div class="barwrap"><div class="bar" style="width:64%"></div></div><div class="cnt">140</div></div>
+  <div class="barrow"><div class="lab">0.01–0.25</div><div class="barwrap"><div class="bar" style="width:85%"></div></div><div class="cnt">187</div></div>
+  <div class="barrow"><div class="lab">0.26–0.49</div><div class="barwrap"><div class="bar" style="width:62%"></div></div><div class="cnt">137</div></div>
+  <div class="barrow"><div class="lab">0.50</div><div class="barwrap"><div class="bar" style="width:5%"></div></div><div class="cnt">11</div></div>
+  <div class="barrow"><div class="lab">0.51–0.74</div><div class="barwrap"><div class="bar" style="width:86%"></div></div><div class="cnt">189</div></div>
+  <div class="barrow"><div class="lab">0.75–0.99</div><div class="barwrap"><div class="bar" style="width:96%"></div></div><div class="cnt">212</div></div>
+  <div class="barrow"><div class="lab">1.0（全对）</div><div class="barwrap"><div class="bar" style="width:56%"></div></div><div class="cnt">123</div></div>
+  <div class="sub">奖励非二值：仅 ~250 条落在 0 或 1，大部分是 GenRM 软分。分布呈双峰偏态——简单词（"Fearless"）常全对，复杂场景文本常部分错。</div>
+
+  <h2>代表性样本</h2>
+  <h3>高分（reward = 1.0）</h3>
+  <div class="sample">
+    <div class="hd"><span class="tag high">high · 1.0</span><span class="mono">0/6.mp4</span></div>
+    <div class="kv">prompt: <span class="quote">A realistic photograph of a wrist tattoo in cursive script reading "Fearless"…</span></div>
+    <div class="kv">目标文本 (gts): <b>Fearless</b> → 模型输出: <b>Fearless</b></div>
+  </div>
+  <div class="sample">
+    <div class="hd"><span class="tag high">high · 1.0</span><span class="mono">0/21.mp4</span></div>
+    <div class="kv">prompt: <span class="quote">A jewelry store window featuring a sleek, modern decal announcing "Diamond Sale"…</span></div>
+    <div class="kv">目标文本 (gts): <b>Diamond Sale</b> → 模型输出: <b>Diamond Sale</b></div>
+  </div>
+
+  <h3>中分（reward ≈ 0.48–0.49）</h3>
+  <div class="sample">
+    <div class="hd"><span class="tag mid">mid · 0.491</span><span class="mono">0/11.mp4</span></div>
+    <div class="kv">prompt: <span class="quote">A hiking trail with a wooden signpost clearly displaying "Private Property No Entry"…</span></div>
+    <div class="kv">目标文本 (gts): <b>Private Property No Entry</b></div>
+    <div class="kv">模型输出: <b>PRITALE / PROPRINR / ENNETY / NO</b>（残缺错位）</div>
+  </div>
+  <div class="sample">
+    <div class="hd"><span class="tag mid">mid · 0.477</span><span class="mono">0/24.mp4</span></div>
+    <div class="kv">prompt: <span class="quote">A bicycle rental kiosk with a prominent sign that reads "Rent A Bike Here"…</span></div>
+    <div class="kv">目标文本 (gts): <b>Rent A Bike Here</b> → 模型输出: <b>Rent OW Dike</b></div>
+  </div>
+
+  <h3>低分（reward = 0.0）</h3>
+  <div class="sample">
+    <div class="hd"><span class="tag low">low · 0.0</span><span class="mono">0/3.mp4</span></div>
+    <div class="kv">prompt: <span class="quote">A fast food drive-thru menu board … reads "Try Our New Burger"…</span></div>
+    <div class="kv">目标文本 (gts): <b>Try Our New Burger</b></div>
+    <div class="kv">模型输出: <b>TRY BOIER / OR VIU / BIUGER / ANTIKOSTA PER OUGELÅRIG</b>（幻觉乱码）</div>
+  </div>
+  <div class="sample">
+    <div class="hd"><span class="tag low">low · 0.0</span><span class="mono">0/4.mp4</span></div>
+    <div class="kv">prompt: <span class="quote">A weathered cave explorer's journal page … "Lost City Near" …</span></div>
+    <div class="kv">目标文本 (gts): <b>Lost City Near</b> → 模型输出: <b>LOSTEH Gra / ON.M / TULY / SOCT.MMY / NEN</b></div>
+  </div>
+
+  <h2>评测配置与产出</h2>
+  <table>
+    <tr><th>项</th><th>值</th></tr>
+    <tr><td>实验名</td><td><span class="mono">eval_baseline_full</span>（基座，无 resume）</td></tr>
+    <tr><td>模型</td><td>/data/models/Wan2.2-TI2V-5B-Diffusers</td></tr>
+    <tr><td>奖励模型</td><td>/data/models/Qwen3-VL-8B-Instruct（GenRM, max_model_len=16384）</td></tr>
+    <tr><td>数据</td><td><span class="mono">/data/verl-omni/workspace/data/ocr/wan22/test.parquet</span>（1018 条）</td></tr>
+    <tr><td>val_batch_size</td><td>8 → 128 batch</td></tr>
+    <tr><td>rollout / reward gpu_memory_utilization</td><td>0.24 / 0.32</td></tr>
+    <tr><td>逐样本结果</td><td><span class="mono">/data/verl-omni/workspace/val_generations/eval_baseline_full/0.jsonl</span>（1018 行）</td></tr>
+    <tr><td>tensorboard</td><td><span class="mono">tensorboard_log/dance_grpo/wan22_5b_t2v_ocr_s150/</span></td></tr>
+  </table>
+
+  <div class="note">本报告为基座模型参考基线。同一 1018 条 prompt 上，step-150 训练后模型得 0.5216（+0.0225）。两条逐样本结果可按 prompt 配对做更细的对比分析。</div>
+
+  <footer>生成于 2026-08-06 · 数据源 huirui (pku-tangh) · verl-omni dance_grpo 全量评测</footer>
+</div>
+</body>
+</html>
